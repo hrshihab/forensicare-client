@@ -13,7 +13,8 @@ import {
     Shield,
     FileText,
     Search,
-    Activity
+    Activity,
+    ClipboardCheck
   } from "lucide-react";
   import { USER_ROLE, UserRole } from "@/constants/roles";
   
@@ -56,47 +57,57 @@ import {
             { title: "Add Department", url: `/dashboard/${role}/departments/add` },
           ],
         },
+        // {
+        //   title: "Cases",
+        //   url: `/dashboard/${role}/cases`,
+        //   icon: FileText,
+        //   items: [
+        //     { title: "All Cases", url: `/dashboard/${role}/cases` },
+        //     { title: "Create Case", url: `/dashboard/${role}/cases/create` },
+        //     { title: "Case Reports", url: `/dashboard/${role}/cases/reports` },
+        //   ],
+        // },
+        // {
+        //   title: "Evidence",
+        //   url: `/dashboard/${role}/evidence`,
+        //   icon: Search,
+        //   items: [
+        //     { title: "All Evidence", url: `/dashboard/${role}/evidence` },
+        //     { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
+        //     { title: "Evidence Analysis", url: `/dashboard/${role}/evidence/analysis` },
+        //   ],
+        // },
         {
-          title: "Cases",
-          url: `/dashboard/${role}/cases`,
-          icon: FileText,
+          title: "Investigation Report",
+          url: `/dashboard/${role}/investigation-report`,
+          icon: ClipboardCheck,
           items: [
-            { title: "All Cases", url: `/dashboard/${role}/cases` },
-            { title: "Create Case", url: `/dashboard/${role}/cases/create` },
-            { title: "Case Reports", url: `/dashboard/${role}/cases/reports` },
+            { title: "Create Report", url: `/dashboard/${role}/investigation-report/create` },
+            { title: "All Reports", url: `/dashboard/${role}/investigation-report` },
+            { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates` },
           ],
         },
-        {
-          title: "Evidence",
-          url: `/dashboard/${role}/evidence`,
-          icon: Search,
-          items: [
-            { title: "All Evidence", url: `/dashboard/${role}/evidence` },
-            { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
-            { title: "Evidence Analysis", url: `/dashboard/${role}/evidence/analysis` },
-          ],
-        },
-        {
-          title: "Reports",
-          url: `/dashboard/${role}/reports`,
-          icon: BarChart3,
-          items: [
-            { title: "Case Reports", url: `/dashboard/${role}/reports/cases` },
-            { title: "Evidence Reports", url: `/dashboard/${role}/reports/evidence` },
-            { title: "User Reports", url: `/dashboard/${role}/reports/users` },
-            { title: "Analytics", url: `/dashboard/${role}/reports/analytics` },
-          ],
-        },
-        {
-          title: "Security",
-          url: `/dashboard/${role}/security`,
-          icon: Shield,
-          items: [
-            { title: "Access Logs", url: `/dashboard/${role}/security/logs` },
-            { title: "Permissions", url: `/dashboard/${role}/security/permissions` },
-            { title: "System Settings", url: `/dashboard/${role}/security/settings` },
-          ],
-        },
+        // {
+        //   title: "Reports",
+        //   url: `/dashboard/${role}/reports`,
+        //   icon: BarChart3,
+        //   items: [
+        //     { title: "Case Reports", url: `/dashboard/${role}/reports/cases` },
+        //     { title: "Evidence Reports", url: `/dashboard/${role}/reports/evidence` },
+        //     { title: "User Reports", url: `/dashboard/${role}/reports/users` },
+        //     { title: "Analytics", url: `/dashboard/${role}/reports/analytics` },
+        //   ],
+        // },
+        // {
+        //   title: "Security",
+        //   url: `/dashboard/${role}/security`,
+        //   icon: Shield,
+        //   items: [
+        //     { title: "Access Logs", url: `/dashboard/${role}/security/logs` },
+        //     { title: "Permissions", url: `/dashboard/${role}/security/permissions` },
+        //     { title: "System Settings", url: `/dashboard/${role}/security/settings` },
+        //   ],
+        // },
         {
           title: "Profile",
           url: `/dashboard/profile`,
@@ -117,16 +128,16 @@ import {
           { title: "My Cases", url: `/dashboard/${role}/cases` },
           { title: "Create Case", url: `/dashboard/${role}/cases/create` },
         ],
-      },
-      {
-        title: "Evidence",
-        url: `/dashboard/${role}/evidence`,
-        icon: Search,
-        items: [
-          { title: "My Evidence", url: `/dashboard/${role}/evidence` },
-          { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
-        ],
-      },
+       },
+      // {
+      //   title: "Evidence",
+      //   url: `/dashboard/${role}/evidence`,
+      //   icon: Search,
+      //   items: [
+      //     { title: "My Evidence", url: `/dashboard/${role}/evidence` },
+      //     { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
+      //   ],
+      // },
       {
         title: "Reports",
         url: `/dashboard/${role}/reports`,

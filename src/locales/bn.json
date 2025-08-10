@@ -1,0 +1,134 @@
+{
+  "common": {
+    "save": "সংরক্ষণ করুন",
+    "cancel": "বাতিল করুন",
+    "submit": "জমা দিন",
+    "edit": "সম্পাদনা করুন",
+    "delete": "মুছুন",
+    "view": "দেখুন",
+    "create": "তৈরি করুন",
+    "required": "প্রয়োজনীয়",
+    "optional": "ঐচ্ছিক",
+    "skip": "এড়িয়ে যান",
+    "skip_reason": "এড়িয়ে যাওয়ার কারণ",
+    "preview": "প্রাকদর্শন",
+    "print": "প্রিন্ট করুন",
+    "language": "ভাষা",
+    "bengali": "বাংলা",
+    "english": "ইংরেজি"
+  },
+  "investigation": {
+    "title": "তদন্ত প্রতিবেদন",
+    "create_title": "নতুন তদন্ত প্রতিবেদন তৈরি করুন",
+    "edit_title": "তদন্ত প্রতিবেদন সম্পাদনা করুন",
+    "sections": {
+      "header": "হেডার",
+      "general": "সাধারণ তথ্য",
+      "external_signs": "বাহ্যিক লক্ষণ",
+      "head_spine": "মাথার খুলী/মেরুদণ্ড নাল",
+      "chest_lungs": "বক্ষ ও ফুসফুস",
+      "abdomen": "উদর",
+      "musculoskeletal": "মাংসপেশী/হাড়/জয়ন্ট",
+      "opinions": "মতামত"
+    },
+    "header": {
+      "thana": "থানা",
+      "gd_cid_case_no": "জিডি/সিআইডি/কেস নং",
+      "ref_date": "সূত্রের তারিখ",
+      "pm_no": "পিএম নং",
+      "report_date": "রিপোর্টের তারিখ",
+      "place": "স্থান",
+      "year": "বছর",
+      "month": "মাস",
+      "day": "তারিখ"
+    },
+    "general": {
+      "person_name": "নাম",
+      "gender": "লিঙ্গ",
+      "age_years": "বয়স (বছর)",
+      "complexion": "গাত্র",
+      "brought_from_village": "কোথা হতে আনা—গ্রাম",
+      "brought_from_thana": "কোথা হতে আনা—থানা",
+      "brought_by_list": "আনা কনস্টাবল/আত্মীয়দের নামসমূহ",
+      "sent_datetime": "প্রেরণের দিন ও ক্ষণ",
+      "brought_datetime": "লাশ মর্গে আনার দিন ও ক্ষণ",
+      "exam_datetime": "পরীক্ষার দিন ও ক্ষণ",
+      "police_info": "পুলিশের তথ্য",
+      "identifier_name": "সনাক্তকারী নাম"
+    },
+    "external_signs": {
+      "physique_state": "ব্যক্তির অবস্থা",
+      "wounds_desc": "যখম—অবস্থান/আকার/ধরণ",
+      "injuries_desc": "আঘাত—অবস্থান/আকার/ধরণ",
+      "neck_marks": "গলা ব্যবচ্ছেদে প্রাপ্ত পট্টর চিহ্ন"
+    },
+    "head_spine": {
+      "scalp_skull_vertebrae": "মাথার বিহরাবরণ/খুলি/মেরুদণ্ড অস্থি",
+      "meninges": "ঝিল্লী",
+      "brain_spinal": "মস্তিষ্ক ও রজ্জু"
+    },
+    "chest_lungs": {
+      "ribs_cartilage": "পাঁজর/কস্টাল কার্টিলেজ",
+      "pleura": "ফুসফুস আবরণী",
+      "larynx_trachea_bronchi": "বাকযন্ত্র/শ্বাসনালী (ব্রঙ্কাস/ব্রিঙ্কিওল)",
+      "right_lung": "ডান ফুসফুস",
+      "left_lung": "বাম ফুসফুস",
+      "pericardium": "হৃদপিণ্ডের ঝিল্লী",
+      "heart": "হৃদপিণ্ড",
+      "blood_vessels": "রক্তনালী"
+    },
+    "abdomen": {
+      "abdominal_general": "প্রকারসমূহ",
+      "peritoneum": "উদরের উপরের ঝিল্লী",
+      "mouth_trachea_esophagus": "মুখ/শ্বাসনালী/অন্ননালী",
+      "stomach_and_contents": "পাকস্থলী ও ভিতরের বস্তু",
+      "small_intestine_and_contents": "ক্ষুদ্রান্ত্র ও ভিতরের বস্তু",
+      "large_intestine_and_contents": "বৃহ্দান্ত্র ও ভিতরের বস্তু",
+      "liver": "যকৃত",
+      "spleen": "প্লীহা",
+      "kidneys": "মূত্রাশয়সমূহ (কিডনি)",
+      "urinary_bladder": "মূত্রাস্থলী",
+      "genital_organs": "প্রজনন অঙ্গ (বাহিরে/ভিতরে)"
+    },
+    "musculoskeletal": {
+      "ms_wounds": "যখম",
+      "ms_disease_variations": "রোগ বা বিবিধতা",
+      "fractures": "অস্থিভঙ্গ",
+      "dislocations": "স্থানচ্যুতি",
+      "detailed_pathology": "বিস্তারিত রোগ/যখম বিবরণ"
+    },
+    "opinions": {
+      "medical_officer_opinion": "মেডিক্যাল অফিসারের মতামত",
+      "civil_surgeon_remark": "সিভিল সার্জনের মন্তব্য"
+    },
+    "attachments": {
+      "title": "সংযুক্তি",
+      "add_file": "ফাইল যোগ করুন",
+      "remove_file": "ফাইল সরান"
+    },
+    "sign_off": {
+      "sign_datetime": "সাইন-টাইম",
+      "officer_name": "অফিসারের নাম",
+      "officer_designation": "পদবি",
+      "civil_name": "সিভিল সার্জনের নাম",
+      "civil_signature": "সিভিল সিগনেচার"
+    }
+  },
+  "validation": {
+    "required_field": "এই ক্ষেত্রটি প্রয়োজনীয়",
+    "invalid_date": "অবৈধ তারিখ",
+    "invalid_number": "অবৈধ সংখ্যা",
+    "min_length": "ন্যূনতম {{min}} অক্ষর প্রয়োজন",
+    "max_length": "সর্বোচ্চ {{max}} অক্ষর হতে পারে",
+    "future_date_not_allowed": "ভবিষ্যতের তারিখ অনুমোদিত নয়",
+    "exam_date_after_brought": "পরীক্ষার তারিখ আনার তারিখের পরে হতে হবে",
+    "brought_date_after_sent": "আনার তারিখ প্রেরণের তারিখের পরে হতে হবে"
+  },
+  "status": {
+    "draft": "খসড়া",
+    "completed": "সম্পন্ন",
+    "pending": "অপেক্ষমান",
+    "error": "ত্রুটি",
+    "skipped": "এড়িয়ে যাওয়া"
+  }
+}

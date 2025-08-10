@@ -1,0 +1,134 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "create": "Create",
+    "required": "Required",
+    "optional": "Optional",
+    "skip": "Skip",
+    "skip_reason": "Skip Reason",
+    "preview": "Preview",
+    "print": "Print",
+    "language": "Language",
+    "bengali": "Bengali",
+    "english": "English"
+  },
+  "investigation": {
+    "title": "Investigation Report",
+    "create_title": "Create New Investigation Report",
+    "edit_title": "Edit Investigation Report",
+    "sections": {
+      "header": "Header",
+      "general": "General Information",
+      "external_signs": "External Signs",
+      "head_spine": "Head & Spine",
+      "chest_lungs": "Chest & Lungs",
+      "abdomen": "Abdomen",
+      "musculoskeletal": "Musculoskeletal",
+      "opinions": "Opinions"
+    },
+    "header": {
+      "thana": "Thana",
+      "gd_cid_case_no": "GD/CID/Case No.",
+      "ref_date": "Reference Date",
+      "pm_no": "PM No.",
+      "report_date": "Report Date",
+      "place": "Place",
+      "year": "Year",
+      "month": "Month",
+      "day": "Day"
+    },
+    "general": {
+      "person_name": "Person Name",
+      "gender": "Gender",
+      "age_years": "Age (Years)",
+      "complexion": "Complexion",
+      "brought_from_village": "Brought from (Village)",
+      "brought_from_thana": "Brought from (Thana)",
+      "brought_by_list": "Brought by (names)",
+      "sent_datetime": "Sent Date & Time",
+      "brought_datetime": "Brought to Morgue Date & Time",
+      "exam_datetime": "Examination Date & Time",
+      "police_info": "Police Information",
+      "identifier_name": "Identifier Name"
+    },
+    "external_signs": {
+      "physique_state": "Physique State",
+      "wounds_desc": "Wounds - Location/Size/Type",
+      "injuries_desc": "Injuries - Location/Size/Type",
+      "neck_marks": "Neck Marks from Dissection"
+    },
+    "head_spine": {
+      "scalp_skull_vertebrae": "Scalp-Skull-Vertebrae",
+      "meninges": "Meninges",
+      "brain_spinal": "Brain & Spinal Cord"
+    },
+    "chest_lungs": {
+      "ribs_cartilage": "Ribs & Costal Cartilage",
+      "pleura": "Pleura",
+      "larynx_trachea_bronchi": "Larynx-Trachea-Bronchi",
+      "right_lung": "Right Lung",
+      "left_lung": "Left Lung",
+      "pericardium": "Pericardium",
+      "heart": "Heart",
+      "blood_vessels": "Blood Vessels"
+    },
+    "abdomen": {
+      "abdominal_general": "General Abdomen",
+      "peritoneum": "Peritoneum",
+      "mouth_trachea_esophagus": "Mouth-Trachea-Esophagus",
+      "stomach_and_contents": "Stomach & Contents",
+      "small_intestine_and_contents": "Small Intestine & Contents",
+      "large_intestine_and_contents": "Large Intestine & Contents",
+      "liver": "Liver",
+      "spleen": "Spleen",
+      "kidneys": "Kidneys",
+      "urinary_bladder": "Urinary Bladder",
+      "genital_organs": "Genital Organs (External/Internal)"
+    },
+    "musculoskeletal": {
+      "ms_wounds": "Wounds",
+      "ms_disease_variations": "Disease or Variations",
+      "fractures": "Fractures",
+      "dislocations": "Dislocations",
+      "detailed_pathology": "Detailed Pathology"
+    },
+    "opinions": {
+      "medical_officer_opinion": "Medical Officer Opinion",
+      "civil_surgeon_remark": "Civil Surgeon Remark"
+    },
+    "attachments": {
+      "title": "Attachments",
+      "add_file": "Add File",
+      "remove_file": "Remove File"
+    },
+    "sign_off": {
+      "sign_datetime": "Sign Date & Time",
+      "officer_name": "Officer Name",
+      "officer_designation": "Designation",
+      "civil_name": "Civil Surgeon Name",
+      "civil_signature": "Civil Surgeon Signature"
+    }
+  },
+  "validation": {
+    "required_field": "This field is required",
+    "invalid_date": "Invalid date",
+    "invalid_number": "Invalid number",
+    "min_length": "Minimum {{min}} characters required",
+    "max_length": "Maximum {{max}} characters allowed",
+    "future_date_not_allowed": "Future dates are not allowed",
+    "exam_date_after_brought": "Examination date must be after brought date",
+    "brought_date_after_sent": "Brought date must be after sent date"
+  },
+  "status": {
+    "draft": "Draft",
+    "completed": "Completed",
+    "pending": "Pending",
+    "error": "Error",
+    "skipped": "Skipped"
+  }
+}
