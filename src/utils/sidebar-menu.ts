@@ -1,0 +1,149 @@
+// src/config/menuItems.tsx
+import {
+    Users,
+    Calendar,
+    CalendarDays,
+    ClipboardList,
+    UserCircle,
+    KeyRound,
+    BarChart3,
+    ArchiveRestore,
+    Building,
+    Settings,
+    Shield,
+    FileText,
+    Search,
+    Activity
+  } from "lucide-react";
+  import { USER_ROLE, UserRole } from "@/constants/roles";
+  
+  export type MenuItem = {
+    title: string;
+    url: string;
+    icon: any;
+    items?: { title: string; url: string }[];
+  };
+  
+  export const getMenuItems = (role: UserRole): MenuItem[] => {
+    const baseItems = [
+      {
+        title: "Dashboard",
+        url: `/dashboard/${role}`,
+        icon: BarChart3,
+        items: [],
+      }
+    ];
+
+    // Admin-specific menu items
+    if (role === USER_ROLE.ADMIN) {
+      return [
+        ...baseItems,
+        {
+          title: "User Management",
+          url: `/dashboard/${role}/users`,
+          icon: Users,
+          items: [
+            { title: "All Users", url: `/dashboard/${role}/users` },
+            { title: "Add User", url: `/dashboard/${role}/users/add` },
+          ],
+        },
+        {
+          title: "Department Management",
+          url: `/dashboard/${role}/departments`,
+          icon: Building,
+          items: [
+            { title: "All Departments", url: `/dashboard/${role}/departments` },
+            { title: "Add Department", url: `/dashboard/${role}/departments/add` },
+          ],
+        },
+        {
+          title: "Cases",
+          url: `/dashboard/${role}/cases`,
+          icon: FileText,
+          items: [
+            { title: "All Cases", url: `/dashboard/${role}/cases` },
+            { title: "Create Case", url: `/dashboard/${role}/cases/create` },
+            { title: "Case Reports", url: `/dashboard/${role}/cases/reports` },
+          ],
+        },
+        {
+          title: "Evidence",
+          url: `/dashboard/${role}/evidence`,
+          icon: Search,
+          items: [
+            { title: "All Evidence", url: `/dashboard/${role}/evidence` },
+            { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
+            { title: "Evidence Analysis", url: `/dashboard/${role}/evidence/analysis` },
+          ],
+        },
+        {
+          title: "Reports",
+          url: `/dashboard/${role}/reports`,
+          icon: BarChart3,
+          items: [
+            { title: "Case Reports", url: `/dashboard/${role}/reports/cases` },
+            { title: "Evidence Reports", url: `/dashboard/${role}/reports/evidence` },
+            { title: "User Reports", url: `/dashboard/${role}/reports/users` },
+            { title: "Analytics", url: `/dashboard/${role}/reports/analytics` },
+          ],
+        },
+        {
+          title: "Security",
+          url: `/dashboard/${role}/security`,
+          icon: Shield,
+          items: [
+            { title: "Access Logs", url: `/dashboard/${role}/security/logs` },
+            { title: "Permissions", url: `/dashboard/${role}/security/permissions` },
+            { title: "System Settings", url: `/dashboard/${role}/security/settings` },
+          ],
+        },
+        {
+          title: "Profile",
+          url: `/dashboard/profile`,
+          icon: UserCircle,
+          items: [],
+        },
+      ];
+    }
+
+    // User-specific menu items (for USER_ROLE.USER)
+    return [
+      ...baseItems,
+      {
+        title: "My Cases",
+        url: `/dashboard/${role}/cases`,
+        icon: FileText,
+        items: [
+          { title: "My Cases", url: `/dashboard/${role}/cases` },
+          { title: "Create Case", url: `/dashboard/${role}/cases/create` },
+        ],
+      },
+      {
+        title: "Evidence",
+        url: `/dashboard/${role}/evidence`,
+        icon: Search,
+        items: [
+          { title: "My Evidence", url: `/dashboard/${role}/evidence` },
+          { title: "Add Evidence", url: `/dashboard/${role}/evidence/add` },
+        ],
+      },
+      {
+        title: "Reports",
+        url: `/dashboard/${role}/reports`,
+        icon: BarChart3,
+        items: [
+          { title: "My Reports", url: `/dashboard/${role}/reports` },
+          { title: "Case History", url: `/dashboard/${role}/reports/history` },
+        ],
+      },
+      {
+        title: "Activity",
+        url: `/dashboard/${role}/activity`,
+        icon: Activity,
+        items: [
+          { title: "Recent Activity", url: `/dashboard/${role}/activity` },
+          { title: "Notifications", url: `/dashboard/${role}/activity/notifications` },
+        ],
+      },
+    ];
+  };
