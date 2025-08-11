@@ -37,7 +37,13 @@
       "ref_date": "Reference Date",
       "pm_no": "PM No.",
       "report_date": "Report Date",
-      "place": "Place",
+      "station": "Station",
+      "station_options": {
+        "dmc_morgue": "DMC Morgue",
+        "kmc": "KMC Morgue",
+        "cmc": "CMC Morgue",
+        "other": "Other Morgue"
+      },
       "year": "Year",
       "month": "Month",
       "day": "Day"
@@ -129,6 +135,9 @@
     "completed": "Completed",
     "pending": "Pending",
     "error": "Error",
-    "skipped": "Skipped"
+    "skipped": "Skipped",
+    "not_started": "Not Started",
+    "in_progress": "In Progress",
+    "done": "Done"
   }
 }

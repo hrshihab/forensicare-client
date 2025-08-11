@@ -69,7 +69,7 @@ Building a comprehensive forensic case management system with exact print parity
 - [ ] Reference date picker
 - [ ] PM number input
 - [ ] Report date picker
-- [ ] Place input
+- [ ] Station input
 - [ ] Year/Month/Day inputs
 
 ### 3.2 General Info Fields

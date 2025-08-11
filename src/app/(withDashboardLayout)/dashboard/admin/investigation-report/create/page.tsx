@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { FormSection } from '@/components/investigation/FormSection';
@@ -11,20 +11,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Save, Eye, Printer, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
+import { useToast } from '@/components/ui/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 const CreateReportForm: React.FC = () => {
   const { t } = useLanguage();
+  const { toast } = useToast();
   const [formData, setFormData] = useState<Partial<InvestigationReport>>({
     brought_by_list: [],
+    station: 'dmc_morgue', // Set default station value
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [sections, setSections] = useState<FormSectionType[]>([
     {
       id: 'header',
       title: 'Header',
       title_bn: 'হেডার',
       isOpen: true,
-      status: 'in_progress',
+      status: 'not_started',
       required: true,
     },
     {
@@ -32,7 +38,7 @@ const CreateReportForm: React.FC = () => {
       title: 'General Information',
       title_bn: 'সাধারণ তথ্য',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: true,
     },
     {
@@ -40,15 +46,15 @@ const CreateReportForm: React.FC = () => {
       title: 'External Signs',
       title_bn: 'বাহ্যিক লক্ষণ',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: false,
     },
     {
       id: 'head_spine',
       title: 'Head & Spine',
-      title_bn: 'মাথার খুলী/মেরুদণ্ড নাল',
+      title_bn: 'মাথার খুলী/মেরুদণ্ড নল',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: false,
     },
     {
@@ -56,7 +62,7 @@ const CreateReportForm: React.FC = () => {
       title: 'Chest & Lungs',
       title_bn: 'বক্ষ ও ফুসফুস',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: false,
     },
     {
@@ -64,7 +70,7 @@ const CreateReportForm: React.FC = () => {
       title: 'Abdomen',
       title_bn: 'উদর',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: false,
     },
     {
@@ -72,7 +78,7 @@ const CreateReportForm: React.FC = () => {
       title: 'Musculoskeletal',
       title_bn: 'মাংসপেশী/হাড়/জয়ন্ট',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: false,
     },
     {
@@ -80,7 +86,7 @@ const CreateReportForm: React.FC = () => {
       title: 'Opinions',
       title_bn: 'মতামত',
       isOpen: false,
-      status: 'in_progress',
+      status: 'not_started',
       required: true,
     },
   ]);
@@ -99,6 +105,12 @@ const CreateReportForm: React.FC = () => {
         return newErrors;
       });
     }
+    
+    // Update section statuses after field change
+    setTimeout(() => updateSectionStatuses(), 100);
+    
+    // Trigger auto-save after field change
+    triggerAutoSave();
   };
 
   const handleSectionToggle = (sectionId: string, isOpen: boolean) => {
@@ -111,10 +123,80 @@ const CreateReportForm: React.FC = () => {
     );
   };
 
+  // Auto-save functionality
+  const triggerAutoSave = useCallback(() => {
+    // Clear any existing timeout
+    if ((window as any).autoSaveTimeout) {
+      clearTimeout((window as any).autoSaveTimeout);
+    }
+    
+    // Set new timeout for 5 seconds
+    (window as any).autoSaveTimeout = setTimeout(() => {
+      autoSaveData();
+    }, 5000);
+  }, []);
+
+  const autoSaveData = useCallback(() => {
+    if (Object.keys(formData).length === 0) return;
+    
+    setIsAutoSaving(true);
+    
+    try {
+      // Save to localStorage
+      const dataToSave = {
+        ...formData,
+        lastModified: new Date().toISOString(),
+        autoSaved: true
+      };
+      
+      localStorage.setItem('investigation_report_draft', JSON.stringify(dataToSave));
+      setLastSaved(new Date());
+      
+      // Show toast notification
+      toast({
+        title: "Auto-saved",
+        description: "Your progress has been automatically saved",
+        duration: 3000,
+      });
+      
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+      toast({
+        title: "Auto-save failed",
+        description: "Failed to save your progress automatically",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsAutoSaving(false);
+    }
+  }, [formData, toast]);
+
+  const loadSavedData = useCallback(() => {
+    try {
+      const savedData = localStorage.getItem('investigation_report_draft');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        // Remove auto-save metadata
+        const { lastModified, autoSaved, ...cleanData } = parsedData;
+        setFormData(cleanData);
+        setLastSaved(new Date(lastModified));
+        
+        toast({
+          title: "Data restored",
+          description: "Your previous work has been restored",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load saved data:', error);
+    }
+  }, [toast]);
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Header validation
+    // Header validation - always validate as it's required and open by default
     if (!formData.thana_id) {
       newErrors.thana_id = t('validation.required_field');
     }
@@ -130,40 +212,43 @@ const CreateReportForm: React.FC = () => {
     if (!formData.report_date) {
       newErrors.report_date = t('validation.required_field');
     }
-    if (!formData.place) {
-      newErrors.place = t('validation.required_field');
+    if (!formData.station || formData.station.trim() === '') {
+      newErrors.station = t('validation.required_field');
     }
 
-    // General validation
-    if (!formData.person_name) {
-      newErrors.person_name = t('validation.required_field');
-    }
-    if (!formData.gender) {
-      newErrors.gender = t('validation.required_field');
-    }
-    if (!formData.age_years) {
-      newErrors.age_years = t('validation.required_field');
-    }
-    if (!formData.brought_by_list || formData.brought_by_list.length === 0) {
-      newErrors.brought_by_list = t('validation.required_field');
-    }
-    if (!formData.sent_datetime) {
-      newErrors.sent_datetime = t('validation.required_field');
-    }
-    if (!formData.brought_datetime) {
-      newErrors.brought_datetime = t('validation.required_field');
-    }
-    if (!formData.exam_datetime) {
-      newErrors.exam_datetime = t('validation.required_field');
-    }
-    if (!formData.police_info) {
-      newErrors.police_info = t('validation.required_field');
-    }
-    if (!formData.identifier_name) {
-      newErrors.identifier_name = t('validation.required_field');
+    // General validation - only validate if section has been opened or has data
+    const generalSection = sections.find(s => s.id === 'general');
+    if (generalSection?.isOpen || hasGeneralSectionData()) {
+      if (!formData.person_name) {
+        newErrors.person_name = t('validation.required_field');
+      }
+      if (!formData.gender) {
+        newErrors.gender = t('validation.required_field');
+      }
+      if (!formData.age_years) {
+        newErrors.age_years = t('validation.required_field');
+      }
+      if (!formData.brought_by_list || formData.brought_by_list.length === 0) {
+        newErrors.brought_by_list = t('validation.required_field');
+      }
+      if (!formData.sent_datetime) {
+        newErrors.sent_datetime = t('validation.required_field');
+      }
+      if (!formData.brought_datetime) {
+        newErrors.brought_datetime = t('validation.required_field');
+      }
+      if (!formData.exam_datetime) {
+        newErrors.exam_datetime = t('validation.required_field');
+      }
+      if (!formData.police_info) {
+        newErrors.police_info = t('validation.required_field');
+      }
+      if (!formData.identifier_name) {
+        newErrors.identifier_name = t('validation.required_field');
+      }
     }
 
-    // Date validation
+    // Date validation - only if both dates exist
     if (formData.sent_datetime && formData.brought_datetime) {
       if (new Date(formData.sent_datetime) >= new Date(formData.brought_datetime)) {
         newErrors.brought_datetime = t('validation.brought_date_after_sent');
@@ -181,37 +266,194 @@ const CreateReportForm: React.FC = () => {
 
   const handleSave = () => {
     if (validateForm()) {
-      // Save logic here
-      console.log('Form data:', formData);
-      // Update section statuses
-      updateSectionStatuses();
+      try {
+        // Save to localStorage
+        const dataToSave = {
+          ...formData,
+          lastModified: new Date().toISOString(),
+          saved: true
+        };
+        
+        localStorage.setItem('investigation_report_draft', JSON.stringify(dataToSave));
+        setLastSaved(new Date());
+        
+        // Show success toast
+        toast({
+          title: "Saved successfully",
+          description: "Your investigation report has been saved",
+          duration: 3000,
+        });
+        
+        // Update section statuses
+        updateSectionStatuses();
+        
+        console.log('Form data saved:', formData);
+      } catch (error) {
+        console.error('Save failed:', error);
+        toast({
+          title: "Save failed",
+          description: "Failed to save your investigation report",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    } else {
+      // Show validation error toast
+      toast({
+        title: "Validation failed",
+        description: "Please fix the errors before saving",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
   const updateSectionStatuses = () => {
     setSections(prev => prev.map(section => {
-      let status: 'done' | 'in_progress' | 'error' | 'skipped' = 'in_progress';
+      let status: 'not_started' | 'in_progress' | 'done' | 'error' | 'skipped' = 'not_started';
       
       if (section.id === 'header') {
-        const hasErrors = ['thana_id', 'gd_cid_case_no', 'ref_date', 'pm_no', 'report_date', 'place']
-          .some(field => errors[field]);
-        status = hasErrors ? 'error' : 'done';
+        const requiredFields = ['thana_id', 'gd_cid_case_no', 'ref_date', 'pm_no', 'report_date', 'station'];
+        const hasErrors = requiredFields.some(field => errors[field]);
+        const filledFields = requiredFields.filter(field => {
+          const value = (formData as any)[field];
+          return isFieldMeaningfullyFilled(field, value);
+        });
+        
+        if (hasErrors) {
+          status = 'error';
+        } else if (filledFields.length === 0) {
+          status = 'not_started';
+        } else if (filledFields.length === requiredFields.length) {
+          status = 'done';
+        } else {
+          status = 'in_progress';
+        }
       } else if (section.id === 'general') {
-        const hasErrors = ['person_name', 'gender', 'age_years', 'brought_by_list', 'sent_datetime', 'brought_datetime', 'exam_datetime', 'police_info', 'identifier_name']
-          .some(field => errors[field]);
-        status = hasErrors ? 'error' : 'done';
+        const requiredFields = ['person_name', 'gender', 'age_years', 'brought_by_list', 'sent_datetime', 'brought_datetime', 'exam_datetime', 'police_info', 'identifier_name'];
+        const hasErrors = requiredFields.some(field => errors[field]);
+        const filledFields = requiredFields.filter(field => {
+          const value = (formData as any)[field];
+          return isFieldMeaningfullyFilled(field, value);
+        });
+        
+        if (hasErrors) {
+          status = 'error';
+        } else if (filledFields.length === 0) {
+          status = 'not_started';
+        } else if (filledFields.length === requiredFields.length) {
+          status = 'done';
+        } else {
+          status = 'in_progress';
+        }
+      } else {
+        // For other sections, only update if they've been opened or have data
+                if (section.isOpen || hasSectionData(section.id)) {
+          const sectionFields = getSectionFields(section.id);
+          if (sectionFields.length > 0) {
+            const filledFields = sectionFields.filter(field => {
+              const value = (formData as any)[field];
+              return isFieldMeaningfullyFilled(field, value);
+            });
+            if (filledFields.length === 0) {
+              status = 'not_started';
+            } else if (filledFields.length === sectionFields.length) {
+              status = 'done';
+            } else {
+              status = 'in_progress';
+            }
+          } else {
+            status = 'not_started';
+          }
+        } else {
+          // Keep existing status for untouched sections
+          status = section.status;
+        }
       }
       
       return { ...section, status };
     }));
   };
 
+  // Helper function to check if general section has any data
+  const hasGeneralSectionData = (): boolean => {
+    const generalFields = ['person_name', 'gender', 'age_years', 'brought_by_list', 'sent_datetime', 'brought_datetime', 'exam_datetime', 'police_info', 'identifier_name'];
+    return generalFields.some(field => {
+      const value = (formData as any)[field];
+      if (field === 'brought_by_list') {
+        return value && Array.isArray(value) && value.length > 0;
+      }
+      return value && value.toString().trim() !== '';
+    });
+  };
+
+  // Helper function to check if a section has any data
+  const hasSectionData = (sectionId: string): boolean => {
+    const sectionFields = getSectionFields(sectionId);
+    return sectionFields.some(field => {
+      const value = (formData as any)[field];
+      return value && value.toString().trim() !== '';
+    });
+  };
+
+  // Helper function to check if a field is meaningfully filled
+  const isFieldMeaningfullyFilled = (field: string, value: any): boolean => {
+    if (!value) return false;
+    
+    if (field === 'brought_by_list') {
+      return Array.isArray(value) && value.length > 0;
+    }
+    
+    if (field === 'station') {
+      // Station is filled if it has any value (including default)
+      return value.toString().trim() !== '';
+    }
+    
+    // For other fields, check if they have meaningful content
+    const trimmedValue = value.toString().trim();
+    return trimmedValue !== '' && trimmedValue !== 'undefined' && trimmedValue !== 'null';
+  };
+
+  // Helper function to get fields for each section
+  const getSectionFields = (sectionId: string): string[] => {
+    switch (sectionId) {
+      case 'external_signs':
+        return ['physique_state', 'wounds_desc', 'injuries_desc', 'neck_marks'];
+      case 'head_spine':
+        return ['scalp_skull_vertebrae', 'meninges', 'brain_spinal'];
+      case 'chest_lungs':
+        return ['ribs_cartilage', 'pleura', 'larynx_trachea_bronchi', 'right_lung', 'left_lung', 'pericardium', 'heart', 'blood_vessels'];
+      case 'abdomen':
+        return ['abdominal_general', 'peritoneum', 'mouth_trachea_esophagus', 'stomach_and_contents', 'small_intestine_and_contents', 'large_intestine_and_contents', 'liver', 'spleen', 'kidneys', 'urinary_bladder', 'genital_organs'];
+      case 'musculoskeletal':
+        return ['ms_wounds', 'ms_disease_variations', 'fractures', 'dislocations', 'detailed_pathology'];
+      case 'opinions':
+        return ['medical_officer_opinion', 'civil_surgeon_remark'];
+      default:
+        return [];
+    }
+  };
+
   useEffect(() => {
     updateSectionStatuses();
-  }, [errors]);
+  }, [errors, formData]);
+
+  // Load saved data on component mount
+  useEffect(() => {
+    loadSavedData();
+  }, [loadSavedData]);
+
+  // Cleanup auto-save timeout on unmount
+  useEffect(() => {
+    return () => {
+      if ((window as any).autoSaveTimeout) {
+        clearTimeout((window as any).autoSaveTimeout);
+      }
+    };
+  }, []);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 ">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
@@ -232,6 +474,23 @@ const CreateReportForm: React.FC = () => {
         </div>
         <div className="flex items-center space-x-3">
           <LanguageToggle />
+          
+          {/* Auto-save indicator */}
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            {isAutoSaving && (
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span>Auto-saving...</span>
+              </div>
+            )}
+            {lastSaved && !isAutoSaving && (
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
+              </div>
+            )}
+          </div>
+          
           <Button variant="outline" size="sm">
             <Eye className="w-4 h-4 mr-2" />
             {t('common.preview')}
@@ -248,102 +507,50 @@ const CreateReportForm: React.FC = () => {
       </div>
 
       {/* Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Form Sections */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Header Section */}
+      <div className="space-y-4">
+        {/* Header Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'header')!}
+          onToggle={(isOpen) => handleSectionToggle('header', isOpen)}
+        >
+          <HeaderSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* General Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'general')!}
+          onToggle={(isOpen) => handleSectionToggle('general', isOpen)}
+        >
+          <GeneralSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Placeholder sections for future implementation */}
+        {sections.slice(2).map((section) => (
           <FormSection
-            section={sections.find(s => s.id === 'header')!}
-            onToggle={(isOpen) => handleSectionToggle('header', isOpen)}
+            key={section.id}
+            section={section}
+            onToggle={(isOpen) => handleSectionToggle(section.id, isOpen)}
           >
-            <HeaderSection
-              formData={formData}
-              onFieldChange={handleFieldChange}
-              errors={errors}
-            />
+            <div className="text-center py-8 text-gray-500">
+              <p>{section.title} section will be implemented in the next phase</p>
+            </div>
           </FormSection>
-
-          {/* General Section */}
-          <FormSection
-            section={sections.find(s => s.id === 'general')!}
-            onToggle={(isOpen) => handleSectionToggle('general', isOpen)}
-          >
-            <GeneralSection
-              formData={formData}
-              onFieldChange={handleFieldChange}
-              errors={errors}
-            />
-          </FormSection>
-
-          {/* Placeholder sections for future implementation */}
-          {sections.slice(2).map((section) => (
-            <FormSection
-              key={section.id}
-              section={section}
-              onToggle={(isOpen) => handleSectionToggle(section.id, isOpen)}
-            >
-              <div className="text-center py-8 text-gray-500">
-                <p>{section.title} section will be implemented in the next phase</p>
-              </div>
-            </FormSection>
-          ))}
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Progress Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Progress</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {sections.map((section) => (
-                  <div key={section.id} className="flex items-center justify-between">
-                    <span className="text-sm font-medium">
-                      {t(`investigation.sections.${section.id}`)}
-                    </span>
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      section.status === 'done' ? 'bg-green-100 text-green-800' :
-                      section.status === 'error' ? 'bg-red-100 text-red-800' :
-                      section.status === 'skipped' ? 'bg-orange-100 text-orange-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {t(`status.${section.status}`)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save Draft
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Eye className="w-4 h-4 mr-2" />
-                  Preview Report
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <Printer className="w-4 h-4 mr-2" />
-                  Print Report
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  );
-};
+                 ))}
+       </div>
+       
+       {/* Toast notifications */}
+       <Toaster />
+     </div>
+   );
+ };
 
 // Wrap the component with LanguageProvider
 const CreateReportPage: React.FC = () => {

@@ -35,6 +35,8 @@ export const FormSection: React.FC<FormSectionProps> = ({
         return <SkipForward className="w-4 h-4 text-orange-600" />;
       case 'in_progress':
         return <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />;
+      case 'not_started':
+        return <div className="w-4 h-4 border-2 border-gray-400 rounded-full" />;
       default:
         return null;
     }
@@ -50,6 +52,8 @@ export const FormSection: React.FC<FormSectionProps> = ({
         return 'bg-orange-100 text-orange-800';
       case 'in_progress':
         return 'bg-blue-100 text-blue-800';
+      case 'not_started':
+        return 'bg-gray-100 text-gray-600';
       default:
         return 'bg-gray-100 text-gray-800';
     }

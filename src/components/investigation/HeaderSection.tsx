@@ -134,26 +134,59 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           )}
         </div>
 
-        {/* Place */}
+        {/* Station */}
         <div className="space-y-2">
-          <Label htmlFor="place" className="text-sm font-medium">
-            {t('investigation.header.place')} *
+          <Label htmlFor="station" className="text-sm font-medium">
+            {t('investigation.header.station')} *
           </Label>
-          <Input
-            id="place"
-            value={formData.place || ''}
-            onChange={(e) => onFieldChange('place', e.target.value)}
-            placeholder="Place"
-            className={errors.place ? 'border-red-500' : ''}
-          />
-          {errors.place && (
-            <p className="text-sm text-red-600">{errors.place}</p>
+          <div className="flex gap-2">
+            <Select
+              value={formData.station && ['dmc_morgue', 'kmc', 'cmc'].includes(formData.station) ? formData.station : 'other'}
+              onValueChange={(value) => {
+                if (value === 'other') {
+                  onFieldChange('station', '');
+                } else {
+                  onFieldChange('station', value);
+                }
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="dmc_morgue">
+                  {t('investigation.header.station_options.dmc_morgue')}
+                </SelectItem>
+                <SelectItem value="kmc">
+                  {t('investigation.header.station_options.kmc')}
+                </SelectItem>
+                <SelectItem value="cmc">
+                  {t('investigation.header.station_options.cmc')}
+                </SelectItem>
+                <SelectItem value="other">
+                  {t('investigation.header.station_options.other')}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {(formData.station === 'other' || !formData.station || 
+              !['dmc_morgue', 'kmc', 'cmc'].includes(formData.station)) && (
+              <Input
+                id="station_custom"
+                value={formData.station && !['dmc_morgue', 'kmc', 'cmc'].includes(formData.station) ? formData.station : ''}
+                onChange={(e) => onFieldChange('station', e.target.value)}
+                placeholder={t('investigation.header.station_options.other')}
+                className={`flex-1 ${errors.station ? 'border-red-500' : ''}`}
+              />
+            )}
+          </div>
+          {errors.station && (
+            <p className="text-sm text-red-600">{errors.station}</p>
           )}
         </div>
       </div>
 
       {/* Date Components */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="year_val" className="text-sm font-medium">
             {t('investigation.header.year')}
@@ -210,7 +243,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

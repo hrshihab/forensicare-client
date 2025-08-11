@@ -6,7 +6,7 @@ export interface InvestigationReport {
   gd_cid_case_no: string;
   ref_date: string;
   report_date: string;
-  place: string;
+  station: string;
   year_val?: number;
   month_val?: number;
   day_val?: number;
@@ -111,6 +111,6 @@ export interface FormSection {
   title: string;
   title_bn: string;
   isOpen: boolean;
-  status: 'done' | 'in_progress' | 'error' | 'skipped';
+  status: 'done' | 'in_progress' | 'error' | 'skipped' | 'not_started';
   required: boolean;
 }

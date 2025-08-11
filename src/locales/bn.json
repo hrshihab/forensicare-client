@@ -32,12 +32,18 @@
       "opinions": "মতামত"
     },
     "header": {
-      "thana": "থানা",
+      "thana": "Thana",
       "gd_cid_case_no": "জিডি/সিআইডি/কেস নং",
       "ref_date": "সূত্রের তারিখ",
       "pm_no": "পিএম নং",
       "report_date": "রিপোর্টের তারিখ",
-      "place": "স্থান",
+      "station": "স্টেশন",
+      "station_options": {
+        "dmc_morgue": "DMC Morgue",
+        "kmc": "KMC Morgue",
+        "cmc": "CMC Morgue",
+        "other": "Other Morgue"
+      },
       "year": "বছর",
       "month": "মাস",
       "day": "তারিখ"
@@ -48,7 +54,7 @@
       "age_years": "বয়স (বছর)",
       "complexion": "গাত্র",
       "brought_from_village": "কোথা হতে আনা—গ্রাম",
-      "brought_from_thana": "কোথা হতে আনা—থানা",
+      "brought_from_thana": "Brought from (Thana)",
       "brought_by_list": "আনা কনস্টাবল/আত্মীয়দের নামসমূহ",
       "sent_datetime": "প্রেরণের দিন ও ক্ষণ",
       "brought_datetime": "লাশ মর্গে আনার দিন ও ক্ষণ",
@@ -129,6 +135,9 @@
     "completed": "সম্পন্ন",
     "pending": "অপেক্ষমান",
     "error": "ত্রুটি",
-    "skipped": "এড়িয়ে যাওয়া"
+    "skipped": "এড়িয়ে যাওয়া",
+    "not_started": "শুরু হয়নি",
+    "in_progress": "চলছে",
+    "done": "সম্পন্ন"
   }
 }
