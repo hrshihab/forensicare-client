@@ -35,7 +35,13 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   ];
 
   const getLocalizedName = (item: any) => {
+    // Always return English name for field values, but show localized name for display
     return language === 'bn' ? item.name_bn : item.name_en;
+  };
+
+  const getFieldValue = (item: any) => {
+    // Always return English name for field values (stored in database)
+    return item.name_en;
   };
 
   return (
@@ -44,18 +50,18 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
         {/* Thana Selection */}
         <div className="space-y-2">
           <Label htmlFor="thana_id" className="text-sm font-medium">
-            {t('investigation.header.thana')} *
+            Thana *
           </Label>
           <Select
             value={formData.thana_id || ''}
             onValueChange={(value) => onFieldChange('thana_id', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={t('investigation.header.thana')} />
+            <SelectTrigger className="w-full h-10">
+              <SelectValue placeholder="Select Thana" />
             </SelectTrigger>
             <SelectContent>
               {thanas.map((thana) => (
-                <SelectItem key={thana.id} value={thana.id}>
+                <SelectItem key={thana.id} value={getFieldValue(thana)}>
                   {getLocalizedName(thana)}
                 </SelectItem>
               ))}
@@ -66,18 +72,47 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           )}
         </div>
 
-        {/* GD/CID/Case Number */}
+        {/* Combined Case Type and Number Field */}
         <div className="space-y-2">
-          <Label htmlFor="gd_cid_case_no" className="text-sm font-medium">
+          <Label htmlFor="case_type" className="text-sm font-medium">
             {t('investigation.header.gd_cid_case_no')} *
           </Label>
-          <Input
-            id="gd_cid_case_no"
-            value={formData.gd_cid_case_no || ''}
-            onChange={(e) => onFieldChange('gd_cid_case_no', e.target.value)}
-            placeholder="GD/CID/Case No."
-            className={errors.gd_cid_case_no ? 'border-red-500' : ''}
-          />
+          <div className="flex h-10">
+            {/* Case Type Selection - 1/4 width, consistent height */}
+            <div className="w-1/4">
+              <Select
+                value={formData.case_type || 'none'}
+                onValueChange={(value) => onFieldChange('case_type', value)}
+              >
+                <SelectTrigger className="w-full h-full rounded-r-none border-r-0 flex items-center">
+                  <SelectValue placeholder="Type" className="flex items-center" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="GD">GD</SelectItem>
+                  <SelectItem value="CID">CID</SelectItem>
+                  <SelectItem value="CASE">CASE</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Case Number Input - 3/4 width, consistent height */}
+            <div className="w-3/4">
+              <Input
+                id="gd_cid_case_no"
+                value={formData.gd_cid_case_no || ''}
+                onChange={(e) => onFieldChange('gd_cid_case_no', e.target.value)}
+                placeholder={formData.case_type && formData.case_type !== 'none' ? `${formData.case_type} No.` : "Select case type first"}
+                className={`${errors.gd_cid_case_no ? 'border-red-500' : ''} ${(!formData.case_type || formData.case_type === 'none') ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''} rounded-l-none border-l-0 h-full`}
+                disabled={!formData.case_type || formData.case_type === 'none'}
+              />
+            </div>
+          </div>
+          
+          {/* Error messages */}
+          {errors.case_type && (
+            <p className="text-sm text-red-600">{errors.case_type}</p>
+          )}
           {errors.gd_cid_case_no && (
             <p className="text-sm text-red-600">{errors.gd_cid_case_no}</p>
           )}
@@ -93,7 +128,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             type="date"
             value={formData.ref_date || ''}
             onChange={(e) => onFieldChange('ref_date', e.target.value)}
-            className={errors.ref_date ? 'border-red-500' : ''}
+            className={`h-10 ${errors.ref_date ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.ref_date && (
             <p className="text-sm text-red-600">{errors.ref_date}</p>
@@ -108,9 +143,9 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           <Input
             id="pm_no"
             value={formData.pm_no || ''}
-            onChange={(e) => onFieldChange('pm_no', e.target.value)}
             placeholder="PM No."
-            className={errors.pm_no ? 'border-red-500' : ''}
+            className={`h-10 ${errors.pm_no ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+            onChange={(e) => onFieldChange('pm_no', e.target.value)}
           />
           {errors.pm_no && (
             <p className="text-sm text-red-600">{errors.pm_no}</p>
@@ -127,7 +162,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             type="date"
             value={formData.report_date || ''}
             onChange={(e) => onFieldChange('report_date', e.target.value)}
-            className={errors.report_date ? 'border-red-500' : ''}
+            className={`h-10 ${errors.report_date ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.report_date && (
             <p className="text-sm text-red-600">{errors.report_date}</p>
@@ -139,111 +174,15 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           <Label htmlFor="station" className="text-sm font-medium">
             {t('investigation.header.station')} *
           </Label>
-          <div className="flex gap-2">
-            <Select
-              value={formData.station && ['dmc_morgue', 'kmc', 'cmc'].includes(formData.station) ? formData.station : 'other'}
-              onValueChange={(value) => {
-                if (value === 'other') {
-                  onFieldChange('station', '');
-                } else {
-                  onFieldChange('station', value);
-                }
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="dmc_morgue">
-                  {t('investigation.header.station_options.dmc_morgue')}
-                </SelectItem>
-                <SelectItem value="kmc">
-                  {t('investigation.header.station_options.kmc')}
-                </SelectItem>
-                <SelectItem value="cmc">
-                  {t('investigation.header.station_options.cmc')}
-                </SelectItem>
-                <SelectItem value="other">
-                  {t('investigation.header.station_options.other')}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            {(formData.station === 'other' || !formData.station || 
-              !['dmc_morgue', 'kmc', 'cmc'].includes(formData.station)) && (
-              <Input
-                id="station_custom"
-                value={formData.station && !['dmc_morgue', 'kmc', 'cmc'].includes(formData.station) ? formData.station : ''}
-                onChange={(e) => onFieldChange('station', e.target.value)}
-                placeholder={t('investigation.header.station_options.other')}
-                className={`flex-1 ${errors.station ? 'border-red-500' : ''}`}
-              />
-            )}
-          </div>
-          {errors.station && (
-            <p className="text-sm text-red-600">{errors.station}</p>
-          )}
-        </div>
-      </div>
-
-      {/* Date Components */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="year_val" className="text-sm font-medium">
-            {t('investigation.header.year')}
-          </Label>
           <Input
-            id="year_val"
-            type="number"
-            min="1900"
-            max="2100"
-            value={formData.year_val || ''}
-            onChange={(e) => onFieldChange('year_val', parseInt(e.target.value) || undefined)}
-            placeholder="Year"
+            id="station"
+            value="DMC MORGUE"
+            className="h-10 border-gray-300 bg-gray-50 text-gray-700 cursor-not-allowed"
+            disabled
+            readOnly
           />
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="month_val" className="text-sm font-medium">
-            {t('investigation.header.month')}
-          </Label>
-          <Select
-            value={formData.month_val?.toString() || ''}
-            onValueChange={(value) => onFieldChange('month_val', parseInt(value) || undefined)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Month" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                <SelectItem key={month} value={month.toString()}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="day_val" className="text-sm font-medium">
-            {t('investigation.header.day')}
-          </Label>
-          <Select
-            value={formData.day_val?.toString() || ''}
-            onValueChange={(value) => onFieldChange('day_val', parseInt(value) || undefined)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Day" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                <SelectItem key={day} value={day.toString()}>
-                  {day}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div> */}
+      </div>
     </div>
   );
 };

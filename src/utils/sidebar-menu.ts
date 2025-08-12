@@ -83,6 +83,7 @@ import {
           icon: ClipboardCheck,
           items: [
             { title: "Create Report", url: `/dashboard/${role}/investigation-report/create` },
+            { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2` },
             { title: "All Reports", url: `/dashboard/${role}/investigation-report` },
             { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates` },
           ],

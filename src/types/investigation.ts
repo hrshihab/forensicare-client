@@ -4,6 +4,7 @@ export interface InvestigationReport {
   thana_id: string;
   thana_text?: string;
   gd_cid_case_no: string;
+  case_type: 'none' | 'GD' | 'CID' | 'CASE'; // Updated to include 'none' option
   ref_date: string;
   report_date: string;
   station: string;
@@ -15,10 +16,9 @@ export interface InvestigationReport {
   person_name: string;
   gender: 'male' | 'female' | 'other';
   age_years: number;
-  complexion?: string;
+  caste_tribe?: string;
   brought_from_village?: string;
-  brought_from_thana_id?: string;
-  brought_from_thana_text?: string;
+  brought_from_thana?: string;
   brought_by_list: string[];
   sent_datetime: string;
   brought_datetime: string;

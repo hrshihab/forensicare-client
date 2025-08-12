@@ -1,29 +1,29 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { FormSection } from '@/components/investigation/FormSection';
 import { HeaderSection } from '@/components/investigation/HeaderSection';
 import { GeneralSection } from '@/components/investigation/GeneralSection';
+import ExternalSignsSection from '@/components/investigation/ExternalSignsSection';
+import HeadSpineSection from '@/components/investigation/HeadSpineSection';
+import ChestLungsSection from '@/components/investigation/ChestLungsSection';
+import AbdomenSection from '@/components/investigation/AbdomenSection';
+import MusculoskeletalSection from '@/components/investigation/MusculoskeletalSection';
+import OpinionsSection from '@/components/investigation/OpinionsSection';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Save, Eye, Printer, ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { Save, Eye, Printer } from 'lucide-react';
 import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
-import { useToast } from '@/components/ui/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 
 const CreateReportForm: React.FC = () => {
-  const { t } = useLanguage();
-  const { toast } = useToast();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState<Partial<InvestigationReport>>({
     brought_by_list: [],
-    station: 'dmc_morgue', // Set default station value
+    station: 'DMC MORGUE', // Set default station value
+    case_type: 'none', // Set default case type to none
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [sections, setSections] = useState<FormSectionType[]>([
     {
       id: 'header',
@@ -108,9 +108,6 @@ const CreateReportForm: React.FC = () => {
     
     // Update section statuses after field change
     setTimeout(() => updateSectionStatuses(), 100);
-    
-    // Trigger auto-save after field change
-    triggerAutoSave();
   };
 
   const handleSectionToggle = (sectionId: string, isOpen: boolean) => {
@@ -122,76 +119,6 @@ const CreateReportForm: React.FC = () => {
       )
     );
   };
-
-  // Auto-save functionality
-  const triggerAutoSave = useCallback(() => {
-    // Clear any existing timeout
-    if ((window as any).autoSaveTimeout) {
-      clearTimeout((window as any).autoSaveTimeout);
-    }
-    
-    // Set new timeout for 5 seconds
-    (window as any).autoSaveTimeout = setTimeout(() => {
-      autoSaveData();
-    }, 5000);
-  }, []);
-
-  const autoSaveData = useCallback(() => {
-    if (Object.keys(formData).length === 0) return;
-    
-    setIsAutoSaving(true);
-    
-    try {
-      // Save to localStorage
-      const dataToSave = {
-        ...formData,
-        lastModified: new Date().toISOString(),
-        autoSaved: true
-      };
-      
-      localStorage.setItem('investigation_report_draft', JSON.stringify(dataToSave));
-      setLastSaved(new Date());
-      
-      // Show toast notification
-      toast({
-        title: "Auto-saved",
-        description: "Your progress has been automatically saved",
-        duration: 3000,
-      });
-      
-    } catch (error) {
-      console.error('Auto-save failed:', error);
-      toast({
-        title: "Auto-save failed",
-        description: "Failed to save your progress automatically",
-        variant: "destructive",
-        duration: 3000,
-      });
-    } finally {
-      setIsAutoSaving(false);
-    }
-  }, [formData, toast]);
-
-  const loadSavedData = useCallback(() => {
-    try {
-      const savedData = localStorage.getItem('investigation_report_draft');
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        // Remove auto-save metadata
-        const { lastModified, autoSaved, ...cleanData } = parsedData;
-        setFormData(cleanData);
-        setLastSaved(new Date(lastModified));
-        
-        toast({
-          title: "Data restored",
-          description: "Your previous work has been restored",
-          duration: 3000,
-        });
-      }
-    } catch (error) {
-      console.error('Failed to load saved data:', error);
-    }
-  }, [toast]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -214,6 +141,9 @@ const CreateReportForm: React.FC = () => {
     }
     if (!formData.station || formData.station.trim() === '') {
       newErrors.station = t('validation.required_field');
+    }
+    if (!formData.case_type) {
+      newErrors.case_type = t('validation.required_field');
     }
 
     // General validation - only validate if section has been opened or has data
@@ -248,6 +178,14 @@ const CreateReportForm: React.FC = () => {
       }
     }
 
+    // Opinions validation - required section
+    if (!formData.medical_officer_opinion) {
+      newErrors.medical_officer_opinion = t('validation.required_field');
+    }
+    if (!formData.civil_surgeon_remark) {
+      newErrors.civil_surgeon_remark = t('validation.required_field');
+    }
+
     // Date validation - only if both dates exist
     if (formData.sent_datetime && formData.brought_datetime) {
       if (new Date(formData.sent_datetime) >= new Date(formData.brought_datetime)) {
@@ -267,44 +205,13 @@ const CreateReportForm: React.FC = () => {
   const handleSave = () => {
     if (validateForm()) {
       try {
-        // Save to localStorage
-        const dataToSave = {
-          ...formData,
-          lastModified: new Date().toISOString(),
-          saved: true
-        };
-        
-        localStorage.setItem('investigation_report_draft', JSON.stringify(dataToSave));
-        setLastSaved(new Date());
-        
-        // Show success toast
-        toast({
-          title: "Saved successfully",
-          description: "Your investigation report has been saved",
-          duration: 3000,
-        });
-        
         // Update section statuses
         updateSectionStatuses();
         
         console.log('Form data saved:', formData);
       } catch (error) {
         console.error('Save failed:', error);
-        toast({
-          title: "Save failed",
-          description: "Failed to save your investigation report",
-          variant: "destructive",
-          duration: 3000,
-        });
       }
-    } else {
-      // Show validation error toast
-      toast({
-        title: "Validation failed",
-        description: "Please fix the errors before saving",
-        variant: "destructive",
-        duration: 3000,
-      });
     }
   };
 
@@ -313,7 +220,7 @@ const CreateReportForm: React.FC = () => {
       let status: 'not_started' | 'in_progress' | 'done' | 'error' | 'skipped' = 'not_started';
       
       if (section.id === 'header') {
-        const requiredFields = ['thana_id', 'gd_cid_case_no', 'ref_date', 'pm_no', 'report_date', 'station'];
+        const requiredFields = ['thana_id', 'gd_cid_case_no', 'ref_date', 'pm_no', 'report_date', 'station', 'case_type'];
         const hasErrors = requiredFields.some(field => errors[field]);
         const filledFields = requiredFields.filter(field => {
           const value = (formData as any)[field];
@@ -346,9 +253,26 @@ const CreateReportForm: React.FC = () => {
         } else {
           status = 'in_progress';
         }
+      } else if (section.id === 'opinions') {
+        const requiredFields = ['medical_officer_opinion', 'civil_surgeon_remark'];
+        const hasErrors = requiredFields.some(field => errors[field]);
+        const filledFields = requiredFields.filter(field => {
+          const value = (formData as any)[field];
+          return isFieldMeaningfullyFilled(field, value);
+        });
+        
+        if (hasErrors) {
+          status = 'error';
+        } else if (filledFields.length === 0) {
+          status = 'not_started';
+        } else if (filledFields.length === requiredFields.length) {
+          status = 'done';
+        } else {
+          status = 'in_progress';
+        }
       } else {
         // For other sections, only update if they've been opened or have data
-                if (section.isOpen || hasSectionData(section.id)) {
+        if (section.isOpen || hasSectionData(section.id)) {
           const sectionFields = getSectionFields(section.id);
           if (sectionFields.length > 0) {
             const filledFields = sectionFields.filter(field => {
@@ -409,6 +333,10 @@ const CreateReportForm: React.FC = () => {
       return value.toString().trim() !== '';
     }
     
+    if (field === 'case_type') {
+      return value.toString().trim() !== '';
+    }
+
     // For other fields, check if they have meaningful content
     const trimmedValue = value.toString().trim();
     return trimmedValue !== '' && trimmedValue !== 'undefined' && trimmedValue !== 'null';
@@ -438,31 +366,11 @@ const CreateReportForm: React.FC = () => {
     updateSectionStatuses();
   }, [errors, formData]);
 
-  // Load saved data on component mount
-  useEffect(() => {
-    loadSavedData();
-  }, [loadSavedData]);
-
-  // Cleanup auto-save timeout on unmount
-  useEffect(() => {
-    return () => {
-      if ((window as any).autoSaveTimeout) {
-        clearTimeout((window as any).autoSaveTimeout);
-      }
-    };
-  }, []);
-
   return (
-    <div className="container mx-auto p-6 ">
+    <div className="container mx-auto p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
-          {/* <Link href="/dashboard/admin/investigation-report">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-          </Link> */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
               {t('investigation.create_title')}
@@ -475,33 +383,17 @@ const CreateReportForm: React.FC = () => {
         <div className="flex items-center space-x-3">
           <LanguageToggle />
           
-          {/* Auto-save indicator */}
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            {isAutoSaving && (
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span>Auto-saving...</span>
-              </div>
-            )}
-            {lastSaved && !isAutoSaving && (
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
-              </div>
-            )}
-          </div>
-          
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
             <Eye className="w-4 h-4 mr-2" />
-            {t('common.preview')}
+            Preview
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
             <Printer className="w-4 h-4 mr-2" />
-            {t('common.print')}
+            Print
           </Button>
-          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
             <Save className="w-4 h-4 mr-2" />
-            {t('common.save')}
+            Save
           </Button>
         </div>
       </div>
@@ -532,25 +424,81 @@ const CreateReportForm: React.FC = () => {
           />
         </FormSection>
 
-        {/* Placeholder sections for future implementation */}
-        {sections.slice(2).map((section) => (
-          <FormSection
-            key={section.id}
-            section={section}
-            onToggle={(isOpen) => handleSectionToggle(section.id, isOpen)}
-          >
-            <div className="text-center py-8 text-gray-500">
-              <p>{section.title} section will be implemented in the next phase</p>
-            </div>
-          </FormSection>
-                 ))}
-       </div>
-       
-       {/* Toast notifications */}
-       <Toaster />
-     </div>
-   );
- };
+        {/* External Signs Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'external_signs')!}
+          onToggle={(isOpen) => handleSectionToggle('external_signs', isOpen)}
+        >
+          <ExternalSignsSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Head & Spine Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'head_spine')!}
+          onToggle={(isOpen) => handleSectionToggle('head_spine', isOpen)}
+        >
+          <HeadSpineSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Chest & Lungs Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'chest_lungs')!}
+          onToggle={(isOpen) => handleSectionToggle('chest_lungs', isOpen)}
+        >
+          <ChestLungsSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Abdomen Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'abdomen')!}
+          onToggle={(isOpen) => handleSectionToggle('abdomen', isOpen)}
+        >
+          <AbdomenSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Musculoskeletal Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'musculoskeletal')!}
+          onToggle={(isOpen) => handleSectionToggle('musculoskeletal', isOpen)}
+        >
+          <MusculoskeletalSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
+        {/* Opinions Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'opinions')!}
+          onToggle={(isOpen) => handleSectionToggle('opinions', isOpen)}
+        >
+          <OpinionsSection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+      </div>
+    </div>
+  );
+};
 
 // Wrap the component with LanguageProvider
 const CreateReportPage: React.FC = () => {

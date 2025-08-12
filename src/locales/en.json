@@ -2,25 +2,33 @@
   "common": {
     "save": "Save",
     "cancel": "Cancel",
-    "submit": "Submit",
     "edit": "Edit",
     "delete": "Delete",
-    "view": "View",
-    "create": "Create",
-    "required": "Required",
-    "optional": "Optional",
-    "skip": "Skip",
-    "skip_reason": "Skip Reason",
-    "preview": "Preview",
-    "print": "Print",
-    "language": "Language",
-    "bengali": "Bengali",
-    "english": "English"
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "status": {
+    "not_started": "Not Started",
+    "in_progress": "In Progress",
+    "done": "Completed",
+    "error": "Error",
+    "skipped": "Skipped"
+  },
+  "validation": {
+    "required_field": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "password_mismatch": "Passwords do not match",
+    "min_length": "Minimum length is {min} characters",
+    "max_length": "Maximum length is {max} characters",
+    "brought_date_after_sent": "Brought date must be after sent date",
+    "exam_date_after_brought": "Examination date must be after brought date"
   },
   "investigation": {
-    "title": "Investigation Report",
-    "create_title": "Create New Investigation Report",
-    "edit_title": "Edit Investigation Report",
+    "create_title": "Create Investigation Report",
     "sections": {
       "header": "Header",
       "general": "General Information",
@@ -37,22 +45,13 @@
       "ref_date": "Reference Date",
       "pm_no": "PM No.",
       "report_date": "Report Date",
-      "station": "Station",
-      "station_options": {
-        "dmc_morgue": "DMC Morgue",
-        "kmc": "KMC Morgue",
-        "cmc": "CMC Morgue",
-        "other": "Other Morgue"
-      },
-      "year": "Year",
-      "month": "Month",
-      "day": "Day"
+      "station": "Station"
     },
     "general": {
       "person_name": "Person Name",
       "gender": "Gender",
       "age_years": "Age (Years)",
-      "complexion": "Complexion",
+      "caste_tribe": "Caste/Tribe",
       "brought_from_village": "Brought from (Village)",
       "brought_from_thana": "Brought from (Thana)",
       "brought_by_list": "Brought by (names)",
@@ -64,19 +63,19 @@
     },
     "external_signs": {
       "physique_state": "Physique State",
-      "wounds_desc": "Wounds - Location/Size/Type",
-      "injuries_desc": "Injuries - Location/Size/Type",
-      "neck_marks": "Neck Marks from Dissection"
+      "wounds_desc": "Wounds Description",
+      "injuries_desc": "Injuries Description",
+      "neck_marks": "Neck Marks"
     },
     "head_spine": {
-      "scalp_skull_vertebrae": "Scalp-Skull-Vertebrae",
+      "scalp_skull_vertebrae": "Scalp, Skull & Vertebrae",
       "meninges": "Meninges",
       "brain_spinal": "Brain & Spinal Cord"
     },
     "chest_lungs": {
-      "ribs_cartilage": "Ribs & Costal Cartilage",
+      "ribs_cartilage": "Ribs & Cartilage",
       "pleura": "Pleura",
-      "larynx_trachea_bronchi": "Larynx-Trachea-Bronchi",
+      "larynx_trachea_bronchi": "Larynx, Trachea & Bronchi",
       "right_lung": "Right Lung",
       "left_lung": "Left Lung",
       "pericardium": "Pericardium",
@@ -84,9 +83,9 @@
       "blood_vessels": "Blood Vessels"
     },
     "abdomen": {
-      "abdominal_general": "General Abdomen",
+      "abdominal_general": "Abdominal General",
       "peritoneum": "Peritoneum",
-      "mouth_trachea_esophagus": "Mouth-Trachea-Esophagus",
+      "mouth_trachea_esophagus": "Mouth, Trachea & Esophagus",
       "stomach_and_contents": "Stomach & Contents",
       "small_intestine_and_contents": "Small Intestine & Contents",
       "large_intestine_and_contents": "Large Intestine & Contents",
@@ -94,50 +93,44 @@
       "spleen": "Spleen",
       "kidneys": "Kidneys",
       "urinary_bladder": "Urinary Bladder",
-      "genital_organs": "Genital Organs (External/Internal)"
+      "genital_organs": "Genital Organs"
     },
     "musculoskeletal": {
       "ms_wounds": "Wounds",
-      "ms_disease_variations": "Disease or Variations",
+      "ms_disease_variations": "Disease or Discoloration",
       "fractures": "Fractures",
       "dislocations": "Dislocations",
       "detailed_pathology": "Detailed Pathology"
     },
     "opinions": {
-      "medical_officer_opinion": "Medical Officer Opinion",
-      "civil_surgeon_remark": "Civil Surgeon Remark"
-    },
-    "attachments": {
-      "title": "Attachments",
-      "add_file": "Add File",
-      "remove_file": "Remove File"
-    },
-    "sign_off": {
-      "sign_datetime": "Sign Date & Time",
-      "officer_name": "Officer Name",
-      "officer_designation": "Designation",
-      "civil_name": "Civil Surgeon Name",
-      "civil_signature": "Civil Surgeon Signature"
+      "medical_officer_opinion": "Medical Officer's Opinion",
+      "civil_surgeon_remark": "Civil Surgeon's Remark"
     }
   },
-  "validation": {
-    "required_field": "This field is required",
-    "invalid_date": "Invalid date",
-    "invalid_number": "Invalid number",
-    "min_length": "Minimum {{min}} characters required",
-    "max_length": "Maximum {{max}} characters allowed",
-    "future_date_not_allowed": "Future dates are not allowed",
-    "exam_date_after_brought": "Examination date must be after brought date",
-    "brought_date_after_sent": "Brought date must be after sent date"
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot Password?",
+    "remember_me": "Remember me",
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "username": "Username",
+    "confirm_password": "Confirm Password"
   },
-  "status": {
-    "draft": "Draft",
-    "completed": "Completed",
-    "pending": "Pending",
-    "error": "Error",
-    "skipped": "Skipped",
-    "not_started": "Not Started",
-    "in_progress": "In Progress",
-    "done": "Done"
+  "dashboard": {
+    "welcome": "Welcome",
+    "overview": "Overview",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "users": "Users",
+    "settings": "Settings"
   }
 }

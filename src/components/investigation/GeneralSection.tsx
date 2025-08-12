@@ -46,9 +46,10 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Person Name */}
-        <div className="space-y-2">
+      {/* Basic Information - নাম, লিঙ্গ, বয়স এবং গোত্র */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Person Name - 2/5 width */}
+        <div className="md:col-span-2 space-y-2">
           <Label htmlFor="person_name" className="text-sm font-medium">
             {t('investigation.general.person_name')} *
           </Label>
@@ -56,15 +57,15 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             id="person_name"
             value={formData.person_name || ''}
             onChange={(e) => onFieldChange('person_name', e.target.value)}
-            placeholder="Person Name"
-            className={errors.person_name ? 'border-red-500' : ''}
+            placeholder={language === 'bn' ? "নাম" : "Person Name"}
+            className={`h-10 ${errors.person_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.person_name && (
             <p className="text-sm text-red-600">{errors.person_name}</p>
           )}
         </div>
 
-        {/* Gender */}
+        {/* Gender - 1/5 width (reduced) */}
         <div className="space-y-2">
           <Label htmlFor="gender" className="text-sm font-medium">
             {t('investigation.general.gender')} *
@@ -73,13 +74,13 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             value={formData.gender || ''}
             onValueChange={(value) => onFieldChange('gender', value)}
           >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Gender" />
+            <SelectTrigger className={`w-full h-10 ${errors.gender ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
+              <SelectValue placeholder={language === 'bn' ? "লিঙ্গ নির্বাচন করুন" : "Select Gender"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="male">{language === 'bn' ? 'পুরুষ' : 'Male'}</SelectItem>
+              <SelectItem value="female">{language === 'bn' ? 'মহিলা' : 'Female'}</SelectItem>
+              <SelectItem value="other">{language === 'bn' ? 'অন্যান্য' : 'Other'}</SelectItem>
             </SelectContent>
           </Select>
           {errors.gender && (
@@ -87,7 +88,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
           )}
         </div>
 
-        {/* Age */}
+        {/* Age - 1/5 width (reduced) */}
         <div className="space-y-2">
           <Label htmlFor="age_years" className="text-sm font-medium">
             {t('investigation.general.age_years')} *
@@ -98,63 +99,68 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             min="0"
             max="120"
             value={formData.age_years || ''}
-            onChange={(e) => onFieldChange('age_years', parseInt(e.target.value) || undefined)}
-            placeholder="Age in years"
-            className={errors.age_years ? 'border-red-500' : ''}
+            onChange={(e) => onFieldChange('age_years', e.target.value)}
+            placeholder={language === 'bn' ? "বয়স (বছর)" : "Age in years"}
+            className={`h-10 ${errors.age_years ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.age_years && (
             <p className="text-sm text-red-600">{errors.age_years}</p>
           )}
         </div>
 
-        {/* Complexion */}
+        {/* Caste/Tribe - 1/5 width */}
         <div className="space-y-2">
-          <Label htmlFor="complexion" className="text-sm font-medium">
-            {t('investigation.general.complexion')}
+          <Label htmlFor="caste_tribe" className="text-sm font-medium">
+            {t('investigation.general.caste_tribe')}
           </Label>
           <Input
-            id="complexion"
-            value={formData.complexion || ''}
-            onChange={(e) => onFieldChange('complexion', e.target.value)}
-            placeholder="Complexion"
+            id="caste_tribe"
+            value={formData.caste_tribe || ''}
+            onChange={(e) => onFieldChange('caste_tribe', e.target.value)}
+            placeholder={language === 'bn' ? "গোত্র" : "Caste/Tribe"}
+            className="h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
           />
         </div>
+      </div>
 
+      {/* Location Information - কোন স্থান হতে আনা হইয়াছে—গ্রাম ও থানা */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Brought from Village */}
         <div className="space-y-2">
           <Label htmlFor="brought_from_village" className="text-sm font-medium">
-            {t('investigation.general.brought_from_village')}
+            {t('investigation.general.brought_from_village')} *
           </Label>
           <Input
             id="brought_from_village"
             value={formData.brought_from_village || ''}
             onChange={(e) => onFieldChange('brought_from_village', e.target.value)}
-            placeholder="Village name"
+            placeholder={language === 'bn' ? "গ্রামের নাম" : "Village name"}
+            className={`h-10 ${errors.brought_from_village ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
+          {errors.brought_from_village && (
+            <p className="text-sm text-red-600">{errors.brought_from_village}</p>
+          )}
         </div>
 
         {/* Brought from Thana */}
         <div className="space-y-2">
-          <Label htmlFor="brought_from_thana_id" className="text-sm font-medium">
-            {t('investigation.general.brought_from_thana')}
+          <Label htmlFor="brought_from_thana" className="text-sm font-medium">
+            {t('investigation.general.brought_from_thana')} *
           </Label>
-          <Select
-            value={formData.brought_from_thana_id || ''}
-            onValueChange={(value) => onFieldChange('brought_from_thana_id', value)}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Thana" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">Dhanmondi</SelectItem>
-              <SelectItem value="2">Gulshan</SelectItem>
-              <SelectItem value="3">Banani</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            id="brought_from_thana"
+            value={formData.brought_from_thana || ''}
+            onChange={(e) => onFieldChange('brought_from_thana', e.target.value)}
+            placeholder={language === 'bn' ? "থানার নাম" : "Thana name"}
+            className={`h-10 ${errors.brought_from_thana ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+          />
+          {errors.brought_from_thana && (
+            <p className="text-sm text-red-600">{errors.brought_from_thana}</p>
+          )}
         </div>
       </div>
 
-      {/* Brought by List */}
+      {/* Brought by Information - যে কনস্টাবল কর্তৃক আনা হইয়াছে তাহার নাম এবং সঙ্গে আসা আত্মীয়-স্বজনের নামসমূহ */}
       <div className="space-y-2">
         <Label className="text-sm font-medium">
           {t('investigation.general.brought_by_list')} *
@@ -169,15 +175,15 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
                   newList[index] = e.target.value;
                   onFieldChange('brought_by_list', newList);
                 }}
-                placeholder="Name"
-                className="flex-1"
+                placeholder={language === 'bn' ? "নাম" : "Name"}
+                className="flex-1 h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
               />
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => handleRemoveBroughtBy(index)}
-                className="px-2"
+                className="px-2 h-10"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -188,15 +194,15 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
               value={newBroughtBy}
               onChange={(e) => setNewBroughtBy(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Add new name"
-              className="flex-1"
+              placeholder={language === 'bn' ? "নতুন নাম যোগ করুন" : "Add new name"}
+              className="flex-1 h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
             />
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleAddBroughtBy}
-              className="px-3"
+              className="px-3 h-10"
             >
               <Plus className="w-4 h-4" />
             </Button>
@@ -209,6 +215,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 
       {/* Date and Time Fields */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Sent Date & Time - প্রেরণের দিন ও ক্ষণ */}
         <div className="space-y-2">
           <Label htmlFor="sent_datetime" className="text-sm font-medium">
             {t('investigation.general.sent_datetime')} *
@@ -218,13 +225,14 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             type="datetime-local"
             value={formData.sent_datetime || ''}
             onChange={(e) => onFieldChange('sent_datetime', e.target.value)}
-            className={errors.sent_datetime ? 'border-red-500' : ''}
+            className={`h-10 ${errors.sent_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.sent_datetime && (
             <p className="text-sm text-red-600">{errors.sent_datetime}</p>
           )}
         </div>
 
+        {/* Brought to Morgue Date & Time - লাশ কাটা মর্গে আনয়নের দিন ও ক্ষণ */}
         <div className="space-y-2">
           <Label htmlFor="brought_datetime" className="text-sm font-medium">
             {t('investigation.general.brought_datetime')} *
@@ -234,13 +242,14 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             type="datetime-local"
             value={formData.brought_datetime || ''}
             onChange={(e) => onFieldChange('brought_datetime', e.target.value)}
-            className={errors.brought_datetime ? 'border-red-500' : ''}
+            className={`h-10 ${errors.brought_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.brought_datetime && (
             <p className="text-sm text-red-600">{errors.brought_datetime}</p>
           )}
         </div>
 
+        {/* Examination Date & Time - পরীক্ষার দিন ও ক্ষণ */}
         <div className="space-y-2">
           <Label htmlFor="exam_datetime" className="text-sm font-medium">
             {t('investigation.general.exam_datetime')} *
@@ -250,7 +259,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             type="datetime-local"
             value={formData.exam_datetime || ''}
             onChange={(e) => onFieldChange('exam_datetime', e.target.value)}
-            className={errors.exam_datetime ? 'border-red-500' : ''}
+            className={`h-10 ${errors.exam_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.exam_datetime && (
             <p className="text-sm text-red-600">{errors.exam_datetime}</p>
@@ -259,7 +268,8 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
       </div>
 
       {/* Text Areas */}
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Police Information - পুলিশ কর্তৃক প্রদত্ত তথ্য */}
         <div className="space-y-2">
           <Label htmlFor="police_info" className="text-sm font-medium">
             {t('investigation.general.police_info')} *
@@ -268,15 +278,16 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             id="police_info"
             value={formData.police_info || ''}
             onChange={(e) => onFieldChange('police_info', e.target.value)}
-            placeholder="Police information"
+            placeholder={language === 'bn' ? "পুলিশ কর্তৃক প্রদত্ত তথ্য" : "Police information"}
             rows={3}
-            className={errors.police_info ? 'border-red-500' : ''}
+            className={errors.police_info ? 'border-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200'}
           />
           {errors.police_info && (
             <p className="text-sm text-red-600">{errors.police_info}</p>
           )}
         </div>
 
+        {/* Identifier Name - যে ব্যক্তি মেডিকেল অফিসিয়ারের সামনে সনাক্ত করিয়াছেন */}
         <div className="space-y-2">
           <Label htmlFor="identifier_name" className="text-sm font-medium">
             {t('investigation.general.identifier_name')} *
@@ -285,8 +296,8 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             id="identifier_name"
             value={formData.identifier_name || ''}
             onChange={(e) => onFieldChange('identifier_name', e.target.value)}
-            placeholder="Identifier name"
-            className={errors.identifier_name ? 'border-red-500' : ''}
+            placeholder={language === 'bn' ? "সনাক্তকারীর নাম" : "Identifier name"}
+            className={`h-10 ${errors.identifier_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.identifier_name && (
             <p className="text-sm text-red-600">{errors.identifier_name}</p>
