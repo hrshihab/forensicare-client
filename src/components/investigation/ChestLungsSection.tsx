@@ -18,9 +18,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
       <div className="space-y-4">
         {/* First Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ১ - প্রকার—পাজর এবং কোমলাস্থিসমূহ */}
+          {/* ১ - পাঁজর এবং তরুণাস্থি */}
           <div className="space-y-2">
-            <Label htmlFor="ribs_cartilage" className="text-sm font-medium">
+            <Label htmlFor="ribs_cartilage" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.ribs_cartilage')} *
             </Label>
             <Textarea
@@ -36,9 +36,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
             )}
           </div>
 
-          {/* ২ - ফুসফুস আবরণী */}
+          {/* ২ - ফুসফুসের আবরণী */}
           <div className="space-y-2">
-            <Label htmlFor="pleura" className="text-sm font-medium">
+            <Label htmlFor="pleura" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.pleura')} *
             </Label>
             <Textarea
@@ -57,9 +57,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
 
         {/* Second Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৩ - বাগযন্ত্র ও শ্বাসনালী */}
+          {/* ৩ - স্বরযন্ত্র, শ্বাসনালী এবং ব্রংকাই */}
           <div className="space-y-2">
-            <Label htmlFor="larynx_trachea_bronchi" className="text-sm font-medium">
+            <Label htmlFor="larynx_trachea_bronchi" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.larynx_trachea_bronchi')} *
             </Label>
             <Textarea
@@ -77,7 +77,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
 
           {/* ৪ - ডান ফুসফুস */}
           <div className="space-y-2">
-            <Label htmlFor="right_lung" className="text-sm font-medium">
+            <Label htmlFor="right_lung" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.right_lung')} *
             </Label>
             <Textarea
@@ -98,7 +98,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ৫ - বাম ফুসফুস */}
           <div className="space-y-2">
-            <Label htmlFor="left_lung" className="text-sm font-medium">
+            <Label htmlFor="left_lung" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.left_lung')} *
             </Label>
             <Textarea
@@ -114,9 +114,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
             )}
           </div>
 
-          {/* ৬ - হন্ধরা ঝিল্লী */}
+          {/* ৬ - হৃদযন্ত্রের আবরণী */}
           <div className="space-y-2">
-            <Label htmlFor="pericardium" className="text-sm font-medium">
+            <Label htmlFor="pericardium" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.pericardium')} *
             </Label>
             <Textarea
@@ -135,9 +135,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
 
         {/* Fourth Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৭ - হৃদপিণ্ড */}
+          {/* ৭ - হৃদযন্ত্র */}
           <div className="space-y-2">
-            <Label htmlFor="heart" className="text-sm font-medium">
+            <Label htmlFor="heart" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.heart')} *
             </Label>
             <Textarea
@@ -153,9 +153,9 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
             )}
           </div>
 
-          {/* ৮ - রক্ত নালী */}
+          {/* ৮ - রক্তনালীসমূহ */}
           <div className="space-y-2">
-            <Label htmlFor="blood_vessels" className="text-sm font-medium">
+            <Label htmlFor="blood_vessels" className="text-base font-medium font-bangla">
               {t('investigation.chest_lungs.blood_vessels')} *
             </Label>
             <Textarea

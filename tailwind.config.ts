@@ -21,6 +21,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)"],
+        "anek-bangla": ["var(--font-anek-bangla)", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

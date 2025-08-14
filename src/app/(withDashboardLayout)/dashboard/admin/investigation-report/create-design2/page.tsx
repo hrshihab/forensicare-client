@@ -34,7 +34,7 @@ const CreateReportPageDesign2 = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState('header');
 
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const handleFieldChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -136,11 +136,8 @@ const CreateReportPageDesign2 = () => {
           <div className="flex items-center space-x-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Create Investigation Report - Design 2
+                {language === 'bn' ? "ময়না তদন্ত রিপোর্ট - ডিজাইন ২" : "Create Investigation Report - Design 2"}
               </h1>
-              <p className="text-gray-600 mt-2">
-                Create a new forensic investigation report using tabbed interface
-              </p>
             </div>
           </div>
           

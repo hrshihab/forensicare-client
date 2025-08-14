@@ -119,6 +119,92 @@
     @apply bg-background text-foreground;
   }
 }
+
 .input {
   @apply border border-gray-300 rounded px-3 py-2 w-full;
+}
+
+/* Anek Bangla font for form fields with Bangla text */
+textarea[placeholder*="ব"],
+textarea[placeholder*="ক"],
+textarea[placeholder*="গ"],
+textarea[placeholder*="ঙ"],
+textarea[placeholder*="চ"],
+textarea[placeholder*="ছ"],
+textarea[placeholder*="জ"],
+textarea[placeholder*="ঝ"],
+textarea[placeholder*="ঞ"],
+textarea[placeholder*="ট"],
+textarea[placeholder*="ঠ"],
+textarea[placeholder*="ড"],
+textarea[placeholder*="ঢ"],
+textarea[placeholder*="ণ"],
+textarea[placeholder*="ত"],
+textarea[placeholder*="থ"],
+textarea[placeholder*="দ"],
+textarea[placeholder*="ধ"],
+textarea[placeholder*="ন"],
+textarea[placeholder*="প"],
+textarea[placeholder*="ফ"],
+textarea[placeholder*="ব"],
+textarea[placeholder*="ভ"],
+textarea[placeholder*="ম"],
+textarea[placeholder*="য"],
+textarea[placeholder*="র"],
+textarea[placeholder*="ল"],
+textarea[placeholder*="শ"],
+textarea[placeholder*="ষ"],
+textarea[placeholder*="স"],
+textarea[placeholder*="হ"],
+textarea[placeholder*="ড়"],
+textarea[placeholder*="ঢ়"],
+textarea[placeholder*="য়"],
+textarea[placeholder*="ৎ"],
+textarea[placeholder*="ং"],
+textarea[placeholder*="ঃ"],
+textarea[placeholder*="ঁ"],
+input[placeholder*="ব"],
+input[placeholder*="ক"],
+input[placeholder*="গ"],
+input[placeholder*="ঙ"],
+input[placeholder*="চ"],
+input[placeholder*="ছ"],
+input[placeholder*="জ"],
+input[placeholder*="ঝ"],
+input[placeholder*="ঞ"],
+input[placeholder*="ট"],
+input[placeholder*="ঠ"],
+input[placeholder*="ড"],
+input[placeholder*="ঢ"],
+input[placeholder*="ণ"],
+input[placeholder*="ত"],
+input[placeholder*="থ"],
+input[placeholder*="দ"],
+input[placeholder*="ধ"],
+input[placeholder*="ন"],
+input[placeholder*="প"],
+input[placeholder*="ফ"],
+input[placeholder*="ব"],
+input[placeholder*="ভ"],
+input[placeholder*="ম"],
+input[placeholder*="য"],
+input[placeholder*="র"],
+input[placeholder*="ল"],
+input[placeholder*="শ"],
+input[placeholder*="ষ"],
+input[placeholder*="স"],
+input[placeholder*="হ"],
+input[placeholder*="ড়"],
+input[placeholder*="ঢ়"],
+input[placeholder*="য়"],
+input[placeholder*="ৎ"],
+input[placeholder*="ং"],
+input[placeholder*="ঃ"],
+input[placeholder*="ঁ"] {
+  font-family: var(--font-anek-bangla), var(--font-poppins), sans-serif !important;
+}
+
+/* Anek Bangla font class for any element containing Bangla text */
+.font-bangla {
+  font-family: var(--font-anek-bangla), var(--font-poppins), sans-serif !important;
 }

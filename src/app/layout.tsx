@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Anek_Bangla } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/lib/providers/ReduxProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toaster";
+import { BanglaFontProvider } from "@/components/BanglaFontProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
+});
+
+const anekBangla = Anek_Bangla({
+  subsets: ["bengali"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-anek-bangla",
 });
 
 export const metadata: Metadata = {
@@ -22,12 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" className={`${poppins.variable} ${anekBangla.variable}`}>
       <body className={poppins.className}>
         <ReduxProvider>
           <LanguageProvider>
-            {children}
-            <Toaster />
+            <BanglaFontProvider>
+              {children}
+              <Toaster />
+            </BanglaFontProvider>
           </LanguageProvider>
         </ReduxProvider>
       </body>

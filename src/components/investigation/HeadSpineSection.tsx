@@ -20,7 +20,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ১ - মাথার বহিরাবরণ__মাথার খুলি এবং মেরুদন্ডের অস্থি খন্ডসমূহ */}
           <div className="space-y-2">
-            <Label htmlFor="scalp_skull_vertebrae" className="text-sm font-medium">
+            <Label htmlFor="scalp_skull_vertebrae" className="text-base font-medium font-bangla">
               {t('investigation.head_spine.scalp_skull_vertebrae')} *
             </Label>
             <Textarea
@@ -38,7 +38,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
 
           {/* ২ - ঝিল্লী */}
           <div className="space-y-2">
-            <Label htmlFor="meninges" className="text-sm font-medium">
+            <Label htmlFor="meninges" className="text-base font-medium font-bangla">
               {t('investigation.head_spine.meninges')} *
             </Label>
             <Textarea
@@ -58,7 +58,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
         {/* Second Row - 1 field spanning full width */}
         <div className="space-y-2">
           {/* ৩ - মস্তিষ্ক এবং রজ্জু */}
-          <Label htmlFor="brain_spinal" className="text-sm font-medium">
+          <Label htmlFor="brain_spinal" className="text-base font-medium font-bangla">
             {t('investigation.head_spine.brain_spinal')} *
           </Label>
           <Textarea

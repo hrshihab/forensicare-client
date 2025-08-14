@@ -20,7 +20,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ১ - ব্যক্তির অবস্থা - বলবান , শীর্ণ, গলিত ইত্যাদি */}
           <div className="space-y-2">
-            <Label htmlFor="physique_state" className="text-sm font-medium">
+            <Label htmlFor="physique_state" className="text-base font-medium font-bangla">
               {t('investigation.external_signs.physique_state')} *
             </Label>
             <Textarea
@@ -38,7 +38,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
 
           {/* ২ - যখম_অবস্থান, আকার ও ধরণ */}
           <div className="space-y-2">
-            <Label htmlFor="wounds_desc" className="text-sm font-medium">
+            <Label htmlFor="wounds_desc" className="text-base font-medium font-bangla">
               {t('investigation.external_signs.wounds_desc')} *
             </Label>
             <Textarea
@@ -59,7 +59,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ৩ - আঘার_অবস্থান,আকার ও ধরণ */}
           <div className="space-y-2">
-            <Label htmlFor="injuries_desc" className="text-sm font-medium">
+            <Label htmlFor="injuries_desc" className="text-base font-medium font-bangla">
               {t('investigation.external_signs.injuries_desc')} *
             </Label>
             <Textarea
@@ -77,7 +77,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
 
           {/* ৪ - গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টর চিনহ ইত্যাদি */}
           <div className="space-y-2">
-            <Label htmlFor="neck_marks" className="text-sm font-medium">
+            <Label htmlFor="neck_marks" className="text-base font-medium font-bangla">
               {t('investigation.external_signs.neck_marks')} *
             </Label>
             <Textarea

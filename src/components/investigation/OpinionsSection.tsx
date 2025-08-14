@@ -18,9 +18,9 @@ export default function OpinionsSection({ formData, onFieldChange, errors }: Opi
       <div className="space-y-4">
         {/* First Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ১ - মৃত্যুর কারণ সম্পর্কে মেডিক্যাল অফিসারের মতামত */}
+          {/* ১ - মেডিকেল অফিসারের মতামত */}
           <div className="space-y-2">
-            <Label htmlFor="medical_officer_opinion" className="text-sm font-medium">
+            <Label htmlFor="medical_officer_opinion" className="text-base font-medium font-bangla">
               {t('investigation.opinions.medical_officer_opinion')} *
             </Label>
             <Textarea
@@ -38,7 +38,7 @@ export default function OpinionsSection({ formData, onFieldChange, errors }: Opi
 
           {/* ২ - সিভিল সার্জনের মন্তব্য */}
           <div className="space-y-2">
-            <Label htmlFor="civil_surgeon_remark" className="text-sm font-medium">
+            <Label htmlFor="civil_surgeon_remark" className="text-base font-medium font-bangla">
               {t('investigation.opinions.civil_surgeon_remark')} *
             </Label>
             <Textarea

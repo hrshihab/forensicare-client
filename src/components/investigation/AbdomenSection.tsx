@@ -18,9 +18,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
       <div className="space-y-4">
         {/* First Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ১ - প্রকারসমূহ */}
+          {/* ১ - পেটের সাধারণ অবস্থা */}
           <div className="space-y-2">
-            <Label htmlFor="abdominal_general" className="text-sm font-medium">
+            <Label htmlFor="abdominal_general" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.abdominal_general')} *
             </Label>
             <Textarea
@@ -36,9 +36,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
             )}
           </div>
 
-          {/* ২ - উদরের উপরের ঝিল্লী */}
+          {/* ২ - পেটের আবরণী */}
           <div className="space-y-2">
-            <Label htmlFor="peritoneum" className="text-sm font-medium">
+            <Label htmlFor="peritoneum" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.peritoneum')} *
             </Label>
             <Textarea
@@ -57,9 +57,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
 
         {/* Second Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৩ - মুখ, শ্বাসনালী এবং অন্ননালী */}
+          {/* ৩ - মুখ, স্বরযন্ত্র এবং অন্ননালী */}
           <div className="space-y-2">
-            <Label htmlFor="mouth_trachea_esophagus" className="text-sm font-medium">
+            <Label htmlFor="mouth_trachea_esophagus" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.mouth_trachea_esophagus')} *
             </Label>
             <Textarea
@@ -75,9 +75,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
             )}
           </div>
 
-          {/* ৪ - পাকস্থলী এবং উহার অভ্যন্তরস্থ বস্তুসমূহ */}
+          {/* ৪ - পাকস্থলী এবং তার ভিতরের বস্তু */}
           <div className="space-y-2">
-            <Label htmlFor="stomach_and_contents" className="text-sm font-medium">
+            <Label htmlFor="stomach_and_contents" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.stomach_and_contents')} *
             </Label>
             <Textarea
@@ -96,9 +96,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
 
         {/* Third Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৫ - ক্ষুদ্রান্ত্র ও উহার অভ্যন্তরস্থ বস্তুসমূহ */}
+          {/* ৫ - ক্ষুদ্রান্ত্র এবং তার ভিতরের বস্তু */}
           <div className="space-y-2">
-            <Label htmlFor="small_intestine_and_contents" className="text-sm font-medium">
+            <Label htmlFor="small_intestine_and_contents" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.small_intestine_and_contents')} *
             </Label>
             <Textarea
@@ -114,9 +114,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
             )}
           </div>
 
-          {/* ৬ - বৃহদান্ত্র ও উহার অভ্যন্তরস্থ বস্তুসমূহ */}
+          {/* ৬ - বৃহদন্ত্র এবং তার ভিতরের বস্তু */}
           <div className="space-y-2">
-            <Label htmlFor="large_intestine_and_contents" className="text-sm font-medium">
+            <Label htmlFor="large_intestine_and_contents" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.large_intestine_and_contents')} *
             </Label>
             <Textarea
@@ -137,7 +137,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ৭ - যকৃৎ */}
           <div className="space-y-2">
-            <Label htmlFor="liver" className="text-sm font-medium">
+            <Label htmlFor="liver" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.liver')} *
             </Label>
             <Textarea
@@ -155,7 +155,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
 
           {/* ৮ - প্লীহা */}
           <div className="space-y-2">
-            <Label htmlFor="spleen" className="text-sm font-medium">
+            <Label htmlFor="spleen" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.spleen')} *
             </Label>
             <Textarea
@@ -174,9 +174,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
 
         {/* Fifth Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৯ - মূত্রাশয়সমূহ */}
+          {/* ৯ - বৃক্কসমূহ */}
           <div className="space-y-2">
-            <Label htmlFor="kidneys" className="text-sm font-medium">
+            <Label htmlFor="kidneys" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.kidneys')} *
             </Label>
             <Textarea
@@ -192,9 +192,9 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
             )}
           </div>
 
-          {/* ১০ - মুত্রাস্থলী */}
+          {/* ১০ - মূত্রাশয় */}
           <div className="space-y-2">
-            <Label htmlFor="urinary_bladder" className="text-sm font-medium">
+            <Label htmlFor="urinary_bladder" className="text-base font-medium font-bangla">
               {t('investigation.abdomen.urinary_bladder')} *
             </Label>
             <Textarea
@@ -213,8 +213,8 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
 
         {/* Sixth Row - 1 field spanning full width */}
         <div className="space-y-2">
-          {/* ১১ - প্রজনন অঙ্গসমূহ বাহিরের এবং ভিতরের */}
-          <Label htmlFor="genital_organs" className="text-sm font-medium">
+          {/* ১১ - জননাঙ্গসমূহ */}
+          <Label htmlFor="genital_organs" className="text-base font-medium font-bangla">
             {t('investigation.abdomen.genital_organs')} *
           </Label>
           <Textarea

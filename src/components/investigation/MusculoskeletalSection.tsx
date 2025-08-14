@@ -18,9 +18,9 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
       <div className="space-y-4">
         {/* First Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ১ - যখম */}
+          {/* ১ - যখমসমূহ */}
           <div className="space-y-2">
-            <Label htmlFor="ms_wounds" className="text-sm font-medium">
+            <Label htmlFor="ms_wounds" className="text-base font-medium font-bangla">
               {t('investigation.musculoskeletal.ms_wounds')} *
             </Label>
             <Textarea
@@ -36,9 +36,9 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
             )}
           </div>
 
-          {/* ২ - রোগ অথবা বিবর্ণতা */}
+          {/* ২ - রোগ এবং তার বিভিন্নতা */}
           <div className="space-y-2">
-            <Label htmlFor="ms_disease_variations" className="text-sm font-medium">
+            <Label htmlFor="ms_disease_variations" className="text-base font-medium font-bangla">
               {t('investigation.musculoskeletal.ms_disease_variations')} *
             </Label>
             <Textarea
@@ -57,9 +57,9 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
 
         {/* Second Row - 2 fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* ৩ - অস্থিভংগ */}
+          {/* ৩ - ভগ্ন অস্থি */}
           <div className="space-y-2">
-            <Label htmlFor="fractures" className="text-sm font-medium">
+            <Label htmlFor="fractures" className="text-base font-medium font-bangla">
               {t('investigation.musculoskeletal.fractures')} *
             </Label>
             <Textarea
@@ -75,9 +75,9 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
             )}
           </div>
 
-          {/* ৪ - স্থানচ্যুতি */}
+          {/* ৪ - অস্থি সন্ধি বিচ্যুতি */}
           <div className="space-y-2">
-            <Label htmlFor="dislocations" className="text-sm font-medium">
+            <Label htmlFor="dislocations" className="text-base font-medium font-bangla">
               {t('investigation.musculoskeletal.dislocations')} *
             </Label>
             <Textarea
@@ -96,8 +96,8 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
 
         {/* Third Row - 1 field spanning full width */}
         <div className="space-y-2">
-          {/* রোগ অথবা যখমের আরও বিস্তৃত বিবরন */}
-          <Label htmlFor="detailed_pathology" className="text-sm font-medium">
+          {/* ৫ - বিস্তারিত রোগতত্ত্ব */}
+          <Label htmlFor="detailed_pathology" className="text-base font-medium font-bangla">
             {t('investigation.musculoskeletal.detailed_pathology')} *
           </Label>
           <Textarea
