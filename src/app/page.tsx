@@ -21,13 +21,11 @@ export default function HomePage() {
 
   useEffect(() => {
     if (mounted && !isLoading) {
-      // if (isAuthenticated) {
-      //   // User is logged in, redirect to dashboard
-      //   //router.push("/dashboard/admin");
-      // } else {
-      //   // User is not logged in, redirect to login
-      //  //router.push("/login");
-      // }
+      if (isAuthenticated) {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/login");
+      }
     }
   }, [isAuthenticated, isLoading, router, mounted]);
 
