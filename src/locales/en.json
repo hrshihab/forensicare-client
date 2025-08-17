@@ -37,6 +37,7 @@
       "chest_lungs": "Chest & Lungs",
       "abdomen": "Abdomen",
       "musculoskeletal": "Musculoskeletal",
+      "detailed_pathology": "Detailed Pathology",
       "opinions": "Opinions"
     },
     "header": {
@@ -101,6 +102,9 @@
       "fractures": "Fractures",
       "dislocations": "Dislocations",
       "detailed_pathology": "Detailed Pathology"
+    },
+    "detailed_pathology": {
+      "pathology_description": "Detailed Pathology"
     },
     "opinions": {
       "medical_officer_opinion": "Medical Officer's Opinion",

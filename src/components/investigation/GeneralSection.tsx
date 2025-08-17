@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { X, Plus, User, MapPin, Users, Calendar, Info } from 'lucide-react';
+import { X, Plus, User, MapPin, Users, Calendar, Info, FileText } from 'lucide-react';
 import { useDropdownValues } from '@/hooks/useDropdownValues';
+import SectionHeader from '@/components/ui/section-header';
 
 interface GeneralSectionProps {
   formData: any;
@@ -25,6 +26,24 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
   const { genderOptions, getLabel } = useDropdownValues();
   const [newBroughtBy, setNewBroughtBy] = useState('');
   const [newRelativeName, setNewRelativeName] = useState('');
+
+  // Calculate completion percentage for General section
+  const requiredFields = [
+    'person_name',
+    'gender',
+    'age_years',
+    'brought_from_village',
+    'brought_from_thana',
+    'constable_name',
+    'relatives_names',
+    'sent_datetime',
+    'brought_datetime',
+    'exam_datetime',
+    'identifier_name',
+    'police_info'
+  ];
+  
+  const completedFields = requiredFields.filter(field => formData[field]).length;
 
   const handleAddConstable = () => {
     if (newBroughtBy.trim()) {
@@ -70,6 +89,22 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Section Header with Progress */}
+      <SectionHeader
+        icon={FileText}
+        iconBgColor="bg-green-100"
+        iconColor="text-green-600"
+        title={language === 'bn' ? 'সাধারণ তথ্য' : 'General Information'}
+        description={language === 'bn' ? 
+          'মৌলিক তথ্য, অবস্থান, তারিখ ও সময় এবং অন্যান্য বিবরণ' : 
+          'Basic information, location, date & time, and other details'
+        }
+        completedFields={completedFields}
+        totalFields={requiredFields.length}
+        progressVariant="green"
+        progressSize="medium"
+      />
+
 		{/* Basic Information - নাম, লিঙ্গ, বয়স এবং গোত্র */}
 		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
 			<div className="flex items-center gap-2 mb-4">

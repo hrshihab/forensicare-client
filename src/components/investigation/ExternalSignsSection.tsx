@@ -1,8 +1,9 @@
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import SectionHeader from '@/components/ui/section-header';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { User, AlertTriangle, Activity, Eye } from 'lucide-react';
+import { AlertTriangle, Eye, User, Shield, Activity, ClipboardList } from 'lucide-react';
 
 interface ExternalSignsSectionProps {
   formData: any;
@@ -13,29 +14,41 @@ interface ExternalSignsSectionProps {
 export default function ExternalSignsSection({ formData, onFieldChange, errors }: ExternalSignsSectionProps) {
   const { t, language } = useLanguage();
 
+  // Calculate completion percentage
+  const requiredFields = [
+    'physique_state',
+    'wounds_desc', 
+    'injuries_desc',
+    'neck_marks'
+  ];
+  
+  const completedFields = requiredFields.filter(field => formData[field]).length;
+
   return (
-    <div className="space-y-8">
-      {/* Section Header */}
-      <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-          <Eye className="h-6 w-6 text-blue-600" />
-          {language === 'bn' ? 'বাহ্যিক লক্ষণ' : 'External Signs'}
-        </h3>
-        <p className="text-sm text-gray-600 mt-1">
-          {language === 'bn' ? 
-            'মৃতদেহের বাহ্যিক অবস্থা ও লক্ষণসমূহ পর্যবেক্ষণ করুন' : 
-            'Observe the external condition and signs of the deceased'
-          }
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Section Header with Progress */}
+      <SectionHeader
+        icon={Eye}
+        iconBgColor="bg-blue-100"
+        iconColor="text-blue-600"
+        title={language === 'bn' ? 'বাহ্যিক লক্ষণ' : 'External Signs'}
+        description={language === 'bn' ? 
+          'মৃতদেহের বাহ্যিক অবস্থা ও লক্ষণসমূহ পর্যবেক্ষণ করুন' : 
+          'Observe the external condition and signs of the deceased'
+        }
+        completedFields={completedFields}
+        totalFields={requiredFields.length}
+        progressVariant="blue"
+        progressSize="medium"
+      />
 
       {/* Physical Condition Group */}
-      <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <User className="h-5 w-5 text-blue-600" />
-          </div>
-          <h4 className="text-lg font-medium text-gray-900">
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+            <User className="h-4 w-4 text-blue-600" />
+          </span>
+          <h4 className="text-base font-semibold text-gray-800">
             {language === 'bn' ? 'শারীরিক অবস্থা' : 'Physical Condition'}
           </h4>
         </div>
@@ -52,25 +65,23 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('physique_state', e.target.value)}
               placeholder={language === 'bn' ? "বলবান, শীর্ণ, গলিত ইত্যাদি" : "Strong, thin, decomposed, etc."}
               rows={3}
-              className={`${errors.physique_state ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.physique_state ? 'border-red-500' : 'border-gray-300'} 
+                focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.physique_state && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
-                {errors.physique_state}
-              </p>
+              <p className="text-sm text-red-600">{errors.physique_state}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Wounds & Injuries Group */}
-      <div className="bg-red-50 rounded-xl p-6 border border-red-100">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-red-100 rounded-lg">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-          </div>
-          <h4 className="text-lg font-medium text-gray-900">
+      <div className="rounded-xl border  p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-100">
+            <Shield className="h-4 w-4 text-red-600" />
+          </span>
+          <h4 className="text-base font-semibold text-gray-800">
             {language === 'bn' ? 'যখম ও আঘাত' : 'Wounds & Injuries'}
           </h4>
         </div>
@@ -87,13 +98,11 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('wounds_desc', e.target.value)}
               placeholder={language === 'bn' ? "যখমের অবস্থান, আকার ও ধরণ" : "Wound location, size and type"}
               rows={4}
-              className={`${errors.wounds_desc ? 'border-red-500' : 'border-gray-300'} focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
+              className={`${errors.wounds_desc ? 'border-red-500' : 'border-gray-300'} 
+                focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
             />
             {errors.wounds_desc && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
-                {errors.wounds_desc}
-              </p>
+              <p className="text-sm text-red-600">{errors.wounds_desc}</p>
             )}
           </div>
 
@@ -108,25 +117,23 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('injuries_desc', e.target.value)}
               placeholder={language === 'bn' ? "আঘাতের অবস্থান, আকার ও ধরণ" : "Injury location, size and type"}
               rows={4}
-              className={`${errors.injuries_desc ? 'border-red-500' : 'border-gray-300'} focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
+              className={`${errors.injuries_desc ? 'border-red-500' : 'border-gray-300'} 
+                focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
             />
             {errors.injuries_desc && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
-                {errors.injuries_desc}
-              </p>
+              <p className="text-sm text-red-600">{errors.injuries_desc}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Neck Examination Group */}
-      <div className="bg-amber-50 rounded-xl p-6 border border-amber-100">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-amber-100 rounded-lg">
-            <Activity className="h-5 w-5 text-amber-600" />
-          </div>
-          <h4 className="text-lg font-medium text-gray-900">
+      <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100">
+            <Activity className="h-4 w-4 text-yellow-600" />
+          </span>
+          <h4 className="text-base font-semibold text-gray-800">
             {language === 'bn' ? 'গলা পরীক্ষা' : 'Neck Examination'}
           </h4>
         </div>
@@ -141,66 +148,36 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               id="neck_marks"
               value={formData.neck_marks || ''}
               onChange={(e) => onFieldChange('neck_marks', e.target.value)}
-              placeholder={language === 'bn' ? "গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টর চিনহ ইত্যাদি" : "Neck marks found during dissection, etc."}
+              placeholder={language === 'bn' ? "গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টর চিহ্ন ইত্যাদি" : "Neck marks found during dissection, etc."}
               rows={4}
-              className={`${errors.neck_marks ? 'border-red-500' : 'border-gray-300'} focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all duration-200 resize-none`}
+              className={`${errors.neck_marks ? 'border-red-500' : 'border-gray-300'} 
+                focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 resize-none`}
             />
             {errors.neck_marks && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
-                {errors.neck_marks}
-              </p>
+              <p className="text-sm text-red-600">{errors.neck_marks}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Important Instructions */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-        <div className="flex items-start gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg mt-1">
-            <AlertTriangle className="h-5 w-5 text-blue-600" />
-          </div>
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+        <div className="flex items-start gap-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 mt-1">
+            <ClipboardList className="h-4 w-4 text-blue-600" />
+          </span>
           <div className="space-y-2">
-            <h4 className="text-lg font-medium text-blue-900">
+            <h4 className="text-base font-semibold text-gray-800">
               {language === 'bn' ? 'গুরুত্বপূর্ণ নির্দেশনা' : 'Important Instructions'}
             </h4>
-            <p className="text-sm text-blue-800 leading-relaxed">
-              {language === 'bn' ? 
-                "বিঃ দ্রঃ যখমের ক্ষেত্রে, যখমে হত্যার, আত্মহত্যার বা অন্য কিছুর আলামত গায়ে কিনা তাহা লিখুন। প্রতিটি ক্ষেত্রে সাবধানতার সাথে পর্যবেক্ষণ করুন।" : 
-                "Note: In case of wounds, write whether there are signs of homicide, suicide, or anything else on the body. Observe each case carefully."
-              }
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <span>
-            {language === 'bn' ? 'ফিল্ড পূরণ হয়েছে' : 'Fields completed'}: 
-            <span className="font-medium text-green-600 ml-1">
-              {[
-                formData.physique_state,
-                formData.wounds_desc,
-                formData.injuries_desc,
-                formData.neck_marks
-              ].filter(Boolean).length} / 4
-            </span>
-          </span>
-          <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-green-500 transition-all duration-300"
-              style={{ 
-                width: `${([
-                  formData.physique_state,
-                  formData.wounds_desc,
-                  formData.injuries_desc,
-                  formData.neck_marks
-                ].filter(Boolean).length / 4) * 100}%` 
-              }}
-            />
+            <div className="p-4 bg-white/60 rounded-lg border border-blue-100">
+              <p className="text-blue-800 leading-relaxed">
+                {language === 'bn' ? 
+                  "বিঃ দ্রঃ যখমের ক্ষেত্রে, যখমে হত্যার, আত্মহত্যার বা অন্য কিছুর আলামত গায়ে কিনা তাহা লিখুন। প্রতিটি ক্ষেত্রে সাবধানতার সাথে পর্যবেক্ষণ করুন।" : 
+                  "Note: In case of wounds, write whether there are signs of homicide, suicide, or anything else on the body. Observe each case carefully."
+                }
+              </p>
+            </div>
           </div>
         </div>
       </div>
