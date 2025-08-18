@@ -32,6 +32,7 @@ export function NavMain({
     items?: {
       title: string
       url: string
+      icon?: LucideIcon
     }[]
   }[]
 }) {
@@ -41,7 +42,11 @@ export function NavMain({
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => {
-          const isActive = pathname === item.url || pathname.startsWith(item.url + '/');
+          // Consider the root dashboard (e.g. /dashboard/admin) active only on exact match
+          const isRootDashboard = /^\/dashboard\/[^/]+$/.test(item.url);
+          const isActive = isRootDashboard
+            ? pathname === item.url
+            : pathname === item.url || pathname.startsWith(item.url + '/');
           const hasActiveSubItem = item.items?.some(subItem => pathname === subItem.url);
           
           return (
@@ -68,10 +73,8 @@ export function NavMain({
                           
                           return (
                             <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton asChild isActive={isSubItemActive}>
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
+                              <SidebarMenuSubButton href={subItem.url} isActive={isSubItemActive} icon={subItem.icon}>
+                                {subItem.title}
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           );

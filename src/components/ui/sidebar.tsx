@@ -643,7 +643,8 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-slot="sidebar-menu-sub"
       data-sidebar="menu-sub"
       className={cn(
-        "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
+        // Button-like submenu group: subtle left rail, transparent background; items own their backgrounds
+        "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l-2 px-2 py-1",
         "group-data-[collapsible=icon]:hidden",
         className
       )}
@@ -670,12 +671,15 @@ function SidebarMenuSubButton({
   asChild = false,
   size = "md",
   isActive = false,
+  icon: Icon,
   className,
+  children,
   ...props
 }: React.ComponentProps<"a"> & {
   asChild?: boolean
   size?: "sm" | "md"
   isActive?: boolean
+  icon?: React.ComponentType<any>
 }) {
   const Comp = asChild ? Slot : "a"
 
@@ -686,15 +690,21 @@ function SidebarMenuSubButton({
       data-size={size}
       data-active={isActive}
       className={cn(
-        "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
+        // Button-like submenu items: border, background, hover/active/focus states
+        "text-sidebar-foreground ring-sidebar-ring flex h-9 min-w-0 items-center gap-2 overflow-hidden rounded-lg border border-sidebar-border bg-background px-3 outline-hidden focus-visible:ring-2 focus-visible:ring-blue-400/60 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:border-sidebar-accent transition-all duration-200 cursor-pointer hover:shadow-sm",
+        "active:translate-y-px",
+        "data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:border-transparent data-[active=true]:shadow",
         size === "sm" && "text-xs",
         size === "md" && "text-sm",
         "group-data-[collapsible=icon]:hidden",
         className
       )}
       {...props}
-    />
+    >
+      {Icon ? <Icon className="mr-1.5" /> : null}
+      <span>{children}</span>
+    </Comp>
   )
 }
 

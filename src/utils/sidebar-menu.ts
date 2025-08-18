@@ -22,7 +22,7 @@ import {
     title: string;
     url: string;
     icon: any;
-    items?: { title: string; url: string }[];
+    items?: { title: string; url: string; icon?: any }[];
   };
   
   export const getMenuItems = (role: UserRole): MenuItem[] => {
@@ -44,8 +44,8 @@ import {
           url: `/dashboard/${role}/users`,
           icon: Users,
           items: [
-            { title: "All Users", url: `/dashboard/${role}/users` },
-            { title: "Add User", url: `/dashboard/${role}/users/add` },
+            { title: "All Users", url: `/dashboard/${role}/users`, icon: Users },
+            { title: "Add User", url: `/dashboard/${role}/users/add`, icon: Users },
           ],
         },
         {
@@ -53,8 +53,8 @@ import {
           url: `/dashboard/${role}/departments`,
           icon: Building,
           items: [
-            { title: "All Departments", url: `/dashboard/${role}/departments` },
-            { title: "Add Department", url: `/dashboard/${role}/departments/add` },
+            { title: "All Departments", url: `/dashboard/${role}/departments`, icon: Building },
+            { title: "Add Department", url: `/dashboard/${role}/departments/add`, icon: Building },
           ],
         },
         // {
@@ -82,10 +82,10 @@ import {
           url: `/dashboard/${role}/investigation-report`,
           icon: ClipboardCheck,
           items: [
-            { title: "Create Report", url: `/dashboard/${role}/investigation-report/create` },
-            { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2` },
-            { title: "All Reports", url: `/dashboard/${role}/investigation-report` },
-            { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates` },
+            { title: "Create Report", url: `/dashboard/${role}/investigation-report/create`, icon: ClipboardCheck },
+            { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2`, icon: ClipboardCheck },
+            { title: "All Reports", url: `/dashboard/${role}/investigation-report`, icon: ClipboardList },
+            { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates`, icon: FileText },
           ],
         },
         // {
@@ -126,8 +126,8 @@ import {
         url: `/dashboard/${role}/cases`,
         icon: FileText,
         items: [
-          { title: "My Cases", url: `/dashboard/${role}/cases` },
-          { title: "Create Case", url: `/dashboard/${role}/cases/create` },
+          { title: "My Cases", url: `/dashboard/${role}/cases`, icon: FileText },
+          { title: "Create Case", url: `/dashboard/${role}/cases/create`, icon: FileText },
         ],
        },
       // {
@@ -144,8 +144,8 @@ import {
         url: `/dashboard/${role}/reports`,
         icon: BarChart3,
         items: [
-          { title: "My Reports", url: `/dashboard/${role}/reports` },
-          { title: "Case History", url: `/dashboard/${role}/reports/history` },
+          { title: "My Reports", url: `/dashboard/${role}/reports`, icon: BarChart3 },
+          { title: "Case History", url: `/dashboard/${role}/reports/history`, icon: CalendarDays },
         ],
       },
       {
@@ -153,8 +153,8 @@ import {
         url: `/dashboard/${role}/activity`,
         icon: Activity,
         items: [
-          { title: "Recent Activity", url: `/dashboard/${role}/activity` },
-          { title: "Notifications", url: `/dashboard/${role}/activity/notifications` },
+          { title: "Recent Activity", url: `/dashboard/${role}/activity`, icon: Activity },
+          { title: "Notifications", url: `/dashboard/${role}/activity/notifications`, icon: Activity },
         ],
       },
     ];
