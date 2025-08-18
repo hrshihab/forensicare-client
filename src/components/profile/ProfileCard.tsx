@@ -100,7 +100,7 @@ export function ProfileCard({
                 <h4 className="font-medium text-sm truncate">
                   {data.firstName} {data.lastName}
                 </h4>
-                <Badge variant={getStatusColor(data.userStatus)} size="sm">
+                <Badge variant={getStatusColor(data.userStatus)}>
                   {data.userStatus || 'Active'}
                 </Badge>
               </div>
@@ -281,7 +281,7 @@ export function ProfileCard({
               <h4 className="font-semibold text-gray-900 truncate">
                 {data.firstName} {data.lastName}
               </h4>
-              <Badge variant={getStatusColor(data.userStatus)} size="sm">
+              <Badge variant={getStatusColor(data.userStatus)}>
                 {data.userStatus || 'Active'}
               </Badge>
             </div>

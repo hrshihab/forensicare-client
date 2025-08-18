@@ -19,7 +19,11 @@ export interface InvestigationReport {
   caste_tribe?: string;
   brought_from_village?: string;
   brought_from_thana?: string;
+  // Historical field kept for compatibility with older UI
   brought_by_list: string[];
+  // Current UI fields
+  constable_name?: string;
+  relatives_names?: string[];
   sent_datetime: string;
   brought_datetime: string;
   exam_datetime: string;

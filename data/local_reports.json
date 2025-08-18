@@ -1,0 +1,85 @@
+[
+  {
+    "id": "1755504869088",
+    "createdAt": "2025-08-18T09:20:33.575Z",
+    "updatedAt": "2025-08-18T11:42:02.374Z",
+    "status": "draft",
+    "header": {
+      "thana_id": "Mirpur",
+      "case_type": "CID",
+      "gd_cid_case_no": "2351",
+      "ref_date": "2025-08-17",
+      "pm_no": "234",
+      "report_date": "2025-08-18",
+      "station": "DMC MORGUE"
+    },
+    "general": {
+      "person_name": "সাকিব",
+      "gender": "male",
+      "age_years": "12",
+      "caste_tribe": "Mahmud",
+      "brought_from_village": "Nowakhali ",
+      "brought_from_thana": "Nowakhali",
+      "constable_name": "rahim ",
+      "relatives_names": [
+        "Mashrafi"
+      ],
+      "sent_datetime": "2025-08-18T12:55",
+      "brought_datetime": "2025-08-18T13:55",
+      "exam_datetime": "2025-08-19T12:56",
+      "police_info": "ভালো ছিল",
+      "identifier_name": "Shihab"
+    },
+    "external_signs": {
+      "physique_state": "boloban",
+      "wounds_desc": "intact",
+      "injuries_desc": "intact",
+      "neck_marks": "intact"
+    },
+    "head_spine": {
+      "scalp": "intact ",
+      "skull": "intact ",
+      "vertebrae": "intact ",
+      "meninges": "intact  ",
+      "brain": "intact ",
+      "spinal_cord": "intact "
+    },
+    "chest_lungs": {
+      "ribs_cartilage": "asdf a ",
+      "pleura": "fa sdf ",
+      "larynx": " asdf ",
+      "trachea": "intact ",
+      "right_lung": "intact ",
+      "left_lung": "intact ",
+      "pericardium": "intact ",
+      "heart": "intact ",
+      "blood_vessels": "intact "
+    },
+    "abdomen": {
+      "abdominal_general": "intact",
+      "peritoneum": "intact",
+      "mouth_trachea_esophagus": "intact",
+      "stomach_and_contents": "intact",
+      "small_intestine_and_contents": "intact",
+      "large_intestine_and_contents": "intact",
+      "liver": "intact",
+      "spleen": "intact",
+      "kidneys": "intact",
+      "urinary_bladder": "intact",
+      "genital_organs": "intact"
+    },
+    "musculoskeletal": {
+      "ms_wounds": "intact",
+      "ms_disease_variations": "intact",
+      "fractures": "intact",
+      "dislocations": "intact"
+    },
+    "detailed_pathology": {
+      "pathology_description": "intact "
+    },
+    "opinions": {
+      "medical_officer_opinion": "sdfsdf ",
+      "civil_surgeon_remark": "asdf asdf"
+    }
+  }
+]

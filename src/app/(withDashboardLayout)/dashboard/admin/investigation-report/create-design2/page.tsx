@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { HeaderSection } from '@/components/investigation/HeaderSection';
@@ -10,9 +11,14 @@ import HeadSpineSection from '@/components/investigation/HeadSpineSection';
 import ChestLungsSection from '@/components/investigation/ChestLungsSection';
 import AbdomenSection from '@/components/investigation/AbdomenSection';
 import MusculoskeletalSection from '@/components/investigation/MusculoskeletalSection';
+import { DetailedPathologySection } from '@/components/investigation/DetailedPathologySection';
+import { OpinionsSection } from '@/components/investigation/OpinionsSection';
 import { Button } from '@/components/ui/button';
 import { Save, Eye, Printer } from 'lucide-react';
 import { InvestigationReport } from '@/types/investigation';
+import { computeSectionProgress } from '@/utils/section-progress';
+import { useSaveLocalReportMutation, useGetLocalReportByIdQuery } from '@/redux/api/reportApis';
+import { toFlatForm } from '@/utils/report-shape';
 
 // Tab configuration
 const tabs = [
@@ -23,6 +29,8 @@ const tabs = [
   { id: 'chest_lungs', label: 'Chest & Lungs', component: 'ChestLungsSection' },
   { id: 'abdomen', label: 'Abdomen', component: 'AbdomenSection' },
   { id: 'musculoskeletal', label: 'Musculoskeletal', component: 'MusculoskeletalSection' },
+  { id: 'detailed_pathology', label: 'Detailed Pathology', component: 'DetailedPathologySection' },
+  { id: 'opinions', label: 'Opinions', component: 'OpinionsSection' },
 ];
 
 const CreateReportPageDesign2 = () => {
@@ -33,26 +41,41 @@ const CreateReportPageDesign2 = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState('header');
+  const [saveLocalReport] = useSaveLocalReportMutation();
+  const searchParams = useSearchParams();
+  const editId = searchParams?.get('id') || undefined;
+  const { data: reportById } = useGetLocalReportByIdQuery(editId as any, { skip: !editId });
 
   const { t, language } = useLanguage();
 
+  const generateId = () => `rpt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
   const handleFieldChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-    
-    // Clear error when field is updated
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-    
-    // Update tab status based on field changes
-    // updateTabStatus(activeTab); // This function is no longer needed
+    setFormData(prev => {
+      const nextState: Partial<InvestigationReport> = {
+        ...prev,
+        [field]: value,
+      };
+      if (!nextState.id && !editId) {
+        nextState.id = prev.id || generateId();
+      }
+
+      // Clear error when field is updated
+      if (errors[field]) {
+        setErrors(prevErrors => {
+          const newErrors = { ...prevErrors } as Record<string, string>;
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+
+      // Auto-save to API for design2 with the up-to-date state
+      setTimeout(() => {
+        saveLocalReport(nextState as any);
+      }, 500);
+
+      return nextState;
+    });
   };
 
   const validateForm = () => {
@@ -79,9 +102,10 @@ const CreateReportPageDesign2 = () => {
   };
 
   const getStatusColor = (status: string, isActive: boolean) => {
-    if (isActive) {
-      return 'text-blue-600 border-blue-600 bg-blue-50';
-    }
+    if (isActive) return 'text-blue-600 border-blue-600 bg-blue-50';
+    if (status === 'done') return 'text-green-700 border-green-600 bg-green-50';
+    if (status === 'in_progress') return 'text-amber-700 border-amber-500 bg-amber-50';
+    if (status === 'error') return 'text-red-700 border-red-600 bg-red-50';
     return 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300';
   };
 
@@ -112,6 +136,10 @@ const CreateReportPageDesign2 = () => {
         return <AbdomenSection {...commonProps} />;
       case 'musculoskeletal':
         return <MusculoskeletalSection {...commonProps} />;
+      case 'detailed_pathology':
+        return <DetailedPathologySection {...commonProps} />;
+      case 'opinions':
+        return <OpinionsSection {...commonProps} />;
       default:
         return <HeaderSection {...commonProps} />;
     }
@@ -127,6 +155,20 @@ const CreateReportPageDesign2 = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (editId && reportById) {
+      const flat = toFlatForm(reportById);
+      setFormData(flat);
+    }
+  }, [editId, reportById]);
+
+  // Seed a stable id for new reports (no editId)
+  useEffect(() => {
+    if (!editId) {
+      setFormData(prev => (prev?.id ? prev : { ...prev, id: generateId() }));
+    }
+  }, [editId]);
 
   return (
     <LanguageProvider>
@@ -162,20 +204,25 @@ const CreateReportPageDesign2 = () => {
         {/* Tab Navigation */}
         <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
-            {tabs.map((tab) => (
-              <li key={tab.id} className="me-2" role="presentation">
-                <button
-                  className={`inline-flex items-center p-4 border-b-2 rounded-t-lg ${activeTab === tab.id ? getStatusColor('', true) : getStatusColor('', false)}`}
-                  onClick={() => handleTabClick(tab.id)}
-                  type="button"
-                  role="tab"
-                  aria-controls={tab.id}
-                  aria-selected={activeTab === tab.id}
-                >
-                  {tab.label}
-                </button>
-              </li>
-            ))}
+            {tabs.map((tab) => {
+              const { completed, total } = computeSectionProgress(tab.id as any, formData as any);
+              const status = completed === 0 ? 'not_started' : completed === total ? 'done' : 'in_progress';
+              return (
+                <li key={tab.id} className="me-2" role="presentation">
+                  <button
+                    className={`inline-flex items-center gap-2 p-4 border-b-2 rounded-t-lg ${activeTab === tab.id ? getStatusColor(status, true) : getStatusColor(status, false)}`}
+                    onClick={() => handleTabClick(tab.id)}
+                    type="button"
+                    role="tab"
+                    aria-controls={tab.id}
+                    aria-selected={activeTab === tab.id}
+                  >
+                    <span>{tab.label}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/70 border">{completed}/{total}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
 

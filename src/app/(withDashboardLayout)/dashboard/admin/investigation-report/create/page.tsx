@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { FormSection } from '@/components/investigation/FormSection';
@@ -11,19 +12,32 @@ import HeadSpineSection from '@/components/investigation/HeadSpineSection';
 import ChestLungsSection from '@/components/investigation/ChestLungsSection';
 import AbdomenSection from '@/components/investigation/AbdomenSection';
 import MusculoskeletalSection from '@/components/investigation/MusculoskeletalSection';
-import OpinionsSection from '@/components/investigation/OpinionsSection';
+import { OpinionsSection } from '@/components/investigation/OpinionsSection';
+import { DetailedPathologySection } from '@/components/investigation/DetailedPathologySection';
 import { Button } from '@/components/ui/button';
 import { Save, Eye, Printer } from 'lucide-react';
 import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
+import { computeSectionStatus, getSectionFields } from '@/utils/section-progress';
+import { useSaveLocalReportMutation, useGetLocalReportsQuery, useGetLocalReportByIdQuery } from '@/redux/api/reportApis';
+import { toFlatForm } from '@/utils/report-shape';
 
 const CreateReportForm: React.FC = () => {
   const { t, language } = useLanguage();
-  const [formData, setFormData] = useState<Partial<InvestigationReport>>({
+  const searchParams = useSearchParams();
+  const editId = searchParams?.get('id') || undefined;
+  
+  // Stable default for SSR/CSR to avoid hydration mismatches; load saved data after mount
+  const defaultFormData: Partial<InvestigationReport> = {
     brought_by_list: [],
-    station: 'DMC MORGUE', // Set default station value
-    case_type: 'none', // Set default case type to none
-  });
+    station: 'DMC MORGUE',
+    case_type: 'none',
+  };
+
+  const [formData, setFormData] = useState<Partial<InvestigationReport>>(defaultFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const lastSavedSnapshot = useRef<string>('');
   const [sections, setSections] = useState<FormSectionType[]>([
     {
       id: 'header',
@@ -82,6 +96,14 @@ const CreateReportForm: React.FC = () => {
       required: false,
     },
     {
+      id: 'detailed_pathology',
+      title: 'Detailed Pathology',
+      title_bn: 'বিস্তারিত রোগতত্ত্ব',
+      isOpen: false,
+      status: 'not_started',
+      required: false,
+    },
+    {
       id: 'opinions',
       title: 'Opinions',
       title_bn: 'মতামত',
@@ -90,6 +112,83 @@ const CreateReportForm: React.FC = () => {
       required: true,
     },
   ]);
+
+  // Save to localStorage
+  const [saveLocalReport] = useSaveLocalReportMutation();
+  const { data: savedReports = [] } = useGetLocalReportsQuery();
+  const { data: reportById } = useGetLocalReportByIdQuery(editId as any, { skip: !editId });
+
+  const saveToLocalStorage = async (data: Partial<InvestigationReport>) => {
+    try {
+      // Ensure a stable id for upsert
+      const payload: Partial<InvestigationReport> = { ...data };
+      if (!payload.id) {
+        payload.id = formData.id || generateId();
+      }
+
+      // Persist via API first to keep disk authoritative
+      const resp = await saveLocalReport(payload as any).unwrap().catch(() => null);
+      let savedPayload = data;
+      if (resp?.data?.id || payload.id) {
+        const finalId = resp?.data?.id ?? payload.id;
+        savedPayload = { ...payload, id: finalId } as Partial<InvestigationReport>;
+        setFormData(prev => ({ ...prev, id: finalId }));
+      }
+
+      // Mirror to browser localStorage for quick resume
+      localStorage.setItem('investigationReportData', JSON.stringify(savedPayload));
+      setLastSaved(new Date());
+      console.log('Data saved:', savedPayload);
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  const generateId = () => `rpt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const normalizeForSnapshot = (data: Partial<InvestigationReport>) => {
+    const { createdAt, updatedAt, ...rest } = (data as any) || {};
+    return rest;
+  };
+
+  // Auto-save function
+  const autoSave = async () => {
+    if (Object.keys(formData).length > 0) {
+      const currentSnapshot = JSON.stringify(normalizeForSnapshot(formData));
+      if (currentSnapshot === lastSavedSnapshot.current) {
+        return; // No changes since last save
+      }
+      setIsAutoSaving(true);
+      await saveToLocalStorage(formData);
+      lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(formData));
+      setTimeout(() => setIsAutoSaving(false), 1000);
+    }
+  };
+
+  // Load saved data on client after mount to keep SSR markup consistent
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem('investigationReportData');
+      if (editId && reportById) {
+        // Load selected report from API and flatten into form
+        const flat = toFlatForm(reportById);
+        setFormData(flat);
+        lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(flat));
+      } else if (savedData) {
+        const parsed = JSON.parse(savedData);
+        // Ensure an id exists for stable upserts
+        if (!parsed.id) parsed.id = generateId();
+        setFormData(parsed);
+        lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(parsed));
+      } else {
+        // New form, assign an id immediately for stable saves
+        const seeded = { ...defaultFormData, id: generateId() } as Partial<InvestigationReport>;
+        setFormData(seeded);
+        lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(seeded));
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+    }
+  }, [editId, reportById]);
 
   const handleFieldChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -108,6 +207,9 @@ const CreateReportForm: React.FC = () => {
     
     // Update section statuses after field change
     setTimeout(() => updateSectionStatuses(), 100);
+    
+    // Trigger auto-save after field change
+    setTimeout(autoSave, 1000);
   };
 
   const handleSectionToggle = (sectionId: string, isOpen: boolean) => {
@@ -149,33 +251,20 @@ const CreateReportForm: React.FC = () => {
     // General validation - only validate if section has been opened or has data
     const generalSection = sections.find(s => s.id === 'general');
     if (generalSection?.isOpen || hasGeneralSectionData()) {
-      if (!formData.person_name) {
-        newErrors.person_name = t('validation.required_field');
+      if (!formData.person_name) newErrors.person_name = t('validation.required_field');
+      if (!formData.gender) newErrors.gender = t('validation.required_field');
+      if (!formData.age_years) newErrors.age_years = t('validation.required_field');
+      if (!formData.brought_from_village) newErrors.brought_from_village = t('validation.required_field');
+      if (!formData.brought_from_thana) newErrors.brought_from_thana = t('validation.required_field');
+      if (!formData.constable_name) newErrors.constable_name = t('validation.required_field');
+      if (!formData.relatives_names || (Array.isArray(formData.relatives_names) && formData.relatives_names.length === 0)) {
+        newErrors.relatives_names = t('validation.required_field');
       }
-      if (!formData.gender) {
-        newErrors.gender = t('validation.required_field');
-      }
-      if (!formData.age_years) {
-        newErrors.age_years = t('validation.required_field');
-      }
-      if (!formData.brought_by_list || formData.brought_by_list.length === 0) {
-        newErrors.brought_by_list = t('validation.required_field');
-      }
-      if (!formData.sent_datetime) {
-        newErrors.sent_datetime = t('validation.required_field');
-      }
-      if (!formData.brought_datetime) {
-        newErrors.brought_datetime = t('validation.required_field');
-      }
-      if (!formData.exam_datetime) {
-        newErrors.exam_datetime = t('validation.required_field');
-      }
-      if (!formData.police_info) {
-        newErrors.police_info = t('validation.required_field');
-      }
-      if (!formData.identifier_name) {
-        newErrors.identifier_name = t('validation.required_field');
-      }
+      if (!formData.sent_datetime) newErrors.sent_datetime = t('validation.required_field');
+      if (!formData.brought_datetime) newErrors.brought_datetime = t('validation.required_field');
+      if (!formData.exam_datetime) newErrors.exam_datetime = t('validation.required_field');
+      if (!formData.police_info) newErrors.police_info = t('validation.required_field');
+      if (!formData.identifier_name) newErrors.identifier_name = t('validation.required_field');
     }
 
     // Opinions validation - required section
@@ -208,6 +297,9 @@ const CreateReportForm: React.FC = () => {
         // Update section statuses
         updateSectionStatuses();
         
+        // Save to localStorage
+        saveToLocalStorage(formData);
+        
         console.log('Form data saved:', formData);
       } catch (error) {
         console.error('Save failed:', error);
@@ -217,154 +309,47 @@ const CreateReportForm: React.FC = () => {
 
   const updateSectionStatuses = () => {
     setSections(prev => prev.map(section => {
-      let status: 'not_started' | 'in_progress' | 'done' | 'error' | 'skipped' = 'not_started';
-      
-      if (section.id === 'header') {
-        const requiredFields = ['thana_id', 'gd_cid_case_no', 'ref_date', 'pm_no', 'report_date', 'station', 'case_type'];
-        const hasErrors = requiredFields.some(field => errors[field]);
-        const filledFields = requiredFields.filter(field => {
-          const value = (formData as any)[field];
-          return isFieldMeaningfullyFilled(field, value);
-        });
-        
-        if (hasErrors) {
-          status = 'error';
-        } else if (filledFields.length === 0) {
-          status = 'not_started';
-        } else if (filledFields.length === requiredFields.length) {
-          status = 'done';
-        } else {
-          status = 'in_progress';
-        }
-      } else if (section.id === 'general') {
-        const requiredFields = ['person_name', 'gender', 'age_years', 'brought_by_list', 'sent_datetime', 'brought_datetime', 'exam_datetime', 'police_info', 'identifier_name'];
-        const hasErrors = requiredFields.some(field => errors[field]);
-        const filledFields = requiredFields.filter(field => {
-          const value = (formData as any)[field];
-          return isFieldMeaningfullyFilled(field, value);
-        });
-        
-        if (hasErrors) {
-          status = 'error';
-        } else if (filledFields.length === 0) {
-          status = 'not_started';
-        } else if (filledFields.length === requiredFields.length) {
-          status = 'done';
-        } else {
-          status = 'in_progress';
-        }
-      } else if (section.id === 'opinions') {
-        const requiredFields = ['medical_officer_opinion', 'civil_surgeon_remark'];
-        const hasErrors = requiredFields.some(field => errors[field]);
-        const filledFields = requiredFields.filter(field => {
-          const value = (formData as any)[field];
-          return isFieldMeaningfullyFilled(field, value);
-        });
-        
-        if (hasErrors) {
-          status = 'error';
-        } else if (filledFields.length === 0) {
-          status = 'not_started';
-        } else if (filledFields.length === requiredFields.length) {
-          status = 'done';
-        } else {
-          status = 'in_progress';
-        }
-      } else {
-        // For other sections, only update if they've been opened or have data
-        if (section.isOpen || hasSectionData(section.id)) {
-          const sectionFields = getSectionFields(section.id);
-          if (sectionFields.length > 0) {
-            const filledFields = sectionFields.filter(field => {
-              const value = (formData as any)[field];
-              return isFieldMeaningfullyFilled(field, value);
-            });
-            if (filledFields.length === 0) {
-              status = 'not_started';
-            } else if (filledFields.length === sectionFields.length) {
-              status = 'done';
-            } else {
-              status = 'in_progress';
-            }
-          } else {
-            status = 'not_started';
-          }
-        } else {
-          // Keep existing status for untouched sections
-          status = section.status;
-        }
-      }
-      
+      const status = computeSectionStatus(section.id as any, formData as any, errors);
       return { ...section, status };
     }));
   };
 
   // Helper function to check if general section has any data
   const hasGeneralSectionData = (): boolean => {
-    const generalFields = ['person_name', 'gender', 'age_years', 'brought_by_list', 'sent_datetime', 'brought_datetime', 'exam_datetime', 'police_info', 'identifier_name'];
+    const generalFields = [
+      'person_name',
+      'gender',
+      'age_years',
+      'brought_from_village',
+      'brought_from_thana',
+      'constable_name',
+      'relatives_names',
+      'sent_datetime',
+      'brought_datetime',
+      'exam_datetime',
+      'police_info',
+      'identifier_name',
+    ];
     return generalFields.some(field => {
       const value = (formData as any)[field];
-      if (field === 'brought_by_list') {
-        return value && Array.isArray(value) && value.length > 0;
+      if (field === 'relatives_names') {
+        return Array.isArray(value) && value.length > 0;
       }
       return value && value.toString().trim() !== '';
     });
   };
 
-  // Helper function to check if a section has any data
-  const hasSectionData = (sectionId: string): boolean => {
-    const sectionFields = getSectionFields(sectionId);
-    return sectionFields.some(field => {
-      const value = (formData as any)[field];
-      return value && value.toString().trim() !== '';
-    });
-  };
-
-  // Helper function to check if a field is meaningfully filled
-  const isFieldMeaningfullyFilled = (field: string, value: any): boolean => {
-    if (!value) return false;
-    
-    if (field === 'brought_by_list') {
-      return Array.isArray(value) && value.length > 0;
-    }
-    
-    if (field === 'station') {
-      // Station is filled if it has any value (including default)
-      return value.toString().trim() !== '';
-    }
-    
-    if (field === 'case_type') {
-      return value.toString().trim() !== '';
-    }
-
-    // For other fields, check if they have meaningful content
-    const trimmedValue = value.toString().trim();
-    return trimmedValue !== '' && trimmedValue !== 'undefined' && trimmedValue !== 'null';
-  };
-
-  // Helper function to get fields for each section
-  const getSectionFields = (sectionId: string): string[] => {
-    switch (sectionId) {
-      case 'external_signs':
-        return ['physique_state', 'wounds_desc', 'injuries_desc', 'neck_marks'];
-      case 'head_spine':
-        return ['scalp_skull_vertebrae', 'meninges', 'brain_spinal'];
-      case 'chest_lungs':
-        return ['ribs_cartilage', 'pleura', 'larynx_trachea_bronchi', 'right_lung', 'left_lung', 'pericardium', 'heart', 'blood_vessels'];
-      case 'abdomen':
-        return ['abdominal_general', 'peritoneum', 'mouth_trachea_esophagus', 'stomach_and_contents', 'small_intestine_and_contents', 'large_intestine_and_contents', 'liver', 'spleen', 'kidneys', 'urinary_bladder', 'genital_organs'];
-      case 'musculoskeletal':
-        return ['ms_wounds', 'ms_disease_variations', 'fractures', 'dislocations', 'detailed_pathology'];
-      case 'opinions':
-        return ['medical_officer_opinion', 'civil_surgeon_remark'];
-      default:
-        return [];
-    }
-  };
+  // Helper function to get fields is provided via utils/getSectionFields
 
   useEffect(() => {
     updateSectionStatuses();
   }, [errors, formData]);
+
+  // Auto-save every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(autoSave, 10000);
+    return () => clearInterval(interval);
+  }, [formData]);
 
   return (
     <div className="container mx-auto p-6">
@@ -381,6 +366,26 @@ const CreateReportForm: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center space-x-3">
+          {/* Auto-save Status */}
+          <div className="flex items-center space-x-2 text-sm">
+            {isAutoSaving ? (
+              <div className="flex items-center space-x-2 text-blue-600">
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+                <span>Auto-saving...</span>
+              </div>
+            ) : lastSaved ? (
+              <div className="flex items-center space-x-2 text-green-600">
+                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2 text-gray-500">
+                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span>Not saved yet</span>
+              </div>
+            )}
+          </div>
+
           <LanguageToggle />
           
           <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
@@ -390,6 +395,22 @@ const CreateReportForm: React.FC = () => {
           <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
             <Printer className="w-4 h-4 mr-2" />
             Print
+          </Button>
+          <Button 
+            onClick={() => {
+              localStorage.removeItem('investigationReportData');
+              setFormData({
+                brought_by_list: [],
+                station: 'DMC MORGUE',
+                case_type: 'none',
+              });
+              setLastSaved(null);
+            }} 
+            variant="outline" 
+            size="sm" 
+            className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 transition-all duration-200"
+          >
+            Clear Data
           </Button>
           <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
             <Save className="w-4 h-4 mr-2" />
@@ -484,6 +505,18 @@ const CreateReportForm: React.FC = () => {
           />
         </FormSection>
 
+        {/* Detailed Pathology Section */}
+        <FormSection
+          section={sections.find(s => s.id === 'detailed_pathology')!}
+          onToggle={(isOpen) => handleSectionToggle('detailed_pathology', isOpen)}
+        >
+          <DetailedPathologySection
+            formData={formData}
+            onFieldChange={handleFieldChange}
+            errors={errors}
+          />
+        </FormSection>
+
         {/* Opinions Section */}
         <FormSection
           section={sections.find(s => s.id === 'opinions')!}
@@ -496,6 +529,50 @@ const CreateReportForm: React.FC = () => {
           />
         </FormSection>
       </div>
+
+      {/* Saved Reports Table */}
+      {Array.isArray(savedReports) && savedReports.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold mb-3">Saved Reports</h2>
+          <div className="overflow-x-auto border rounded-md">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="text-left px-3 py-2">ID</th>
+                  <th className="text-left px-3 py-2">PM No</th>
+                  <th className="text-left px-3 py-2">Person Name</th>
+                  <th className="text-left px-3 py-2">Case Type</th>
+                  <th className="text-left px-3 py-2">Updated</th>
+                  <th className="text-left px-3 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {savedReports.map((r: any) => (
+                  <tr key={r.id} className="border-t">
+                    <td className="px-3 py-2">{r.id}</td>
+                    <td className="px-3 py-2">{r?.header?.pm_no ?? '-'}</td>
+                    <td className="px-3 py-2">{r?.general?.person_name ?? '-'}</td>
+                    <td className="px-3 py-2">{r?.header?.case_type ?? '-'}</td>
+                    <td className="px-3 py-2">{r.updatedAt ?? '-'}</td>
+                    <td className="px-3 py-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setFormData(r)
+                          localStorage.setItem('investigationReportData', JSON.stringify(r))
+                        }}
+                      >
+                        Load
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -17,8 +17,9 @@ import { userLogin } from "@/services/actions/userlogin"
 
 export default function LoginPage({
   className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: {
+  className?: string;
+}) {
   const [showPassword, setShowPassword] = useState(false)
   const [username, setUsername] = useState("admin")
   const [password, setPassword] = useState("password1")
@@ -52,7 +53,7 @@ export default function LoginPage({
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className={cn("flex flex-col gap-6 w-[500px]", className)} {...props}>
+        <div className={cn("flex flex-col gap-6 w-[500px]", className)}>
       <Card className="border-blue-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm bg-white/80">
         <CardHeader className="space-y-4">
           <div className="flex items-center justify-center gap-2">

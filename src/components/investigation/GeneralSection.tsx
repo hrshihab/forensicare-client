@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { X, Plus, User, MapPin, Users, Calendar, Info, FileText } from 'lucide-react';
+import { computeSectionProgress } from '@/utils/section-progress';
 import { useDropdownValues } from '@/hooks/useDropdownValues';
 import SectionHeader from '@/components/ui/section-header';
 
@@ -27,23 +28,8 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
   const [newBroughtBy, setNewBroughtBy] = useState('');
   const [newRelativeName, setNewRelativeName] = useState('');
 
-  // Calculate completion percentage for General section
-  const requiredFields = [
-    'person_name',
-    'gender',
-    'age_years',
-    'brought_from_village',
-    'brought_from_thana',
-    'constable_name',
-    'relatives_names',
-    'sent_datetime',
-    'brought_datetime',
-    'exam_datetime',
-    'identifier_name',
-    'police_info'
-  ];
-  
-  const completedFields = requiredFields.filter(field => formData[field]).length;
+  // Calculate completion via shared util (DRY)
+  const { completed: completedFields, total: totalFieldsCount } = computeSectionProgress('general', formData as any, { newRelativeName });
 
   const handleAddConstable = () => {
     if (newBroughtBy.trim()) {
@@ -100,7 +86,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
           'Basic information, location, date & time, and other details'
         }
         completedFields={completedFields}
-        totalFields={requiredFields.length}
+        totalFields={totalFieldsCount}
         progressVariant="green"
         progressSize="medium"
       />
@@ -298,6 +284,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
                 value={newRelativeName}
                 onChange={(e) => setNewRelativeName(e.target.value)}
                 onKeyPress={handleRelativeKeyPress}
+                onBlur={handleAddRelative}
                 placeholder={language === 'bn' ? "আত্মীয়ের নাম" : "Relative name"}
                 className="flex-1 h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
               />
