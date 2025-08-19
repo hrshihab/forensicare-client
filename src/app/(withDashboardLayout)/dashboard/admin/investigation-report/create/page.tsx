@@ -15,11 +15,15 @@ import MusculoskeletalSection from '@/components/investigation/MusculoskeletalSe
 import { OpinionsSection } from '@/components/investigation/OpinionsSection';
 import { DetailedPathologySection } from '@/components/investigation/DetailedPathologySection';
 import { Button } from '@/components/ui/button';
-import { Save, Eye, Printer } from 'lucide-react';
+import { Save, Eye, Printer, Lock, Unlock } from 'lucide-react';
 import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
 import { computeSectionStatus, getSectionFields } from '@/utils/section-progress';
-import { useSaveLocalReportMutation, useGetLocalReportsQuery, useGetLocalReportByIdQuery } from '@/redux/api/reportApis';
+import { useSaveLocalReportMutation, useGetLocalReportsQuery, useGetLocalReportByIdQuery, useSubmitLocalReportMutation, useUnlockLocalReportMutation } from '@/redux/api/reportApis';
 import { toFlatForm } from '@/utils/report-shape';
+import useUserInfo from '@/hooks/useUserInfo';
+import { useToast } from '@/components/ui/use-toast';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useGetUserInfoQuery } from '@/redux/api/getApis';
 
 const CreateReportForm: React.FC = () => {
   const { t, language } = useLanguage();
@@ -115,11 +119,35 @@ const CreateReportForm: React.FC = () => {
 
   // Save to localStorage
   const [saveLocalReport] = useSaveLocalReportMutation();
+  const [submitLocalReport] = useSubmitLocalReportMutation();
+  const [unlockLocalReport] = useUnlockLocalReportMutation();
   const { data: savedReports = [] } = useGetLocalReportsQuery();
   const { data: reportById } = useGetLocalReportByIdQuery(editId as any, { skip: !editId });
+  const userInfo = useUserInfo();
+  const { toast } = useToast();
+  const rawUser = typeof window !== 'undefined' ? localStorage.getItem('userInfo') : null;
+  let storedUsername = '' as string;
+  try {
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      storedUsername = (parsed?.user?.username || parsed?.user?.userName || parsed?.user?.name || '').toString();
+    }
+  } catch {}
+  const isAdminName = (userInfo?.username?.toLowerCase?.() === 'admin') || (storedUsername.toLowerCase?.() === 'admin');
+  const { data: currentUserInfo } = useGetUserInfoQuery(Number((userInfo as any)?.userId || 0), { skip: !((userInfo as any)?.userId) });
+  const isSuperUser = Boolean(
+    (currentUserInfo as any)?.isSuperUser || (currentUserInfo as any)?.IsSuperUser ||
+    (userInfo as any)?.isSuperUser || (userInfo as any)?.IsSuperUser ||
+    (() => { try { return JSON.parse(rawUser || '{}')?.user?.isSuperUser ?? JSON.parse(rawUser || '{}')?.user?.IsSuperUser; } catch { return false } })()
+  );
+  // Editing lock depends only on the 'locked' flag, not the status
+  const isLocked = Boolean((reportById as any)?.locked || (formData as any)?.locked);
+  const canEdit = !isLocked; // admin cannot bypass; must unlock first
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const saveToLocalStorage = async (data: Partial<InvestigationReport>) => {
     try {
+      if (!canEdit) return; // prevent saving when locked for non-admins
       // Ensure a stable id for upsert
       const payload: Partial<InvestigationReport> = { ...data };
       if (!payload.id) {
@@ -153,6 +181,7 @@ const CreateReportForm: React.FC = () => {
   // Auto-save function
   const autoSave = async () => {
     if (Object.keys(formData).length > 0) {
+      if (!canEdit) return;
       const currentSnapshot = JSON.stringify(normalizeForSnapshot(formData));
       if (currentSnapshot === lastSavedSnapshot.current) {
         return; // No changes since last save
@@ -191,6 +220,7 @@ const CreateReportForm: React.FC = () => {
   }, [editId, reportById]);
 
   const handleFieldChange = (field: string, value: any) => {
+    if (!canEdit) return;
     setFormData(prev => ({
       ...prev,
       [field]: value,
@@ -267,13 +297,7 @@ const CreateReportForm: React.FC = () => {
       if (!formData.identifier_name) newErrors.identifier_name = t('validation.required_field');
     }
 
-    // Opinions validation - required section
-    if (!formData.medical_officer_opinion) {
-      newErrors.medical_officer_opinion = t('validation.required_field');
-    }
-    if (!formData.civil_surgeon_remark) {
-      newErrors.civil_surgeon_remark = t('validation.required_field');
-    }
+    // For draft save we skip strict opinions validation
 
     // Date validation - only if both dates exist
     if (formData.sent_datetime && formData.brought_datetime) {
@@ -291,20 +315,80 @@ const CreateReportForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateForSubmit = (): boolean => {
+    const required: string[] = [
+      'thana_id','case_type','gd_cid_case_no','ref_date','pm_no','report_date','station',
+      'person_name','gender','age_years','brought_from_village','brought_from_thana','constable_name','relatives_names','sent_datetime','brought_datetime','exam_datetime','police_info','identifier_name'
+    ];
+    const missing: string[] = required.filter((k) => {
+      const v: any = (formData as any)[k];
+      return !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'string' && v.trim() === '');
+    });
+    const newErrors: Record<string, string> = { ...errors };
+    missing.forEach((k) => { newErrors[k] = t('validation.required_field'); });
+    setErrors(newErrors);
+    return missing.length === 0;
+  };
+
   const handleSave = () => {
-    if (validateForm()) {
-      try {
-        // Update section statuses
-        updateSectionStatuses();
-        
-        // Save to localStorage
-        saveToLocalStorage(formData);
-        
-        console.log('Form data saved:', formData);
-      } catch (error) {
-        console.error('Save failed:', error);
-      }
+    try {
+      // Update section statuses
+      updateSectionStatuses();
+      // Save draft without strict validation
+      saveToLocalStorage({ ...formData, status: (formData as any)?.status ?? 'draft' });
+      console.log('Draft saved:', formData);
+      toast({ title: 'Draft saved', description: 'Your report has been saved as a draft.' });
+    } catch (error) {
+      console.error('Save failed:', error);
     }
+  };
+
+  const handleSubmitFinal = async () => {
+    if (!canEdit) return;
+    const ok = validateForSubmit();
+    if (!ok) return;
+    try {
+      const resp = await submitLocalReport({ ...(formData as any), id: (formData as any).id }).unwrap();
+      const saved = resp?.data ?? null;
+      if (saved) {
+        const flat = toFlatForm(saved);
+        setFormData(flat);
+        localStorage.setItem('investigationReportData', JSON.stringify(flat));
+      }
+      // Optionally a toast can be added post-submit; modal already confirms intent
+    } catch (e: any) {
+      alert(e?.data?.error || 'Submit failed');
+    }
+  };
+
+  const handleUnlock = async () => {
+    try {
+      const id = (formData as any)?.id;
+      if (!id) return;
+      const resp = await unlockLocalReport({ id }).unwrap();
+      const saved = resp?.data ?? null;
+      if (saved) {
+        const flat = toFlatForm(saved);
+        setFormData(flat);
+        localStorage.setItem('investigationReportData', JSON.stringify(flat));
+      }
+      alert('Editing unlocked for this report.');
+    } catch (e: any) {
+      alert(e?.data?.error || 'Unlock failed');
+    }
+  };
+
+  const isSubmitReady = (): boolean => {
+    const required: string[] = [
+      'thana_id','case_type','gd_cid_case_no','ref_date','pm_no','report_date','station',
+      'person_name','gender','age_years','brought_from_village','brought_from_thana','constable_name','relatives_names','sent_datetime','brought_datetime','exam_datetime','police_info','identifier_name'
+    ];
+    return required.every((k) => {
+      const v: any = (formData as any)[k];
+      if (Array.isArray(v)) return v.length > 0;
+      if (typeof v === 'string') return v.trim() !== '';
+      return Boolean(v);
+    });
   };
 
   const updateSectionStatuses = () => {
@@ -366,36 +450,21 @@ const CreateReportForm: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          {/* Auto-save Status */}
-          <div className="flex items-center space-x-2 text-sm">
-            {isAutoSaving ? (
-              <div className="flex items-center space-x-2 text-blue-600">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                <span>Auto-saving...</span>
-              </div>
-            ) : lastSaved ? (
-              <div className="flex items-center space-x-2 text-green-600">
-                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                <span>Last saved: {lastSaved.toLocaleTimeString()}</span>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2 text-gray-500">
-                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                <span>Not saved yet</span>
-              </div>
-            )}
-          </div>
+          {/* Auto-save indicator removed per requirement */}
 
           <LanguageToggle />
           
-          <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
-            <Eye className="w-4 h-4 mr-2" />
-            Preview
-          </Button>
-          <Button variant="outline" size="sm" className="border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
-            <Printer className="w-4 h-4 mr-2" />
-            Print
-          </Button>
+          {/* Preview/Print buttons removed per requirement */}
+          {!canEdit && (
+            <div className="flex items-center text-sm text-amber-700 bg-amber-100 px-3 py-1 rounded-md">
+              <Lock className="w-4 h-4 mr-2" /> Final submission — locked
+            </div>
+          )}
+          {(isAdminName || isSuperUser) && isLocked && (
+            <Button onClick={handleUnlock} variant="outline" size="sm" className="border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400">
+              <Unlock className="w-4 h-4 mr-2" /> Allow Edit
+            </Button>
+          )}
           <Button 
             onClick={() => {
               localStorage.removeItem('investigationReportData');
@@ -412,10 +481,17 @@ const CreateReportForm: React.FC = () => {
           >
             Clear Data
           </Button>
-          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
-            <Save className="w-4 h-4 mr-2" />
-            Save
-          </Button>
+          {canEdit && (
+            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+              <Save className="w-4 h-4 mr-2" />
+              Save Draft
+            </Button>
+          )}
+          {canEdit && (
+            <Button onClick={() => setConfirmOpen(true)} disabled={!isSubmitReady()} className="bg-emerald-600 disabled:bg-gray-300 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+              Submit
+            </Button>
+          )}
         </div>
       </div>
 
@@ -530,49 +606,23 @@ const CreateReportForm: React.FC = () => {
         </FormSection>
       </div>
 
-      {/* Saved Reports Table */}
-      {Array.isArray(savedReports) && savedReports.length > 0 && (
-        <div className="mt-10">
-          <h2 className="text-xl font-semibold mb-3">Saved Reports</h2>
-          <div className="overflow-x-auto border rounded-md">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="text-left px-3 py-2">ID</th>
-                  <th className="text-left px-3 py-2">PM No</th>
-                  <th className="text-left px-3 py-2">Person Name</th>
-                  <th className="text-left px-3 py-2">Case Type</th>
-                  <th className="text-left px-3 py-2">Updated</th>
-                  <th className="text-left px-3 py-2">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {savedReports.map((r: any) => (
-                  <tr key={r.id} className="border-t">
-                    <td className="px-3 py-2">{r.id}</td>
-                    <td className="px-3 py-2">{r?.header?.pm_no ?? '-'}</td>
-                    <td className="px-3 py-2">{r?.general?.person_name ?? '-'}</td>
-                    <td className="px-3 py-2">{r?.header?.case_type ?? '-'}</td>
-                    <td className="px-3 py-2">{r.updatedAt ?? '-'}</td>
-                    <td className="px-3 py-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setFormData(r)
-                          localStorage.setItem('investigationReportData', JSON.stringify(r))
-                        }}
-                      >
-                        Load
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      {/* Saved reports and history moved to the All Reports page */}
+
+      {/* Submit confirmation modal */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Submit report?</DialogTitle>
+            <DialogDescription>
+              This will lock the report. You won’t be able to edit unless an admin unlocks it.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Cancel</Button>
+            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={async () => { await handleSubmitFinal(); setConfirmOpen(false); }}>Confirm & Submit</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

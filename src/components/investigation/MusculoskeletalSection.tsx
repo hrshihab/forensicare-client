@@ -20,7 +20,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
     'ms_disease_variations',
     'fractures',
     'dislocations',
-    'detailed_pathology'
+    'pathology_description'
   ];
   
   const completedFields = requiredFields.filter(field => formData[field]).length;
@@ -154,19 +154,19 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
         <div className="space-y-3">
           {/* ৫ - বিস্তারিত রোগতত্ত্ব */}
           <div className="space-y-3 group">
-            <Label htmlFor="detailed_pathology" className="text-base font-semibold text-gray-700 group-hover:text-yellow-800 transition-colors">
+            <Label htmlFor="pathology_description" className="text-base font-semibold text-gray-700 group-hover:text-yellow-800 transition-colors">
               {t('investigation.musculoskeletal.detailed_pathology')} *
             </Label>
             <Textarea
-              id="detailed_pathology"
-              value={formData.detailed_pathology || ''}
-              onChange={(e) => onFieldChange('detailed_pathology', e.target.value)}
+              id="pathology_description"
+              value={formData.pathology_description || ''}
+              onChange={(e) => onFieldChange('pathology_description', e.target.value)}
               placeholder={language === 'bn' ? "বিস্তারিত রোগতত্ত্ব" : "Detailed pathology"}
               rows={3}
-              className={`${errors.detailed_pathology ? 'border-red-500' : 'border-yellow-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.pathology_description ? 'border-red-500' : 'border-yellow-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
-            {errors.detailed_pathology && (
-              <p className="text-sm text-red-600">{errors.detailed_pathology}</p>
+            {errors.pathology_description && (
+              <p className="text-sm text-red-600">{errors.pathology_description}</p>
             )}
           </div>
         </div>

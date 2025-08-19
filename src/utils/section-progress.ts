@@ -73,7 +73,10 @@ export const getSectionFields = (sectionId: SectionId): string[] => {
         'genital_organs',
       ];
     case 'musculoskeletal':
-      return ['ms_wounds', 'ms_disease_variations', 'fractures', 'dislocations'];
+      // Design 2 shows five inputs inside Musculoskeletal; the last one
+      // reuses the global detailed pathology field key (pathology_description)
+      // to keep a single source of truth in the persisted shape.
+      return ['ms_wounds', 'ms_disease_variations', 'fractures', 'dislocations', 'pathology_description'];
     case 'detailed_pathology':
       return ['pathology_description'];
     case 'opinions':

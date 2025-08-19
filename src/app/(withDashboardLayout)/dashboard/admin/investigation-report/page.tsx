@@ -3,12 +3,37 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Layout } from 'lucide-react';
 import Link from 'next/link';
-import { useGetLocalReportsQuery } from '@/redux/api/reportApis';
+import { useGetLocalReportsQuery, useUnlockLocalReportMutation } from '@/redux/api/reportApis';
+import useUserInfo from '@/hooks/useUserInfo';
+import { useGetUserInfoQuery } from '@/redux/api/getApis';
 
 export default function InvestigationReportsPage() {
   const { data: reports = [], isLoading, isError } = useGetLocalReportsQuery();
+  const [unlockReport] = useUnlockLocalReportMutation();
+  const userInfo = useUserInfo();
+  const rawUser = typeof window !== 'undefined' ? localStorage.getItem('userInfo') : null;
+  let storedUsername = '' as string;
+  try {
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      storedUsername = (parsed?.user?.username || parsed?.user?.userName || parsed?.user?.name || '').toString();
+    }
+  } catch {}
+  const isAdminName = (userInfo?.username?.toLowerCase?.() === 'admin') || (storedUsername.toLowerCase?.() === 'admin');
+  const { data: currentUserInfo } = useGetUserInfoQuery(Number((userInfo as any)?.userId || 0), { skip: !((userInfo as any)?.userId) });
+  const isSuperUser = Boolean((currentUserInfo as any)?.isSuperUser || (currentUserInfo as any)?.IsSuperUser || (JSON.parse(rawUser || '{}')?.user?.isSuperUser) || (JSON.parse(rawUser || '{}')?.user?.IsSuperUser));
+
+  const handleUnlock = async (id: string) => {
+    if (!(isAdminName || isSuperUser)) return;
+    try {
+      await unlockReport({ id }).unwrap();
+      alert('Editing unlocked for this report.');
+    } catch (e: any) {
+      alert(e?.data?.error || 'Unlock failed');
+    }
+  };
   return (
-    <div className="p-6">
+    <div className="p-6 overflow-x-hidden">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Investigation Reports</h1>
@@ -46,6 +71,7 @@ export default function InvestigationReportsPage() {
                   <th className="text-left px-3 py-2">Person</th>
                   <th className="text-left px-3 py-2">Case Type</th>
                   <th className="text-left px-3 py-2">Updated</th>
+                  <th className="text-left px-3 py-2">Status</th>
                   <th className="text-left px-3 py-2">Action</th>
                 </tr>
               </thead>
@@ -57,6 +83,13 @@ export default function InvestigationReportsPage() {
                     <td className="px-3 py-2">{r?.general?.person_name ?? '-'}</td>
                     <td className="px-3 py-2">{r?.header?.case_type ?? '-'}</td>
                     <td className="px-3 py-2">{r.updatedAt ?? '-'}</td>
+                    <td className="px-3 py-2">
+                      {r.locked ? (
+                        <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md text-xs">Locked</span>
+                      ) : (
+                        <span className="text-green-700 bg-green-100 px-2 py-0.5 rounded-md text-xs">Draft</span>
+                      )}
+                    </td>
                     <td className="px-3 py-2 space-x-3">
                       <Link className="text-blue-600 hover:underline" href={`/dashboard/admin/investigation-report/create?id=${r.id}`}>
                         Edit (Design 1)
@@ -64,6 +97,11 @@ export default function InvestigationReportsPage() {
                       <Link className="text-purple-600 hover:underline" href={`/dashboard/admin/investigation-report/create-design2?id=${r.id}`}>
                         Edit (Design 2)
                       </Link>
+                      {(isAdminName || isSuperUser) && r.locked && (
+                        <Button onClick={() => handleUnlock(r.id)} variant="outline" className="ml-2 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 h-7 px-2 text-xs">
+                          Allow Edit
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}

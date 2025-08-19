@@ -70,7 +70,8 @@ export const userLogin = async (data: FieldValues) => {
         userStatus: userData.userStatus || 'Active',
         employeeType: userData.employeeType,
         lineManager: userData.lineManager,
-        isAgency: userData.isAgency
+        isAgency: userData.isAgency,
+        isSuperUser: userData.isSuperUser ?? userData.IsSuperUser ?? false
       }
     };
     

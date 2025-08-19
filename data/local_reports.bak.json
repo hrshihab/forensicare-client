@@ -2,15 +2,15 @@
   {
     "id": "rpt_1755598383807_v40rrd",
     "createdAt": "2025-08-19T10:20:47.171Z",
-    "updatedAt": "2025-08-19T13:59:31.359Z",
+    "updatedAt": "2025-08-19T13:48:18.513Z",
     "status": "submitted",
-    "locked": false,
+    "locked": true,
     "lockedAt": "2025-08-19T13:48:18.513Z",
     "lockedBy": "admin",
     "submittedAt": "2025-08-19T13:48:18.513Z",
     "submittedBy": "admin",
     "createdBy": "admin",
-    "updatedBy": "rangerdev",
+    "updatedBy": "admin",
     "audit": [
       {
         "by": "admin",

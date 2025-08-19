@@ -71,7 +71,22 @@ function SidebarProvider({
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
+  const getInitialOpen = () => {
+    try {
+      if (typeof document !== "undefined") {
+        const cookie = document.cookie
+          .split(";")
+          .map((c) => c.trim())
+          .find((c) => c.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+        if (cookie) {
+          const v = cookie.split("=")[1]
+          if (v === "true" || v === "false") return v === "true"
+        }
+      }
+    } catch {}
+    return defaultOpen
+  }
+  const [_open, _setOpen] = React.useState(getInitialOpen)
   const open = openProp ?? _open
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
@@ -139,7 +154,7 @@ function SidebarProvider({
             } as React.CSSProperties
           }
           className={cn(
-            "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
+            "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full overflow-x-hidden",
             className
           )}
           {...props}
@@ -244,7 +259,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/80 group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className="bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/80 group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm text-[16px] leading-tight"
         >
           {children}
         </div>
@@ -474,7 +489,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-base outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 after:absolute after:inset-y-1 after:left-0 after:w-1 after:rounded-full after:bg-transparent data-[active=true]:after:bg-blue-500",
+  "peer/menu-button relative flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-[16px] outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state-open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 after:absolute after:inset-y-1 after:left-0 after:w-1 after:rounded-full after:bg-transparent data-[active=true]:after:bg-blue-500",
   {
     variants: {
       variant: {
@@ -483,9 +498,9 @@ const sidebarMenuButtonVariants = cva(
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
       },
       size: {
-        default: "h-9 text-base",
-        sm: "h-7 text-xs",
-        lg: "h-12 text-base group-data-[collapsible=icon]:p-0!",
+        default: "h-9 text-[16px]",
+        sm: "h-7 text-[16px]",
+        lg: "h-12 text-[16px] group-data-[collapsible=icon]:p-0!",
       },
     },
     defaultVariants: {
@@ -690,13 +705,16 @@ function SidebarMenuSubButton({
       data-size={size}
       data-active={isActive}
       className={cn(
-        // Button-like submenu items: border, background, hover/active/focus states
-        "text-sidebar-foreground ring-sidebar-ring flex h-9 min-w-0 items-center gap-2 overflow-hidden rounded-lg border border-sidebar-border bg-background px-3 outline-hidden focus-visible:ring-2 focus-visible:ring-blue-400/60 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground hover:border-sidebar-accent transition-all duration-200 cursor-pointer hover:shadow-sm",
+        // Submenu items styled like main items: left blue rail on active, not full fill
+        "text-sidebar-foreground ring-sidebar-ring relative flex h-9 min-w-0 items-center gap-2 overflow-hidden rounded-lg border border-transparent bg-transparent px-3 outline-hidden focus-visible:ring-2 focus-visible:ring-blue-400/60 focus-visible:border-sidebar-accent disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 text-[16px]",
+        "hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground transition-all duration-200 cursor-pointer hover:shadow-sm",
         "active:translate-y-px",
-        "data-[active=true]:bg-blue-600 data-[active=true]:text-white data-[active=true]:border-transparent data-[active=true]:shadow",
-        size === "sm" && "text-xs",
-        size === "md" && "text-sm",
+        // Left rail indicator
+        "after:absolute after:inset-y-1 after:left-0 after:w-1 after:rounded-full after:bg-transparent data-[active=true]:after:bg-blue-500",
+        // Subtle active emphasis
+        "data-[active=true]:text-blue-600 data-[active=true]:border-blue-200",
+        size === "sm" && "text-[16px]",
+        size === "md" && "text-[16px]",
         "group-data-[collapsible=icon]:hidden",
         className
       )}

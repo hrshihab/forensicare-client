@@ -1,5 +1,18 @@
 export interface InvestigationReport {
   id?: string;
+  // lifecycle
+  status?: 'draft' | 'submitted';
+  locked?: boolean;
+  lockedAt?: string;
+  lockedBy?: string;
+  lockReason?: string;
+  submittedAt?: string;
+  submittedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  audit?: { at: string; by: string; action: string }[];
   pm_no: string;
   thana_id: string;
   thana_text?: string;
@@ -87,10 +100,10 @@ export interface InvestigationReport {
   skip_status?: 'none' | 'optional_skipped' | 'required_skipped';
   skip_reason?: string;
   section_status?: 'done' | 'in_progress' | 'error' | 'skipped';
-  created_by?: string;
-  created_at?: string;
-  updated_by?: string;
-  updated_at?: string;
+  created_by?: string; // deprecated, use createdBy
+  created_at?: string; // deprecated, use createdAt
+  updated_by?: string; // deprecated, use updatedBy
+  updated_at?: string; // deprecated, use updatedAt
   version_no?: number;
 }
 

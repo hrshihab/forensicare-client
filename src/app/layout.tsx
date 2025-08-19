@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} ${anekBangla.variable}`}>
-      <body className={poppins.className}>
+      <body className={anekBangla.className}>
         <ReduxProvider>
           <LanguageProvider>
             <BanglaFontProvider>

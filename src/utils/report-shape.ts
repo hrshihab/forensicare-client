@@ -8,6 +8,16 @@ export function toNestedReport(flat: AnyRecord): AnyRecord {
     createdAt: flat.createdAt,
     updatedAt: flat.updatedAt,
     status: flat.status ?? 'draft',
+    // submission/lock metadata
+    locked: flat.locked ?? (flat.status === 'submitted'),
+    lockedAt: flat.lockedAt,
+    lockedBy: flat.lockedBy,
+    lockReason: flat.lockReason,
+    submittedAt: flat.submittedAt,
+    submittedBy: flat.submittedBy,
+    createdBy: flat.createdBy,
+    updatedBy: flat.updatedBy,
+    audit: Array.isArray(flat.audit) ? flat.audit : [],
     header: {
       thana_id: flat.thana_id,
       case_type: flat.case_type,
@@ -107,6 +117,16 @@ export function toFlatForm(nested: AnyRecord): AnyRecord {
     createdAt: nested.createdAt,
     updatedAt: nested.updatedAt,
     status: nested.status,
+    // submission/lock metadata
+    locked: nested.locked ?? (nested.status === 'submitted'),
+    lockedAt: nested.lockedAt,
+    lockedBy: nested.lockedBy,
+    lockReason: nested.lockReason,
+    submittedAt: nested.submittedAt,
+    submittedBy: nested.submittedBy,
+    createdBy: nested.createdBy,
+    updatedBy: nested.updatedBy,
+    audit: Array.isArray(nested.audit) ? nested.audit : [],
     // header
     thana_id: header.thana_id,
     case_type: header.case_type,

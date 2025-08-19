@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { ChevronRight, type LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -37,6 +38,8 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname();
+  const [activePath, setActivePath] = React.useState<string | null>(null);
+  React.useEffect(() => setActivePath(pathname), [pathname]);
 
   return (
     <SidebarGroup>
@@ -44,13 +47,13 @@ export function NavMain({
         {items.map((item) => {
           // Consider the root dashboard (e.g. /dashboard/admin) active only on exact match
           const isRootDashboard = /^\/dashboard\/[^/]+$/.test(item.url);
-          const isActive = isRootDashboard
-            ? pathname === item.url
-            : pathname === item.url || pathname.startsWith(item.url + '/');
-          const hasActiveSubItem = item.items?.some(subItem => pathname === subItem.url);
+          const isActive = !!(activePath && (isRootDashboard
+            ? activePath === item.url
+            : activePath === item.url || activePath.startsWith(item.url + '/')));
+          const hasActiveSubItem = !!(activePath && item.items?.some(subItem => activePath === subItem.url));
           
           return (
-            <Collapsible key={item.title} asChild defaultOpen={isActive || hasActiveSubItem}>
+            <Collapsible key={item.title} asChild defaultOpen={false}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
                   <Link href={item.url}>
@@ -69,7 +72,7 @@ export function NavMain({
                     <CollapsibleContent>
                       <SidebarMenuSub>
                         {item.items?.map((subItem) => {
-                          const isSubItemActive = pathname === subItem.url;
+                          const isSubItemActive = !!(activePath && activePath === subItem.url);
                           
                           return (
                             <SidebarMenuSubItem key={subItem.title}>

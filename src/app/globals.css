@@ -116,8 +116,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
+  html { overflow-x: hidden; }
 }
 
 .input {
@@ -201,10 +202,17 @@ input[placeholder*="ৎ"],
 input[placeholder*="ং"],
 input[placeholder*="ঃ"],
 input[placeholder*="ঁ"] {
-  font-family: var(--font-anek-bangla), var(--font-poppins), sans-serif !important;
+  font-family: var(--font-anek-bangla), sans-serif !important;
 }
 
 /* Anek Bangla font class for any element containing Bangla text */
 .font-bangla {
-  font-family: var(--font-anek-bangla), var(--font-poppins), sans-serif !important;
+  font-family: var(--font-anek-bangla), sans-serif !important;
 }
+
+/* Utility to hide horizontal scrollbar while allowing scroll */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }

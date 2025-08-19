@@ -44,6 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const role = getRole();
 
   React.useEffect(() => {
+    // Mark mounted once, but do not alter UI between SSR and CSR
     setMounted(true);
   }, []);
 
@@ -83,34 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [data.navMain, query]);
 
   // Don't render until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <Sidebar variant="inset" {...props}>
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <Link href={`/dashboard/${role}`}>
-                  <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                    <img src="/logo.png" alt="ForensiCare" width={36} height={36} />
-                  </div>
-                  <div className="grid flex-1 text-left text-2xl leading-tight">
-                    <span className="truncate font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">ForensiCare</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          {/* Loading state */}
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={data.user} />
-        </SidebarFooter>
-      </Sidebar>
-    );
-  }
+  // Always render the same structure during SSR and CSR to avoid hydration mismatches
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -131,15 +105,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {mounted ? (
-          <div className="px-2 pb-1">
-            <SidebarInput
-              placeholder="Search menu..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
-        ) : null}
+        <div className="px-2 pb-1">
+          <SidebarInput
+            placeholder="Search menu..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
         <NavMain items={filteredNavMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

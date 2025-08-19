@@ -48,7 +48,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
         icon={FileText}
         iconBgColor="bg-blue-100"
         iconColor="text-blue-600"
-        title={language === 'bn' ? 'হেডার তথ্য' : 'Header Information'}
+        title={language === 'bn' ? 'হেডিং তথ্য' : 'Header Information'}
         description={language === 'bn' ? 
           'মামলার প্রাথমিক তথ্য, থানা, মামলা নম্বর এবং তারিখসমূহ' : 
           'Primary case information, thana, case numbers, and dates'
@@ -102,7 +102,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             </Label>
             <div className="flex h-10">
               {/* Case Type Selection - 1/4 width */}
-              <div className="w-1/4">
+              <div className="w-2/6">
                 <Select
                   value={formData.case_type || 'none'}
                   onValueChange={(value) => onFieldChange('case_type', value)}
@@ -121,7 +121,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               </div>
               
               {/* Case Number Input - 3/4 width */}
-              <div className="w-3/4">
+              <div className="w-4/6">
                 <Input
                   id="gd_cid_case_no"
                   value={formData.gd_cid_case_no || ''}

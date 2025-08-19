@@ -148,7 +148,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               id="neck_marks"
               value={formData.neck_marks || ''}
               onChange={(e) => onFieldChange('neck_marks', e.target.value)}
-              placeholder={language === 'bn' ? "গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টর চিহ্ন ইত্যাদি" : "Neck marks found during dissection, etc."}
+              placeholder={language === 'bn' ? "গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টির চিহ্ন ইত্যাদি" : "Neck marks found during dissection, etc."}
               rows={4}
               className={`${errors.neck_marks ? 'border-red-500' : 'border-gray-300'} 
                 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 resize-none`}

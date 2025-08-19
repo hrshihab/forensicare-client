@@ -23,10 +23,26 @@ export const reportApis = localApi.injectEndpoints({
       }),
       invalidatesTags: ['local'],
     }),
+    submitLocalReport: builder.mutation<any, any>({
+      query: (data) => ({
+        url: '/api/reports/local',
+        method: 'POST',
+        body: { ...data, action: 'submit' },
+      }),
+      invalidatesTags: ['local'],
+    }),
+    unlockLocalReport: builder.mutation<any, { id: string; reason?: string }>({
+      query: ({ id, reason }) => ({
+        url: '/api/reports/local',
+        method: 'POST',
+        body: { id, action: 'unlock', lockReason: reason },
+      }),
+      invalidatesTags: ['local'],
+    }),
   }),
   overrideExisting: true,
 })
 
-export const { useGetLocalReportsQuery, useGetLocalReportByIdQuery, useSaveLocalReportMutation } = reportApis
+export const { useGetLocalReportsQuery, useGetLocalReportByIdQuery, useSaveLocalReportMutation, useSubmitLocalReportMutation, useUnlockLocalReportMutation } = reportApis
 
 
