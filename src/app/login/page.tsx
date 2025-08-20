@@ -25,6 +25,7 @@ export default function LoginPage({
   const [password, setPassword] = useState("password1")
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const [selectedDemo, setSelectedDemo] = useState<"admin" | "rangerdev" | null>("admin")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,6 +71,42 @@ export default function LoginPage({
           </div>
         </CardHeader>
         <CardContent>
+          {/* Demo user quick-fill buttons */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                setUsername("admin")
+                setPassword("password1")
+                setSelectedDemo("admin")
+              }}
+              className={cn(
+                "px-3 py-1 rounded-md border",
+                selectedDemo === "admin"
+                  ? "bg-blue-600 text-white border-blue-700"
+                  : "bg-white text-blue-600 border-blue-200"
+              )}
+            >
+              Admin
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setUsername("rangerdev")
+                setPassword("1")
+                setSelectedDemo("rangerdev")
+              }}
+              className={cn(
+                "px-3 py-1 rounded-md border",
+                selectedDemo === "rangerdev"
+                  ? "bg-blue-600 text-white border-blue-700"
+                  : "bg-white text-blue-600 border-blue-200"
+              )}
+            >
+              Rangerdev
+            </button>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
@@ -127,7 +164,6 @@ export default function LoginPage({
               </Button>
               
               <div className="text-center text-sm text-gray-500">
-                <p>✅ Demo credentials auto-filled for fast development</p>
                   <p className="text-xs text-green-600">Username: admin | Password: password1</p>
               </div>
             </div>

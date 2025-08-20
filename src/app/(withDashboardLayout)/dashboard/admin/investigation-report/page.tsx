@@ -55,7 +55,7 @@ export default function InvestigationReportsPage() {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-white rounded-xl shadow-sm border p-6">
         {isLoading && <p className="text-gray-500 text-center">Loading...</p>}
         {isError && <p className="text-red-500 text-center">Failed to load reports</p>}
         {!isLoading && Array.isArray(reports) && reports.length === 0 && (
@@ -66,36 +66,45 @@ export default function InvestigationReportsPage() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="text-left px-3 py-2">ID</th>
-                  <th className="text-left px-3 py-2">PM No</th>
-                  <th className="text-left px-3 py-2">Person</th>
-                  <th className="text-left px-3 py-2">Case Type</th>
-                  <th className="text-left px-3 py-2">Updated</th>
-                  <th className="text-left px-3 py-2">Status</th>
-                  <th className="text-left px-3 py-2">Action</th>
+                  <th className="text-left px-4 py-3">ID</th>
+                  <th className="text-left px-4 py-3">PM No</th>
+                  <th className="text-left px-4 py-3">Person</th>
+                  <th className="text-left px-4 py-3">Case Type</th>
+                  <th className="text-left px-4 py-3">Updated</th>
+                  <th className="text-left px-4 py-3">Status</th>
+                  <th className="text-left px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {reports.slice(0).reverse().map((r: any) => (
-                  <tr key={r.id} className="border-t">
-                    <td className="px-3 py-2">{r.id}</td>
-                    <td className="px-3 py-2">{r?.header?.pm_no ?? '-'}</td>
-                    <td className="px-3 py-2">{r?.general?.person_name ?? '-'}</td>
-                    <td className="px-3 py-2">{r?.header?.case_type ?? '-'}</td>
-                    <td className="px-3 py-2">{r.updatedAt ?? '-'}</td>
-                    <td className="px-3 py-2">
+                  <tr key={r.id} className="border-t hover:bg-gray-50/60 transition-colors">
+                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{r.id}</td>
+                    <td className="px-4 py-3">{r?.header?.pm_no ?? '-'}</td>
+                    <td className="px-4 py-3">{r?.general?.person_name ?? '-'}</td>
+                    <td className="px-4 py-3">{r?.header?.case_type ?? '-'}</td>
+                    <td className="px-4 py-3">{r.updatedAt ?? '-'}</td>
+                    <td className="px-4 py-3">
                       {r.locked ? (
-                        <span className="text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md text-xs">Locked</span>
+                        <span className="inline-flex items-center rounded-full bg-amber-100 text-amber-800 px-2.5 py-0.5 text-xs font-medium">Locked</span>
                       ) : (
-                        <span className="text-green-700 bg-green-100 px-2 py-0.5 rounded-md text-xs">Draft</span>
+                        <span className="inline-flex items-center rounded-full bg-green-100 text-green-800 px-2.5 py-0.5 text-xs font-medium">Draft</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 space-x-3">
-                      <Link className="text-blue-600 hover:underline" href={`/dashboard/admin/investigation-report/create?id=${r.id}`}>
-                        Edit (Design 1)
+                    <td className="px-4 py-3 space-x-2 whitespace-nowrap">
+                      <Link className="text-blue-600 hover:underline" href={`/dashboard/admin/investigation-report/${r.id}`}>
+                        View
                       </Link>
+                      <span className="text-gray-300">|</span>
                       <Link className="text-purple-600 hover:underline" href={`/dashboard/admin/investigation-report/create-design2?id=${r.id}`}>
-                        Edit (Design 2)
+                        Edit D2
+                      </Link>
+                      <span className="text-gray-300">|</span>
+                      <Link className="text-sky-600 hover:underline" href={`/dashboard/admin/investigation-report/create?id=${r.id}`}>
+                        Edit D1
+                      </Link>
+                      <span className="text-gray-300">|</span>
+                      <Link className="text-amber-700 hover:underline" href={`/dashboard/admin/investigation-report/${r.id}/logs`}>
+                        Logs
                       </Link>
                       {(isAdminName || isSuperUser) && r.locked && (
                         <Button onClick={() => handleUnlock(r.id)} variant="outline" className="ml-2 border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 h-7 px-2 text-xs">

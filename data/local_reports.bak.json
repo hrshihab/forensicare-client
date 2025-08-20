@@ -1,101 +1,50 @@
 [
   {
-    "id": "rpt_1755598383807_v40rrd",
-    "createdAt": "2025-08-19T10:20:47.171Z",
-    "updatedAt": "2025-08-19T13:48:18.513Z",
-    "status": "submitted",
-    "locked": true,
-    "lockedAt": "2025-08-19T13:48:18.513Z",
-    "lockedBy": "admin",
-    "submittedAt": "2025-08-19T13:48:18.513Z",
-    "submittedBy": "admin",
-    "createdBy": "admin",
-    "updatedBy": "admin",
+    "id": "rpt_1755679313095_skx01h",
+    "createdAt": "2025-08-20T08:42:40.535Z",
+    "updatedAt": "2025-08-20T08:43:08.811Z",
+    "status": "draft",
+    "locked": false,
+    "createdBy": "rangerdev",
+    "updatedBy": "rangerdev",
     "audit": [
       {
-        "by": "admin",
+        "by": "rangerdev",
         "actions": [
           {
-            "at": "2025-08-19T13:48:09.018Z",
+            "at": "2025-08-20T08:43:08.811Z",
             "fields": [
-              "header.thana_id",
               "header.case_type",
-              "header.gd_cid_case_no",
-              "header.ref_date",
-              "header.pm_no",
-              "header.report_date",
               "header.station",
-              "general.person_name",
-              "general.gender",
-              "general.age_years",
-              "general.brought_from_village",
-              "general.brought_from_thana",
-              "general.constable_name",
-              "general.relatives_names",
-              "general.sent_datetime",
-              "general.brought_datetime",
-              "general.exam_datetime",
-              "general.police_info",
-              "general.identifier_name",
               "external_signs.physique_state",
               "external_signs.wounds_desc",
               "external_signs.injuries_desc",
               "external_signs.neck_marks",
-              "head_spine.scalp",
-              "head_spine.skull",
-              "head_spine.vertebrae",
-              "head_spine.meninges",
-              "head_spine.brain",
-              "head_spine.spinal_cord",
-              "abdomen.abdominal_general"
+              "general.person_name",
+              "chest_lungs.ribs_cartilage"
             ]
           }
         ]
       }
     ],
     "header": {
-      "thana_id": "Ramna",
-      "case_type": "GD",
-      "gd_cid_case_no": "23599",
-      "ref_date": "2025-08-17",
-      "pm_no": "2347",
-      "report_date": "2025-08-18",
+      "case_type": "none",
       "station": "DMC MORGUE"
     },
     "general": {
-      "person_name": "সাকিব মাসু",
-      "gender": "male",
-      "age_years": "25",
-      "brought_from_village": "Uttara 10",
-      "brought_from_thana": "Uttara",
-      "constable_name": "Rabi",
-      "relatives_names": [
-        "Haris"
-      ],
-      "sent_datetime": "2025-08-18T16:19",
-      "brought_datetime": "2025-08-18T17:19",
-      "exam_datetime": "2025-08-19T17:20",
-      "police_info": "Valo",
-      "identifier_name": "Shihab"
+      "person_name": "sdf"
     },
     "external_signs": {
-      "physique_state": "Bolban",
-      "wounds_desc": "Intac",
-      "injuries_desc": "Intact",
-      "neck_marks": "Intact sad"
+      "physique_state": "adsf",
+      "wounds_desc": "sdf",
+      "injuries_desc": "asdf",
+      "neck_marks": "asdf"
     },
-    "head_spine": {
-      "scalp": "Intact",
-      "skull": "Intact",
-      "vertebrae": "Intact",
-      "meninges": "Intact",
-      "brain": "Intact",
-      "spinal_cord": "Intact "
+    "head_spine": {},
+    "chest_lungs": {
+      "ribs_cartilage": "s"
     },
-    "chest_lungs": {},
-    "abdomen": {
-      "abdominal_general": "Intac"
-    },
+    "abdomen": {},
     "musculoskeletal": {},
     "detailed_pathology": {},
     "opinions": {}
