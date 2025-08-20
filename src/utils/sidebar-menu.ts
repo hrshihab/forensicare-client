@@ -88,6 +88,14 @@ import {
             { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates`, icon: FileText },
           ],
         },
+        {
+          title: "Medical Exam",
+          url: `/dashboard/${role}/medical-exam`,
+          icon: ClipboardList,
+          items: [
+            { title: "Create (Design 2)", url: `/dashboard/${role}/medical-exam/create-design2`, icon: ClipboardList },
+          ],
+        },
         // {
         //   title: "Reports",
         //   url: `/dashboard/${role}/reports`,
