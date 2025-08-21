@@ -16,7 +16,8 @@ export type MedSectionId =
 export const getMedSectionFields = (id: MedSectionId): string[] => {
   switch (id) {
     case 'header_facility':
-      return ['memo_no','date','source_thana','case_type','case_no','institution_name','institution_address'];
+      // Do not count fixed institution fields towards progress
+      return ['memo_no','date','source_thana','case_type','case_no'];
     case 'identity':
       return ['victim_name','age_years','gender','religion','occupation','guardian_name','address'];
     case 'consent':

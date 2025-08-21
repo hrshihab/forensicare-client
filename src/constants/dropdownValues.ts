@@ -33,7 +33,8 @@ export const CASE_TYPE_OPTIONS: DropdownOption[] = [
   { value: 'none', label_bn: 'কোনটি নয়', label_en: 'None' },
   { value: 'GD', label_bn: 'জিডি', label_en: 'GD' },
   { value: 'CID', label_bn: 'সিআইডি', label_en: 'CID' },
-  { value: 'CASE', label_bn: 'মামলা', label_en: 'Case' }
+  { value: 'CASE', label_bn: 'মামলা', label_en: 'Case' },
+  { value: 'Others', label_bn: 'অন্যান্য', label_en: 'Others' }
 ];
 
 // Helper function to get localized label based on current language

@@ -1,26 +1,32 @@
 [
   {
-    "id": "rpt_1755679313095_skx01h",
-    "createdAt": "2025-08-20T08:42:40.535Z",
-    "updatedAt": "2025-08-20T08:43:08.849Z",
+    "id": "rpt_1755772020952_uj7dtv",
+    "createdAt": "2025-08-21T10:30:35.875Z",
+    "updatedAt": "2025-08-21T10:38:37.377Z",
     "status": "draft",
     "locked": false,
-    "createdBy": "rangerdev",
-    "updatedBy": "rangerdev",
+    "createdBy": "admin",
+    "updatedBy": "admin",
     "audit": [
       {
-        "by": "rangerdev",
+        "by": "admin",
         "actions": [
           {
-            "at": "2025-08-20T08:43:08.849Z",
+            "at": "2025-08-21T10:30:38.769Z",
             "fields": [
               "header.case_type",
               "header.station",
+              "musculoskeletal.ms_wounds",
+              "musculoskeletal.ms_disease_variations",
+              "musculoskeletal.fractures",
+              "musculoskeletal.dislocations",
+              "detailed_pathology.pathology_description"
+            ]
+          },
+          {
+            "at": "2025-08-21T10:38:37.377Z",
+            "fields": [
               "external_signs.physique_state",
-              "external_signs.wounds_desc",
-              "external_signs.injuries_desc",
-              "external_signs.neck_marks",
-              "general.person_name",
               "chest_lungs.ribs_cartilage"
             ]
           }
@@ -31,22 +37,24 @@
       "case_type": "none",
       "station": "DMC MORGUE"
     },
-    "general": {
-      "person_name": "sdf"
-    },
+    "general": {},
     "external_signs": {
-      "physique_state": "adsf",
-      "wounds_desc": "sdf",
-      "injuries_desc": "asdf",
-      "neck_marks": "asdf"
+      "physique_state": "v"
     },
     "head_spine": {},
     "chest_lungs": {
-      "ribs_cartilage": "sd"
+      "ribs_cartilage": "c"
     },
     "abdomen": {},
-    "musculoskeletal": {},
-    "detailed_pathology": {},
+    "musculoskeletal": {
+      "ms_wounds": "ea",
+      "ms_disease_variations": "sdf",
+      "fractures": "sf",
+      "dislocations": "asdf"
+    },
+    "detailed_pathology": {
+      "pathology_description": "asdf"
+    },
     "opinions": {}
   }
 ]

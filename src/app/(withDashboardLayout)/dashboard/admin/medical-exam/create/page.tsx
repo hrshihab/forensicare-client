@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Save } from 'lucide-react';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { useToast } from '@/components/ui/use-toast';
+import HeaderFacilitySection from '@/components/medical-exam/HeaderFacilitySection';
 
 type FormState = Record<string, any>;
 
@@ -32,7 +33,7 @@ function CreateMedicalExamInner() {
     memo_no: '',
     date: '',
     source_thana: '',
-    case_type: 'GD',
+    case_type: 'none',
     case_no: '',
     institution_name: 'ফরেনসিক মেডিসিন বিভাগ',
     institution_address: 'ঢাকা মেডিকেল কলেজ, ঢাকা',
@@ -149,37 +150,7 @@ function CreateMedicalExamInner() {
 
       {/* Section A+B — Case Header + Facility */}
       <Section titleBn="কেস হেডার ও প্রতিষ্ঠান" titleEn="Case Header & Facility">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Labeled id="memo_no" labelBn="স্বারক নং" labelEn="Memo No">
-            <Input id="memo_no" value={formData.memo_no} onChange={(e) => onChange('memo_no', e.target.value)} />
-          </Labeled>
-          <Labeled id="date" labelBn="তারিখ" labelEn="Date">
-            <Input id="date" type="date" value={formData.date} onChange={(e) => onChange('date', e.target.value)} />
-          </Labeled>
-          <div className="grid grid-cols-3 gap-2">
-            <Labeled id="source_thana" labelBn="থানা" labelEn="Thana">
-              <Input id="source_thana" value={formData.source_thana} onChange={(e) => onChange('source_thana', e.target.value)} />
-            </Labeled>
-            <Labeled id="case_type" labelBn="কেস টাইপ" labelEn="Case Type">
-              <select id="case_type" className="border rounded-md h-10 px-2" value={formData.case_type} onChange={(e) => onChange('case_type', e.target.value)}>
-                <option value="GD">GD</option>
-                <option value="Case">Case</option>
-                <option value="Others">Others</option>
-              </select>
-            </Labeled>
-            <Labeled id="case_no" labelBn="নং" labelEn="No">
-              <Input id="case_no" value={formData.case_no} onChange={(e) => onChange('case_no', e.target.value)} />
-            </Labeled>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <Labeled id="institution_name" labelBn="প্রতিষ্ঠানের নাম" labelEn="Institution Name">
-            <Input id="institution_name" value={formData.institution_name} onChange={(e) => onChange('institution_name', e.target.value)} />
-          </Labeled>
-          <Labeled id="institution_address" labelBn="ঠিকানা" labelEn="Address">
-            <Input id="institution_address" value={formData.institution_address} onChange={(e) => onChange('institution_address', e.target.value)} />
-          </Labeled>
-        </div>
+        <HeaderFacilitySection formData={formData} onFieldChange={onChange} />
       </Section>
 
       {/* Section C — Victim Identity */}
