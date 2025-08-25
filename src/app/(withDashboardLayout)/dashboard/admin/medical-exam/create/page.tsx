@@ -37,14 +37,15 @@ function CreateMedicalExamInner() {
     case_no: '',
     institution_name: 'ফরেনসিক মেডিসিন বিভাগ',
     institution_address: 'ঢাকা মেডিকেল কলেজ, ঢাকা',
-    // C — Victim Identity
-    victim_name: '',
-    age_years: '',
-    gender: 'male',
-    religion: '',
-    occupation: '',
-    guardian_name: '',
-    address: '',
+         // C — Victim Identity
+     victim_name: '',
+     age_years: '',
+     gender: 'male',
+     religion: '',
+     occupation: '',
+     guardian_type: 'father',
+     guardian_name: '',
+     address: '',
     // D — Consent & Attestation
     identifier_details: '',
     consent_given: false,
@@ -155,7 +156,8 @@ function CreateMedicalExamInner() {
 
       {/* Section C — Victim Identity */}
       <Section titleBn="ভিকটিম পরিচিতি" titleEn="Victim Identity">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* First Row: Name, Age, Sex */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <Labeled id="victim_name" labelBn="ভিকটিমের নাম" labelEn="Victim Name"><Input id="victim_name" value={formData.victim_name} onChange={(e) => onChange('victim_name', e.target.value)} /></Labeled>
           <Labeled id="age_years" labelBn="বয়স (ভাষ্য মতে)" labelEn="Age (as stated)"><Input id="age_years" type="number" value={formData.age_years} onChange={(e) => onChange('age_years', e.target.value)} /></Labeled>
           <Labeled id="gender" labelBn="লিঙ্গ" labelEn="Gender">
@@ -165,11 +167,37 @@ function CreateMedicalExamInner() {
               ))}
             </div>
           </Labeled>
+        </div>
+        {/* Second Row: Religion, Occupation, Guardian Type + Name */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <Labeled id="religion" labelBn="ধর্ম" labelEn="Religion"><Input id="religion" value={formData.religion} onChange={(e) => onChange('religion', e.target.value)} /></Labeled>
           <Labeled id="occupation" labelBn="পেশা" labelEn="Occupation"><Input id="occupation" value={formData.occupation} onChange={(e) => onChange('occupation', e.target.value)} /></Labeled>
-          <Labeled id="guardian_name" labelBn="পিতা/মাতা/স্বামী" labelEn="Father/Mother/Spouse"><Input id="guardian_name" value={formData.guardian_name} onChange={(e) => onChange('guardian_name', e.target.value)} /></Labeled>
+          <div className="space-y-2">
+            <Label className="text-sm font-semibold text-gray-700">{language === 'bn' ? 'সম্পর্কের ধরন' : 'Relationship Type'}</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <select 
+                value={formData.guardian_type || 'father'} 
+                onChange={(e) => onChange('guardian_type', e.target.value)}
+                className="h-10 text-base rounded-lg bg-white border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+              >
+                <option value="father">{language === 'bn' ? 'পিতা' : 'Father'}</option>
+                <option value="mother">{language === 'bn' ? 'মাতা' : 'Mother'}</option>
+                <option value="husband">{language === 'bn' ? 'স্বামী' : 'Husband'}</option>
+              </select>
+              <Input 
+                id="guardian_name" 
+                value={formData.guardian_name || ''} 
+                onChange={(e) => onChange('guardian_name', e.target.value)}
+                placeholder={language === 'bn' ? 'নাম লিখুন' : 'Enter name'}
+                className="h-10 text-base rounded-lg bg-white border-gray-300 placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200"
+              />
+            </div>
+          </div>
         </div>
-        <Labeled id="address" labelBn="ঠিকানা" labelEn="Address"><Textarea id="address" value={formData.address} onChange={(e) => onChange('address', e.target.value)} /></Labeled>
+        {/* Third Row: Address */}
+        <div className="mb-4">
+          <Labeled id="address" labelBn="ঠিকানা" labelEn="Address"><Textarea id="address" value={formData.address} onChange={(e) => onChange('address', e.target.value)} /></Labeled>
+        </div>
       </Section>
 
       {/* Section D — Consent */}

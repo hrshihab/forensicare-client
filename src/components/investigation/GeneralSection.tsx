@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,56 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
   const { genderOptions, getLabel } = useDropdownValues();
   const [newBroughtBy, setNewBroughtBy] = useState('');
   const [newRelativeName, setNewRelativeName] = useState('');
+
+	// Default value for police_info based on current language
+	const defaultPoliceInfo = language === 'bn'
+		? 'সুরতহাল ও চালান'
+		: 'As per inquest report and challan';
+
+	// Default value for identifier_name based on current language
+	const defaultIdentifierName = language === 'bn'
+		? 'উল্লেখিত কলাম ৩'
+		: 'As per column 3';
+
+	// Keep track of the previously-used default to decide if we should switch on language change
+	const lastDefaultPoliceInfoRef = useRef<string>(defaultPoliceInfo);
+	const lastDefaultIdentifierNameRef = useRef<string>(defaultIdentifierName);
+
+	// Initialize or update police_info with default text when appropriate
+	useEffect(() => {
+		const currentValue = (formData.police_info ?? '').trim();
+		const previousDefault = lastDefaultPoliceInfoRef.current;
+		const newDefault = defaultPoliceInfo;
+
+		const isEmpty = currentValue === '';
+		const isCurrentlyUsingPrevDefault = currentValue === previousDefault;
+
+		// If empty, or still equal to the previous default, switch to the new language default
+		if (isEmpty || isCurrentlyUsingPrevDefault) {
+			onFieldChange('police_info', newDefault);
+		}
+
+		// Update ref for next comparison
+		lastDefaultPoliceInfoRef.current = newDefault;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [language]);
+
+	// Initialize or update identifier_name with default text when appropriate
+	useEffect(() => {
+		const currentValue = (formData.identifier_name ?? '').trim();
+		const previousDefault = lastDefaultIdentifierNameRef.current;
+		const newDefault = defaultIdentifierName;
+
+		const isEmpty = currentValue === '';
+		const isCurrentlyUsingPrevDefault = currentValue === previousDefault;
+
+		if (isEmpty || isCurrentlyUsingPrevDefault) {
+			onFieldChange('identifier_name', newDefault);
+		}
+
+		lastDefaultIdentifierNameRef.current = newDefault;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [language]);
 
   // Calculate completion via shared util (DRY)
   const { completed: completedFields, total: totalFieldsCount } = computeSectionProgress('general', formData as any, { newRelativeName });
@@ -98,7 +148,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 					<User className="h-4 w-4 text-blue-600" />
 				</span>
 				<h4 className="text-base font-semibold text-gray-800">
-					{language === 'bn' ? 'মৌলিক তথ্য' : 'Basic Information'}
+					{language === 'bn' ? 'সাধারণ তথ্য' : 'General Information'}
 				</h4>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -187,7 +237,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 					<MapPin className="h-4 w-4 text-emerald-600" />
 				</span>
 				<h4 className="text-base font-semibold text-gray-800">
-					{language === 'bn' ? 'কোন স্থান হতে আনা হইয়াছে' : 'Brought from which Location'}
+					{language === 'bn' ? 'কোথা হইতে আনা হইয়াছে' : 'Brought from which Location'}
 				</h4>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -241,12 +291,12 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
         {/* Constable Name - যে কনস্টাবল কর্তৃক আনা হইয়াছে - 1/2 width */}
         <div className="md:col-span-2 space-y-2">
           <Label className="text-base font-medium font-bangla">
-            {language === 'bn' ? "যে কনস্টাবল কর্তৃক আনা হইয়াছে" : "Constable who brought the body"} *
+            {language === 'bn' ? "যে কনস্ট্যাবল কর্তৃক আনা হইয়াছে" : "Constable who brought the body"} *
           </Label>
           <Input
             value={formData.constable_name || ''}
             onChange={(e) => onFieldChange('constable_name', e.target.value)}
-            placeholder={language === 'bn' ? "কনস্টাবলের নাম" : "Constable name"}
+            placeholder={language === 'bn' ? "কনস্ট্যাবলের নাম" : "Constable name"}
             className={`h-10 ${errors.constable_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.constable_name && (
@@ -285,7 +335,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
                 onChange={(e) => setNewRelativeName(e.target.value)}
                 onKeyPress={handleRelativeKeyPress}
                 onBlur={handleAddRelative}
-                placeholder={language === 'bn' ? "আত্মীয়ের নাম" : "Relative name"}
+                placeholder={language === 'bn' ? "আত্মীয়-স্বজনের নামসমূহ" : "Relative names"}
                 className="flex-1 h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
               />
               <Button
@@ -381,6 +431,24 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+			{/* Police Information - 1/2 width */}
+			<div className="space-y-2">
+					<Label htmlFor="police_info" className="text-base font-medium font-bangla">
+						{t('investigation.general.police_info')} *
+					</Label>
+					<Textarea
+						id="police_info"
+						value={formData.police_info || ''}
+						onChange={(e) => onFieldChange('police_info', e.target.value)}
+						placeholder={language === 'bn' ? "পুলিশের দেওয়া তথ্য লিখুন" : "Enter police information"}
+						rows={1}
+						className={`${errors.police_info ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+					/>
+					{errors.police_info && (
+						<p className="text-sm text-red-600">{errors.police_info}</p>
+					)}
+				</div>
+
         	{/* Identifier Name - 1/2 width */}
 				<div className="space-y-2">
 					<Label htmlFor="identifier_name" className="text-base font-medium font-bangla">
@@ -398,23 +466,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 					)}
 				</div>
 
-				{/* Police Information - 1/2 width */}
-				<div className="space-y-2">
-					<Label htmlFor="police_info" className="text-base font-medium font-bangla">
-						{t('investigation.general.police_info')} *
-					</Label>
-					<Textarea
-						id="police_info"
-						value={formData.police_info || ''}
-						onChange={(e) => onFieldChange('police_info', e.target.value)}
-						placeholder={language === 'bn' ? "পুলিশের দেওয়া তথ্য লিখুন" : "Enter police information"}
-						rows={3}
-						className={`${errors.police_info ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
-					/>
-					{errors.police_info && (
-						<p className="text-sm text-red-600">{errors.police_info}</p>
-					)}
-				</div>
+				
 
 			
 			</div>

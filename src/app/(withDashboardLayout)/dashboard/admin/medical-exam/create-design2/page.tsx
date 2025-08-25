@@ -7,7 +7,6 @@ import { Save, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import HeaderFacilitySection from '@/components/medical-exam/HeaderFacilitySection';
-import IdentitySection from '@/components/medical-exam/IdentitySection';
 import ConsentSection from '@/components/medical-exam/ConsentSection';
 import LogisticsSection from '@/components/medical-exam/LogisticsSection';
 import NarrativeSection from '@/components/medical-exam/NarrativeSection';
@@ -23,7 +22,6 @@ import { FileText, User, CheckSquare, Clock, AlignLeft, Activity, Shield, Heart,
 
 const tabs: { id: MedSectionId; labelBn: string; labelEn: string }[] = [
   { id: 'header_facility', labelBn: 'হেডার/প্রতিষ্ঠান', labelEn: 'Header/Facility' },
-  { id: 'identity', labelBn: 'পরিচিতি', labelEn: 'Identity' },
   { id: 'consent', labelBn: 'সম্মতি', labelEn: 'Consent' },
   { id: 'logistics', labelBn: 'সময়সূচি', labelEn: 'Logistics' },
   { id: 'narrative', labelBn: 'ঘটনা', labelEn: 'Narrative' },
@@ -73,7 +71,6 @@ function Inner() {
     const common = { formData, onFieldChange } as any;
     switch (activeTab) {
       case 'header_facility': return <HeaderFacilitySection {...common} />;
-      case 'identity': return <IdentitySection {...common} />;
       case 'consent': return <ConsentSection {...common} />;
       case 'logistics': return <LogisticsSection {...common} />;
       case 'narrative': return <NarrativeSection {...common} />;
@@ -138,7 +135,6 @@ function Inner() {
             const title = language==='bn'?label?.labelBn:label?.labelEn;
             const icons: Partial<Record<MedSectionId, any>> = {
               header_facility: FileText,
-              identity: User,
               consent: CheckSquare,
               logistics: Clock,
               narrative: AlignLeft,

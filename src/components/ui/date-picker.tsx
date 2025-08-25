@@ -51,23 +51,18 @@ export function DatePicker({
   }
 
   return (
-    <div className="relative">
-      <div className="relative">
-        <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none z-10" />
-        <Input
-          type="date"
-          id={id}
-          value={displayValue}
-          onChange={handleDateChange}
-          disabled={disabled}
-          className={cn(
-            "pl-10 h-11 text-base border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200",
-            className
-          )}
-          placeholder={placeholder}
-          {...props}
-        />
-      </div>
-    </div>
+    <Input
+      type="date"
+      id={id}
+      value={displayValue}
+      onChange={handleDateChange}
+      disabled={disabled}
+      className={cn(
+        "pl-3 h-11 text-base border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-left",
+        className
+      )}
+      placeholder={placeholder}
+      {...props}
+    />
   )
 }
