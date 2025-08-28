@@ -85,6 +85,7 @@ import {
             { title: "Create Report", url: `/dashboard/${role}/investigation-report/create`, icon: ClipboardCheck },
             { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2`, icon: ClipboardCheck },
             { title: "All Reports", url: `/dashboard/${role}/investigation-report`, icon: ClipboardList },
+            { title: "Local (JSON) Reports", url: `/dashboard/${role}/investigation-report/local`, icon: ClipboardList },
             { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates`, icon: FileText },
           ],
         },

@@ -19,9 +19,10 @@ import ExaminerSection from '@/components/medical-exam/ExaminerSection';
 import { computeMedSectionProgress, MedSectionId } from '@/utils/medical-exam-progress';
 import SectionHeader from '@/components/ui/section-header';
 import { FileText, User, CheckSquare, Clock, AlignLeft, Activity, Shield, Heart, Search } from 'lucide-react';
+import { useHeaderFacility } from '@/hooks/useHeaderFacility';
 
 const tabs: { id: MedSectionId; labelBn: string; labelEn: string }[] = [
-  { id: 'header_facility', labelBn: 'হেডার/প্রতিষ্ঠান', labelEn: 'Header/Facility' },
+  { id: 'header_facility', labelBn: 'হেডার ও প্রতিষ্ঠান তথ্য', labelEn: 'Header & Institution Data' },
   { id: 'consent', labelBn: 'সম্মতি', labelEn: 'Consent' },
   { id: 'logistics', labelBn: 'সময়সূচি', labelEn: 'Logistics' },
   { id: 'narrative', labelBn: 'ঘটনা', labelEn: 'Narrative' },
@@ -41,6 +42,19 @@ function Inner() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [formData, setFormData] = useState<Record<string, any>>({ institution_name: 'ফরেনসিক মেডিসিন বিভাগ', institution_address: 'ঢাকা মেডিকেল কলেজ, ঢাকা' });
+  const [isClient, setIsClient] = useState(false);
+  
+  // Get header facility data from Redux
+  const { data: headerFacilityData, loadFromStorage } = useHeaderFacility();
+
+  // Load data from storage on mount
+  useEffect(() => {
+    loadFromStorage();
+  }, []);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const updateScrollState = () => {
     const el = tabsScrollRef.current; if (!el) return;
@@ -65,22 +79,71 @@ function Inner() {
   }, []);
 
   const onFieldChange = (field: string, value: any) => setFormData(prev => ({ ...prev, [field]: value }));
-  const saveDraft = () => { localStorage.setItem('medicalExamFormData_v2', JSON.stringify(formData)); toast({ title: language==='bn'?'খসড়া সংরক্ষিত':'Draft saved', description: language==='bn'?'ডেটা সংরক্ষণ করা হয়েছে':'Your data has been saved.' }); };
+  
+  const saveDraft = () => {
+    // Save both local form data and Redux header facility data
+    localStorage.setItem('medicalExamFormData_v2', JSON.stringify(formData));
+    localStorage.setItem('headerFacilityData', JSON.stringify(headerFacilityData));
+    toast({ title: language==='bn'?'খসড়া সংরক্ষিত':'Draft saved', description: language==='bn'?'ডেটা সংরক্ষণ করা হয়েছে':'Your data has been saved.' });
+  };
+
+  const saveLocalJson = async () => {
+    const id = headerFacilityData?.id || `${Date.now()}`;
+    const flat = {
+      id,
+      // Map fields from headerFacilityData into the API flat shape (minimal header/general)
+      thana_id: headerFacilityData.source_thana || '',
+      case_type: 'case',
+      gd_cid_case_no: headerFacilityData.case_no || '',
+      ref_date: headerFacilityData.case_issue_date || headerFacilityData.date || '',
+      pm_no: headerFacilityData.memo_no || '',
+      report_date: headerFacilityData.date || '',
+      station: headerFacilityData.institution_name || '',
+      person_name: headerFacilityData.victim_name || '',
+      gender: headerFacilityData.victim_gender || '',
+      age_years: headerFacilityData.victim_age || '',
+      caste_tribe: headerFacilityData.victim_religion || '',
+      brought_from_village: headerFacilityData.victim_address || '',
+      brought_from_thana: headerFacilityData.source_thana || '',
+      constable_name: '',
+      relatives_names: headerFacilityData.guardian_name || '',
+      sent_datetime: '',
+      brought_datetime: '',
+      exam_datetime: '',
+      police_info: '',
+      identifier_name: headerFacilityData.identifier_name || '',
+      status: 'draft',
+    } as any;
+    try {
+      const res = await fetch('/api/medical/local', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(flat),
+      });
+      const json = await res.json();
+      if (json?.ok) {
+        toast({ title: language==='bn'?'লোকাল হিসেবে সংরক্ষিত':'Saved to local JSON' });
+      } else {
+        toast({ title: 'Save failed', description: json?.error || 'Unknown error' });
+      }
+    } catch (e: any) {
+      toast({ title: 'Error', description: e?.message || String(e) });
+    }
+  };
 
   const renderTabContent = () => {
-    const common = { formData, onFieldChange } as any;
     switch (activeTab) {
-      case 'header_facility': return <HeaderFacilitySection {...common} />;
-      case 'consent': return <ConsentSection {...common} />;
-      case 'logistics': return <LogisticsSection {...common} />;
-      case 'narrative': return <NarrativeSection {...common} />;
-      case 'general_exam': return <GeneralExamSection {...common} />;
-      case 'injuries': return <InjuriesSection {...common} />;
-      case 'sexual_assault': return <SexualAssaultSection {...common} />;
-      case 'investigations': return <InvestigationsSection {...common} />;
-      case 'treatment': return <TreatmentSection {...common} />;
-      case 'examiner': return <ExaminerSection {...common} />;
-      default: return <HeaderFacilitySection {...common} />;
+      case 'header_facility': return <HeaderFacilitySection />;
+      case 'consent': return <ConsentSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'logistics': return <LogisticsSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'narrative': return <NarrativeSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'general_exam': return <GeneralExamSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'injuries': return <InjuriesSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'sexual_assault': return <SexualAssaultSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'investigations': return <InvestigationsSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'treatment': return <TreatmentSection formData={formData} onFieldChange={onFieldChange} />;
+      case 'examiner': return <ExaminerSection formData={formData} onFieldChange={onFieldChange} />;
+      default: return <HeaderFacilitySection />;
     }
   };
 
@@ -91,6 +154,7 @@ function Inner() {
         <div className="flex items-center gap-2">
           <LanguageToggle />
           <Button onClick={saveDraft} className="bg-blue-600 hover:bg-blue-700 text-white"><Save className="w-4 h-4 mr-2" />{language==='bn'?'খসড়া সংরক্ষণ':'Save Draft'}</Button>
+          <Button onClick={saveLocalJson} className="bg-emerald-600 hover:bg-emerald-700 text-white">{language==='bn'?'লোকাল (JSON) সংরক্ষণ':'Save Local JSON'}</Button>
         </div>
       </div>
 
@@ -109,7 +173,8 @@ function Inner() {
           <div ref={tabsScrollRef} className="overflow-hidden no-scrollbar w-full max-w-full">
             <ul className="flex flex-nowrap gap-2 text-sm font-medium pl-10 pr-10" role="tablist">
               {tabs.map((t) => {
-                const { completed, total } = computeMedSectionProgress(t.id, formData);
+                const progressData = t.id === 'header_facility' ? headerFacilityData : formData;
+                const { completed, total } = isClient ? computeMedSectionProgress(t.id, progressData) : { completed: 0, total: 0 } as any;
                 const isActive = activeTab === t.id;
                 const base = isActive ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100';
                 return (
@@ -130,7 +195,8 @@ function Inner() {
         <div className="p-6 space-y-6">
           {/* Section-style header matching Investigation Design 2 */}
           {(() => {
-            const { completed, total } = computeMedSectionProgress(activeTab, formData);
+            const progressData = activeTab === 'header_facility' ? headerFacilityData : formData;
+            const { completed, total } = isClient ? computeMedSectionProgress(activeTab, progressData) : { completed: 0, total: 0 } as any;
             const label = tabs.find(t => t.id === activeTab);
             const title = language==='bn'?label?.labelBn:label?.labelEn;
             const icons: Partial<Record<MedSectionId, any>> = {

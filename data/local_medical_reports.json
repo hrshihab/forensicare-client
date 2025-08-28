@@ -1,0 +1,28 @@
+[
+  {
+    "id": "1756193233784",
+    "thana_id": "Banani",
+    "case_type": "case",
+    "gd_cid_case_no": "1221",
+    "ref_date": "2025-08-26",
+    "pm_no": "12",
+    "report_date": "2025-08-26",
+    "station": "ফরেনসিক মেডিসিন বিভাগ",
+    "person_name": "ss",
+    "gender": "female",
+    "age_years": "22",
+    "caste_tribe": "islam",
+    "brought_from_village": "uttara dhaka",
+    "brought_from_thana": "Banani",
+    "constable_name": "",
+    "relatives_names": "abc rahman",
+    "sent_datetime": "",
+    "brought_datetime": "",
+    "exam_datetime": "",
+    "police_info": "",
+    "identifier_name": "unknown",
+    "status": "draft",
+    "updatedAt": "2025-08-26T07:27:22.144Z",
+    "createdAt": "2025-08-26T07:27:22.144Z"
+  }
+]

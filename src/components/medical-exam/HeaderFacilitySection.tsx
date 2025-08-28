@@ -8,14 +8,25 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useDropdownValues } from '@/hooks/useDropdownValues';
 import { Button } from '@/components/ui/button';
+import { useHeaderFacility } from '@/hooks/useHeaderFacility';
+import Link from 'next/link';
+import { useMemo, useEffect, useState } from 'react';
 
-export default function HeaderFacilitySection({ formData, onFieldChange }: any) {
+export default function HeaderFacilitySection() {
   const { language } = useLanguage();
   const { thanaOptions, caseTypeOptions, getLabel } = useDropdownValues();
+  const { data: formData, updateFieldValue } = useHeaderFacility();
   const L = (bn: string, en: string) => (language === 'bn' ? bn : en);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => { setIsClient(true); }, []);
   
   // Check if case number should be disabled
   const isCaseNumberDisabled = !formData.case_type || formData.case_type === 'none';
+  
+  // Handle field change
+  const onFieldChange = (field: string, value: any) => {
+    updateFieldValue(field as any, value);
+  };
   
   // Handle date change from DatePicker
   const handleDateChange = (date: Date | undefined) => {
@@ -27,6 +38,22 @@ export default function HeaderFacilitySection({ formData, onFieldChange }: any) 
     }
   };
   
+  const canPrint = useMemo(() => {
+    // Minimal required fields for preview/print of header: victim name, age, gender, address, and at least memo/date
+    const required = [
+      formData?.victim_name,
+      formData?.victim_gender,
+      formData?.victim_age,
+      formData?.victim_address,
+      formData?.date,
+    ];
+    return required.every((v) => typeof v === 'string' ? v.trim().length > 0 : Boolean(v));
+  }, [formData]);
+  
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="space-y-8">
       {/* Report Information Section */}
@@ -35,7 +62,7 @@ export default function HeaderFacilitySection({ formData, onFieldChange }: any) 
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
             <MapPin className="h-4 w-4 text-blue-600" />
           </span>
-          <h4 className="text-base font-semibold text-blue-900">{L('রিপোর্ট ও প্রতিষ্ঠান তথ্য','Report & Institution Info')}</h4>
+          <h4 className="text-base font-semibold text-blue-900">{L('রিপোর্ট ও প্রতিষ্ঠান তথ্য','Report & Institution Information')}</h4>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
           {/* Report No - 2/6 width */}
@@ -312,7 +339,7 @@ export default function HeaderFacilitySection({ formData, onFieldChange }: any) 
             <FileText className="h-4 w-4 text-amber-600" />
           </span>
           <h4 className="text-base font-semibold text-amber-900">
-            {L('সনাক্তকারী/আনয়নকারীর পরিচয়', 'Identifier/Bringer Identity')}
+            {L('সনাক্তকারী/আনয়নকারীর পরিচয়', 'Identifier/Bringer Identity')}
           </h4>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -448,6 +475,15 @@ export default function HeaderFacilitySection({ formData, onFieldChange }: any) 
     
         </div>
       </div>
+
+      {/* Print action */}
+      {canPrint && (
+        <div className="flex justify-end">
+          <Link href="/dashboard/admin/medical-exam/print/header-facility">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">{L('প্রিভিউ ও প্রিন্ট','Preview & Print')}</Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
