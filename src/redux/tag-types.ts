@@ -4,6 +4,8 @@ export enum tagTypes {
   attendance = 'attendance',
   leave = 'leave',
   department = 'department',
+  report = 'report',
+  medicalReport = 'medicalReport',
   updateTag = 'updateTag',
 }
 
@@ -13,5 +15,7 @@ export const tagTypesList = [
   tagTypes.attendance,
   tagTypes.leave,
   tagTypes.department,
+  tagTypes.report,
+  tagTypes.medicalReport,
   tagTypes.updateTag,
 ];

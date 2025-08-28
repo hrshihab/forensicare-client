@@ -46,6 +46,48 @@ export const getApis = baseApi.injectEndpoints({
         providesTags: [tagTypes.department],
       }),
 
+      // Reports (server-backed)
+      getReports: builder.query<any[], { page?: number; pageSize?: number } | void>({
+        query: (params) => ({
+          url: '/reports',
+          params: params ? { page: params.page ?? 1, pageSize: params.pageSize ?? 25 } : undefined,
+        }),
+        transformResponse: (response: any) => {
+          if (Array.isArray(response)) return response;
+          return response?.result?.data ?? response?.data ?? [];
+        },
+        providesTags: [tagTypes.report],
+      }),
+
+      getReportById: builder.query<any, string | number>({
+        query: (id) => ({ url: `/reports/${id}` }),
+        transformResponse: (response: any) => {
+          return response?.result?.data ?? response?.data ?? response ?? null;
+        },
+        providesTags: (_r, _e, id) => [{ type: tagTypes.report, id }],
+      }),
+
+      // Medical Reports (server-backed)
+      getMedicalReports: builder.query<any[], { page?: number; pageSize?: number } | void>({
+        query: (params) => ({
+          url: '/medical-reports',
+          params: params ? { page: params.page ?? 1, pageSize: params.pageSize ?? 25 } : undefined,
+        }),
+        transformResponse: (response: any) => {
+          if (Array.isArray(response)) return response;
+          return response?.result?.data ?? response?.data ?? [];
+        },
+        providesTags: [tagTypes.medicalReport],
+      }),
+
+      getMedicalReportById: builder.query<any, string | number>({
+        query: (id) => ({ url: `/medical-reports/${id}` }),
+        transformResponse: (response: any) => {
+          return response?.result?.data ?? response?.data ?? response ?? null;
+        },
+        providesTags: (_r, _e, id) => [{ type: tagTypes.medicalReport, id }],
+      }),
+
     // GET single department by ID
       getDepartmentById: builder.query({
         query: (id) => `/department/${id}`,
@@ -62,4 +104,8 @@ export const {
     useGetUserByIdQuery,
     useGetUserInfoQuery,
     useGetDepartmentsQuery,
-    useGetDepartmentByIdQuery, } = getApis;
+    useGetDepartmentByIdQuery,
+    useGetReportsQuery,
+    useGetReportByIdQuery,
+    useGetMedicalReportsQuery,
+    useGetMedicalReportByIdQuery, } = getApis;

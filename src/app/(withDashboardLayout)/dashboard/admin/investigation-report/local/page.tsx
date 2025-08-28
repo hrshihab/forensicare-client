@@ -1,34 +1,17 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useGetReportsQuery } from '@/redux/api/getApis';
 
 export default function LocalReportsPage() {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [reports, setReports] = useState<any[]>([]);
-
-  useEffect(() => {
-    const run = async () => {
-      try {
-        const res = await fetch('/api/reports/local', { cache: 'no-store' });
-        const json = await res.json();
-        if (json?.ok) setReports(Array.isArray(json.data) ? json.data : []);
-        else toast({ title: 'Failed to load', description: json?.error || 'Unknown error' });
-      } catch (e: any) {
-        toast({ title: 'Error', description: e?.message || String(e) });
-      } finally {
-        setLoading(false);
-      }
-    };
-    run();
-  }, [toast]);
+  const { data, isLoading } = useGetReportsQuery();
+  const reports = Array.isArray(data) ? data : [];
 
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-xl font-semibold">Local JSON Reports</h1>
-      {loading ? (
+      {isLoading ? (
         <div>Loading...</div>
       ) : (
         <div className="space-y-2">

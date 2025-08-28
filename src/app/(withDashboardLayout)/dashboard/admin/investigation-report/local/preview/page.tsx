@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useGetReportByIdQuery } from '@/redux/api/getApis';
 
 function A4({ children }: { children: React.ReactNode }) {
   return (
@@ -14,24 +15,7 @@ function A4({ children }: { children: React.ReactNode }) {
 export default function LocalReportPreviewPage() {
   const params = useSearchParams();
   const id = params.get('id');
-  const [loading, setLoading] = useState(true);
-  const [report, setReport] = useState<any | null>(null);
-
-  useEffect(() => {
-    const run = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/reports/local?id=${encodeURIComponent(id || '')}`, { cache: 'no-store' });
-        const json = await res.json();
-        setReport(json?.data || null);
-      } catch {
-        setReport(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) run();
-  }, [id]);
+  const { data: report, isLoading: loading } = useGetReportByIdQuery(id || '', { skip: !id });
 
   const header = report?.header || {};
   const general = report?.general || {};

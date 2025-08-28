@@ -4,12 +4,12 @@ import React, { useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useGetLocalReportByIdQuery } from '@/redux/api/reportApis';
+import { useGetReportByIdQuery } from '@/redux/api/getApis';
 
 export default function ReportViewPage() {
   const params = useParams();
   const id = (params as any)?.id as string;
-  const { data: report } = useGetLocalReportByIdQuery(id as any, { skip: !id });
+  const { data: report } = useGetReportByIdQuery(id as any, { skip: !id });
 
   const rows = useMemo(() => {
     if (!report) return [] as Array<{ label: string; value: any }>

@@ -19,6 +19,7 @@ import ExaminerSection from '@/components/medical-exam/ExaminerSection';
 import { computeMedSectionProgress, MedSectionId } from '@/utils/medical-exam-progress';
 import SectionHeader from '@/components/ui/section-header';
 import { FileText, User, CheckSquare, Clock, AlignLeft, Activity, Shield, Heart, Search } from 'lucide-react';
+import { useUpsertMedicalReportMutation } from '@/redux/api/postApis';
 import { useHeaderFacility } from '@/hooks/useHeaderFacility';
 
 const tabs: { id: MedSectionId; labelBn: string; labelEn: string }[] = [
@@ -38,6 +39,7 @@ function Inner() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<MedSectionId>('header_facility');
+  const [upsertMedicalReport] = useUpsertMedicalReportMutation();
   const tabsScrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -88,7 +90,7 @@ function Inner() {
   };
 
   const saveLocalJson = async () => {
-    const id = headerFacilityData?.id || `${Date.now()}`;
+    const id = (headerFacilityData as any)?.id || `${Date.now()}`;
     const flat = {
       id,
       // Map fields from headerFacilityData into the API flat shape (minimal header/general)
@@ -115,16 +117,11 @@ function Inner() {
       status: 'draft',
     } as any;
     try {
-      const res = await fetch('/api/medical/local', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(flat),
-      });
-      const json = await res.json();
-      if (json?.ok) {
-        toast({ title: language==='bn'?'লোকাল হিসেবে সংরক্ষিত':'Saved to local JSON' });
+      const resp = await upsertMedicalReport(flat).unwrap();
+      if (resp) {
+        toast({ title: language==='bn'?'সার্ভারে সংরক্ষিত':'Saved to server' });
       } else {
-        toast({ title: 'Save failed', description: json?.error || 'Unknown error' });
+        toast({ title: 'Save failed', description: 'No response' });
       }
     } catch (e: any) {
       toast({ title: 'Error', description: e?.message || String(e) });

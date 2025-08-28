@@ -3,13 +3,15 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Layout } from 'lucide-react';
 import Link from 'next/link';
-import { useGetLocalReportsQuery, useUnlockLocalReportMutation } from '@/redux/api/reportApis';
+import { useGetReportsQuery } from '@/redux/api/getApis';
+import { useUnlockReportMutation } from '@/redux/api/postApis';
 import useUserInfo from '@/hooks/useUserInfo';
 import { useGetUserInfoQuery } from '@/redux/api/getApis';
 
 export default function InvestigationReportsPage() {
-  const { data: reports = [], isLoading, isError } = useGetLocalReportsQuery();
-  const [unlockReport] = useUnlockLocalReportMutation();
+  const { data: reportsData, isLoading, isError } = useGetReportsQuery();
+  const reports = Array.isArray(reportsData) ? reportsData : [] as any[];
+  const [unlockReport] = useUnlockReportMutation();
   const userInfo = useUserInfo();
   const rawUser = typeof window !== 'undefined' ? localStorage.getItem('userInfo') : null;
   let storedUsername = '' as string;
