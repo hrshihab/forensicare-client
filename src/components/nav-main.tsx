@@ -39,7 +39,21 @@ export function NavMain({
 }) {
   const pathname = usePathname();
   const [activePath, setActivePath] = React.useState<string | null>(null);
+  const [openMenus, setOpenMenus] = React.useState<Set<string>>(new Set());
+  
   React.useEffect(() => setActivePath(pathname), [pathname]);
+  
+  // Keep menus open when they have active items
+  React.useEffect(() => {
+    const newOpenMenus = new Set<string>();
+    items.forEach(item => {
+      if (item.items?.some(subItem => activePath === subItem.url) || 
+          (activePath && activePath.startsWith(item.url + '/'))) {
+        newOpenMenus.add(item.title);
+      }
+    });
+    setOpenMenus(newOpenMenus);
+  }, [activePath, items]);
 
   return (
     <SidebarGroup>
@@ -53,7 +67,17 @@ export function NavMain({
           const hasActiveSubItem = !!(activePath && item.items?.some(subItem => activePath === subItem.url));
           
           return (
-            <Collapsible key={item.title} asChild defaultOpen={false}>
+            <Collapsible key={item.title} asChild open={openMenus.has(item.title)} onOpenChange={(open) => {
+              if (open) {
+                setOpenMenus(prev => new Set([...prev, item.title]));
+              } else {
+                setOpenMenus(prev => {
+                  const newSet = new Set(prev);
+                  newSet.delete(item.title);
+                  return newSet;
+                });
+              }
+            }}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
                   <Link href={item.url}>

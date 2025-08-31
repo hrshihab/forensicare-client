@@ -142,11 +142,22 @@ export default function HeaderFacilitySection() {
               {L('কেস টাইপ ও নং','Case Type & No')}
             </Label>
             <div className="flex h-11 rounded-lg border border-gray-300 bg-white shadow-sm focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-200 transition-all duration-200 overflow-hidden">
-              {/* Case Type (Fixed) */}
+              {/* Case Type (Selectable) */}
               <div className="w-1/3 border-r border-gray-300">
-                <div className="flex items-center h-full px-2 bg-gray-100 text-gray-600 text-sm">
-                  {L('মামলা', 'Case')}
-                </div>
+                <Select
+                  value={formData.case_type || 'case'}
+                  onValueChange={(value) => onFieldChange('case_type', value)}
+                >
+                  <SelectTrigger className="h-full border-0 rounded-none bg-gray-100 hover:bg-gray-200 focus:ring-0 text-sm text-gray-700">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="case">{L('মামলা', 'Case')}</SelectItem>
+                    <SelectItem value="gd">{L('জিডি', 'GD')}</SelectItem>
+                    <SelectItem value="fir">{L('এফআইআর', 'FIR')}</SelectItem>
+                    <SelectItem value="other">{L('অন্যান্য', 'Other')}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Case Number Input */}

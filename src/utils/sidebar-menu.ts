@@ -48,15 +48,15 @@ import {
             { title: "Add User", url: `/dashboard/${role}/users/add`, icon: Users },
           ],
         },
-        {
-          title: "Department Management",
-          url: `/dashboard/${role}/departments`,
-          icon: Building,
-          items: [
-            { title: "All Departments", url: `/dashboard/${role}/departments`, icon: Building },
-            { title: "Add Department", url: `/dashboard/${role}/departments/add`, icon: Building },
-          ],
-        },
+        // {
+        //   title: "Department Management",
+        //   url: `/dashboard/${role}/departments`,
+        //   icon: Building,
+        //   items: [
+        //     { title: "All Departments", url: `/dashboard/${role}/departments`, icon: Building },
+        //     { title: "Add Department", url: `/dashboard/${role}/departments/add`, icon: Building },
+        //   ],
+        // },
         // {
         //   title: "Cases",
         //   url: `/dashboard/${role}/cases`,
@@ -85,8 +85,6 @@ import {
             { title: "Create Report", url: `/dashboard/${role}/investigation-report/create`, icon: ClipboardCheck },
             { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2`, icon: ClipboardCheck },
             { title: "All Reports", url: `/dashboard/${role}/investigation-report`, icon: ClipboardList },
-            { title: "Local (JSON) Reports", url: `/dashboard/${role}/investigation-report/local`, icon: ClipboardList },
-            { title: "Report Templates", url: `/dashboard/${role}/investigation-report/templates`, icon: FileText },
           ],
         },
         {

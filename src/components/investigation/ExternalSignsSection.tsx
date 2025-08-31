@@ -33,8 +33,8 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
         iconColor="text-blue-600"
         title={language === 'bn' ? 'বাহ্যিক লক্ষণ' : 'External Signs'}
         description={language === 'bn' ? 
-          'মৃতদেহের বাহ্যিক অবস্থা ও লক্ষণসমূহ পর্যবেক্ষণ করুন' : 
-          'Observe the external condition and signs of the deceased'
+          'বিঃ দ্রঃ যখমের ক্ষেত্রে, যখমে হত্যার, আত্মহত্যার বা অন্য কিছুর আলামত গায়ে কিনা তাহা লিখুন। প্রতিটি ক্ষেত্রে সাবধানতার সাথে পর্যবেক্ষণ করুন।' : 
+          'Note: In case of wounds, write whether there are signs of homicide, suicide, or anything else on the body. Observe each case carefully.'
         }
         completedFields={completedFields}
         totalFields={requiredFields.length}
@@ -42,8 +42,10 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
         progressSize="medium"
       />
 
+    
+
       {/* Physical Condition Group */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
             <User className="h-4 w-4 text-blue-600" />
@@ -65,7 +67,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('physique_state', e.target.value)}
               placeholder={language === 'bn' ? "বলবান, শীর্ণ, গলিত ইত্যাদি" : "Strong, thin, decomposed, etc."}
               rows={3}
-              className={`${errors.physique_state ? 'border-red-500' : 'border-gray-300'} 
+              className={`${errors.physique_state ? 'border-red-500' : ''} 
                 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.physique_state && (
@@ -76,7 +78,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
       </div>
 
       {/* Wounds & Injuries Group */}
-      <div className="rounded-xl border  p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-red-50/30 to-orange-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-100">
             <Shield className="h-4 w-4 text-red-600" />
@@ -98,7 +100,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('wounds_desc', e.target.value)}
               placeholder={language === 'bn' ? "যখমের অবস্থান, আকার ও ধরণ" : "Wound location, size and type"}
               rows={4}
-              className={`${errors.wounds_desc ? 'border-red-500' : 'border-gray-300'} 
+              className={`${errors.wounds_desc ? 'border-red-500' : ''} 
                 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
             />
             {errors.wounds_desc && (
@@ -117,7 +119,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('injuries_desc', e.target.value)}
               placeholder={language === 'bn' ? "আঘাতের অবস্থান, আকার ও ধরণ" : "Injury location, size and type"}
               rows={4}
-              className={`${errors.injuries_desc ? 'border-red-500' : 'border-gray-300'} 
+              className={`${errors.injuries_desc ? 'border-red-500' : ''} 
                 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 resize-none`}
             />
             {errors.injuries_desc && (
@@ -128,7 +130,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
       </div>
 
       {/* Neck Examination Group */}
-      <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-yellow-50/30 to-amber-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-100">
             <Activity className="h-4 w-4 text-yellow-600" />
@@ -150,7 +152,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
               onChange={(e) => onFieldChange('neck_marks', e.target.value)}
               placeholder={language === 'bn' ? "গলা ব্যবচ্ছেদের সময় প্রাপ্ত পট্টির চিহ্ন ইত্যাদি" : "Neck marks found during dissection, etc."}
               rows={4}
-              className={`${errors.neck_marks ? 'border-red-500' : 'border-gray-300'} 
+              className={`${errors.neck_marks ? 'border-red-500' : ''} 
                 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 resize-none`}
             />
             {errors.neck_marks && (
@@ -160,27 +162,7 @@ export default function ExternalSignsSection({ formData, onFieldChange, errors }
         </div>
       </div>
 
-      {/* Important Instructions */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
-        <div className="flex items-start gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 mt-1">
-            <ClipboardList className="h-4 w-4 text-blue-600" />
-          </span>
-          <div className="space-y-2">
-            <h4 className="text-base font-semibold text-gray-800">
-              {language === 'bn' ? 'গুরুত্বপূর্ণ নির্দেশনা' : 'Important Instructions'}
-            </h4>
-            <div className="p-4 bg-white/60 rounded-lg border border-blue-100">
-              <p className="text-blue-800 leading-relaxed">
-                {language === 'bn' ? 
-                  "বিঃ দ্রঃ যখমের ক্ষেত্রে, যখমে হত্যার, আত্মহত্যার বা অন্য কিছুর আলামত গায়ে কিনা তাহা লিখুন। প্রতিটি ক্ষেত্রে সাবধানতার সাথে পর্যবেক্ষণ করুন।" : 
-                  "Note: In case of wounds, write whether there are signs of homicide, suicide, or anything else on the body. Observe each case carefully."
-                }
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+   
     </div>
   );
 }

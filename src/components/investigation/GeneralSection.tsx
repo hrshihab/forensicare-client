@@ -142,7 +142,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
       />
 
 		{/* Basic Information - নাম, লিঙ্গ, বয়স এবং গোত্র */}
-		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+		<div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
 			<div className="flex items-center gap-2 mb-4">
 				<span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
 					<User className="h-4 w-4 text-blue-600" />
@@ -162,7 +162,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.person_name || ''}
 						onChange={(e) => onFieldChange('person_name', e.target.value)}
 						placeholder={language === 'bn' ? "নাম" : "Person Name"}
-						className={`h-10 ${errors.person_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.person_name ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.person_name && (
 						<p className="text-sm text-red-600">{errors.person_name}</p>
@@ -178,7 +178,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.gender || ''}
 						onValueChange={(value) => onFieldChange('gender', value)}
 					>
-						<SelectTrigger className={`w-full h-10 ${errors.gender ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
+						<SelectTrigger className={`w-full h-10 ${errors.gender ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
 							<SelectValue placeholder={language === 'bn' ? "লিঙ্গ নির্বাচন করুন" : "Select Gender"} />
 						</SelectTrigger>
 						<SelectContent>
@@ -207,7 +207,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.age_years || ''}
 						onChange={(e) => onFieldChange('age_years', e.target.value)}
 						placeholder={language === 'bn' ? "বয়স (বছর)" : "Age in years"}
-						className={`h-10 ${errors.age_years ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.age_years ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.age_years && (
 						<p className="text-sm text-red-600">{errors.age_years}</p>
@@ -224,14 +224,14 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.caste_tribe || ''}
 						onChange={(e) => onFieldChange('caste_tribe', e.target.value)}
 						placeholder={language === 'bn' ? "গোত্র" : "Caste/Tribe"}
-						className="h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+						className="h-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
 					/>
 				</div>
 			</div>
 		</div>
 
 		{/* Location Information - কোন স্থান হতে আনা হইয়াছে—গ্রাম ও থানা */}
-		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+		<div className="rounded-xl bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
 			<div className="flex items-center gap-2 mb-4">
 				<span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100">
 					<MapPin className="h-4 w-4 text-emerald-600" />
@@ -251,7 +251,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.brought_from_village || ''}
 						onChange={(e) => onFieldChange('brought_from_village', e.target.value)}
 						placeholder={language === 'bn' ? "গ্রামের নাম" : "Village name"}
-						className={`h-10 ${errors.brought_from_village ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.brought_from_village ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.brought_from_village && (
 						<p className="text-sm text-red-600">{errors.brought_from_village}</p>
@@ -268,7 +268,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.brought_from_thana || ''}
 						onChange={(e) => onFieldChange('brought_from_thana', e.target.value)}
 						placeholder={language === 'bn' ? "থানার নাম" : "Thana name"}
-						className={`h-10 ${errors.brought_from_thana ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.brought_from_thana ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.brought_from_thana && (
 						<p className="text-sm text-red-600">{errors.brought_from_thana}</p>
@@ -278,7 +278,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 		</div>
 
 		{/* Brought by Information - Single constable field */}
-		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+		<div className="rounded-xl bg-gradient-to-r from-slate-50 via-purple-50/30 to-violet-50/20 p-5 shadow-sm border border-slate-100/50">
 			<div className="flex items-center gap-2 mb-4">
 				<span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-purple-100">
 					<Users className="h-4 w-4 text-purple-600" />
@@ -297,7 +297,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
             value={formData.constable_name || ''}
             onChange={(e) => onFieldChange('constable_name', e.target.value)}
             placeholder={language === 'bn' ? "কনস্ট্যাবলের নাম" : "Constable name"}
-            className={`h-10 ${errors.constable_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+            className={`h-10 ${errors.constable_name ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
           />
           {errors.constable_name && (
             <p className="text-sm text-red-600">{errors.constable_name}</p>
@@ -336,7 +336,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
                 onKeyPress={handleRelativeKeyPress}
                 onBlur={handleAddRelative}
                 placeholder={language === 'bn' ? "আত্মীয়-স্বজনের নামসমূহ" : "Relative names"}
-                className="flex-1 h-10 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                						className="flex-1 h-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
               />
               <Button
                 type="button"
@@ -356,7 +356,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 		</div>
 
 		{/* Date and Time Information */}
-		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+		<div className="rounded-xl bg-gradient-to-r from-slate-50 via-amber-50/30 to-orange-50/20 p-5 shadow-sm border border-slate-100/50">
 			<div className="flex items-center gap-2 mb-4">
 				<span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
 					<Calendar className="h-4 w-4 text-amber-600" />
@@ -376,7 +376,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						type="datetime-local"
 						value={formData.sent_datetime || ''}
 						onChange={(e) => onFieldChange('sent_datetime', e.target.value)}
-						className={`h-10 ${errors.sent_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.sent_datetime ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.sent_datetime && (
 						<p className="text-sm text-red-600">{errors.sent_datetime}</p>
@@ -393,7 +393,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						type="datetime-local"
 						value={formData.brought_datetime || ''}
 						onChange={(e) => onFieldChange('brought_datetime', e.target.value)}
-						className={`h-10 ${errors.brought_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.brought_datetime ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.brought_datetime && (
 						<p className="text-sm text-red-600">{errors.brought_datetime}</p>
@@ -410,7 +410,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						type="datetime-local"
 						value={formData.exam_datetime || ''}
 						onChange={(e) => onFieldChange('exam_datetime', e.target.value)}
-						className={`h-10 ${errors.exam_datetime ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.exam_datetime ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.exam_datetime && (
 						<p className="text-sm text-red-600">{errors.exam_datetime}</p>
@@ -420,7 +420,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 		</div>
 
 		{/* Police Information and Identifier - Moved to end */}
-		<div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+		<div className="rounded-xl bg-gradient-to-r from-slate-50 via-sky-50/30 to-cyan-50/20 p-5 shadow-sm border border-slate-100/50">
 			<div className="flex items-center gap-2 mb-4">
 				<span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100">
 					<Info className="h-4 w-4 text-sky-600" />
@@ -442,7 +442,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						onChange={(e) => onFieldChange('police_info', e.target.value)}
 						placeholder={language === 'bn' ? "পুলিশের দেওয়া তথ্য লিখুন" : "Enter police information"}
 						rows={1}
-						className={`${errors.police_info ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`${errors.police_info ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.police_info && (
 						<p className="text-sm text-red-600">{errors.police_info}</p>
@@ -459,7 +459,7 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 						value={formData.identifier_name || ''}
 						onChange={(e) => onFieldChange('identifier_name', e.target.value)}
 						placeholder={language === 'bn' ? "সনাক্তকারীর নাম" : "Identifier name"}
-						className={`h-10 ${errors.identifier_name ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+						className={`h-10 ${errors.identifier_name ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
 					/>
 					{errors.identifier_name && (
 						<p className="text-sm text-red-600">{errors.identifier_name}</p>

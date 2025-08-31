@@ -19,8 +19,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
     'ms_wounds',
     'ms_disease_variations',
     'fractures',
-    'dislocations',
-    'pathology_description'
+    'dislocations'
   ];
   
   const completedFields = requiredFields.filter(field => formData[field]).length;
@@ -44,7 +43,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
       />
 
       {/* Wounds & Diseases Group - Blue */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 border border-blue-200">
             <Shield className="h-4 w-4 text-gray-700" />
@@ -93,7 +92,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
       </div>
 
       {/* Fractures & Dislocations Group - White */}
-      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 border border-green-200">
             <Heart className="h-4 w-4 text-green-700" />
@@ -114,7 +113,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
               onChange={(e) => onFieldChange('fractures', e.target.value)}
               placeholder={language === 'bn' ? "অস্থিভংগ" : "Fractures"}
               rows={3}
-              className={`${errors.fractures ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.fractures ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.fractures && (
               <p className="text-sm text-red-600">{errors.fractures}</p>
@@ -132,7 +131,7 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
               onChange={(e) => onFieldChange('dislocations', e.target.value)}
               placeholder={language === 'bn' ? "স্থানচ্যুতি" : "Dislocations"}
               rows={3}
-              className={`${errors.dislocations ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.dislocations ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.dislocations && (
               <p className="text-sm text-red-600">{errors.dislocations}</p>
@@ -141,36 +140,8 @@ export default function MusculoskeletalSection({ formData, onFieldChange, errors
         </div>
       </div>
 
-      {/* Detailed Pathology Group - Yellow */}
-      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-5 shadow-sm">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-100 border border-yellow-200">
-            <Activity className="h-4 w-4 text-yellow-700" />
-          </span>
-          <h4 className="text-lg font-semibold text-yellow-900">
-            {language === 'bn' ? 'বিস্তারিত রোগতত্ত্ব' : 'Detailed Pathology'}
-          </h4>
-        </div>
-        <div className="space-y-3">
-          {/* ৫ - বিস্তারিত রোগতত্ত্ব */}
-          <div className="space-y-3 group">
-            <Label htmlFor="pathology_description" className="text-base font-semibold text-gray-700 group-hover:text-yellow-800 transition-colors">
-              {t('investigation.musculoskeletal.detailed_pathology')} *
-            </Label>
-            <Textarea
-              id="pathology_description"
-              value={formData.pathology_description || ''}
-              onChange={(e) => onFieldChange('pathology_description', e.target.value)}
-              placeholder={language === 'bn' ? "বিস্তারিত রোগতত্ত্ব" : "Detailed pathology"}
-              rows={3}
-              className={`${errors.pathology_description ? 'border-red-500' : 'border-yellow-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
-            />
-            {errors.pathology_description && (
-              <p className="text-sm text-red-600">{errors.pathology_description}</p>
-            )}
-          </div>
-        </div>
-      </div>
+
+
     </div>
   );
 }

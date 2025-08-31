@@ -9,8 +9,12 @@ import useUserInfo from '@/hooks/useUserInfo';
 import { useGetUserInfoQuery } from '@/redux/api/getApis';
 
 export default function InvestigationReportsPage() {
-  const { data: reportsData, isLoading, isError } = useGetReportsQuery();
+  const { data: reportsData, isLoading, isError, error } = useGetReportsQuery();
   const reports = Array.isArray(reportsData) ? reportsData : [] as any[];
+  
+  // Debug logging
+  console.log('Reports API Response:', { reportsData, isLoading, isError, error });
+  console.log('Processed reports:', reports);
   const [unlockReport] = useUnlockReportMutation();
   const userInfo = useUserInfo();
   const rawUser = typeof window !== 'undefined' ? localStorage.getItem('userInfo') : null;
@@ -81,10 +85,10 @@ export default function InvestigationReportsPage() {
                 {reports.slice(0).reverse().map((r: any) => (
                   <tr key={r.id} className="border-t hover:bg-gray-50/60 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-gray-600">{r.id}</td>
-                    <td className="px-4 py-3">{r?.header?.pm_no ?? '-'}</td>
-                    <td className="px-4 py-3">{r?.general?.person_name ?? '-'}</td>
+                    <td className="px-4 py-3">{r?.header?.pm_no ?? r?.header?.thana_id ?? '-'}</td>
+                    <td className="px-4 py-3">{r?.general?.person_name ?? 'N/A'}</td>
                     <td className="px-4 py-3">{r?.header?.case_type ?? '-'}</td>
-                    <td className="px-4 py-3">{r.updatedAt ?? '-'}</td>
+                    <td className="px-4 py-3">{r.updatedAt ? new Date(r.updatedAt).toLocaleDateString() : '-'}</td>
                     <td className="px-4 py-3">
                       {r.locked ? (
                         <span className="inline-flex items-center rounded-full bg-amber-100 text-amber-800 px-2.5 py-0.5 text-xs font-medium">Locked</span>

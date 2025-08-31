@@ -74,7 +74,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
       </div> */}
 
       {/* General Abdomen Group - Professional White */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 border border-blue-200">
             <Shield className="h-4 w-4 text-blue-700" />
@@ -95,7 +95,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('abdominal_general', e.target.value)}
               placeholder={language === 'bn' ? "প্রকারসমূহ" : "General types"}
               rows={3}
-              className={`${errors.abdominal_general ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                              className={`${errors.abdominal_general ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.abdominal_general && (
               <p className="text-sm text-red-600">{errors.abdominal_general}</p>
@@ -113,7 +113,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('peritoneum', e.target.value)}
               placeholder={language === 'bn' ? "উদরের উপরের ঝিল্লী" : "Upper abdominal membrane"}
               rows={3}
-              className={`${errors.peritoneum ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                              className={`${errors.peritoneum ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.peritoneum && (
               <p className="text-sm text-red-600">{errors.peritoneum}</p>
@@ -123,7 +123,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
         </div>
 
       {/* Digestive System Group - Professional */}
-      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-orange-50/30 to-amber-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100 border border-orange-200">
             <Activity className="h-4 w-4 text-orange-700" />
@@ -146,7 +146,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('mouth_trachea_esophagus', e.target.value)}
               placeholder={language === 'bn' ? "মুখ, শ্বাসনালী এবং অন্ননালী" : "Mouth, trachea and esophagus"}
               rows={3}
-                className={`${errors.mouth_trachea_esophagus ? 'border-red-500' : 'border-gray-300'} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.mouth_trachea_esophagus ? 'border-red-500' : ''} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.mouth_trachea_esophagus && (
               <p className="text-sm text-red-600">{errors.mouth_trachea_esophagus}</p>
@@ -164,7 +164,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('stomach_and_contents', e.target.value)}
               placeholder={language === 'bn' ? "পাকস্থলী এবং উহার অভ্যন্তরস্থ বস্তুসমূহ" : "Stomach and its contents"}
               rows={3}
-                className={`${errors.stomach_and_contents ? 'border-red-500' : 'border-gray-300'} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.stomach_and_contents ? 'border-red-500' : ''} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.stomach_and_contents && (
               <p className="text-sm text-red-600">{errors.stomach_and_contents}</p>
@@ -185,7 +185,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('small_intestine_and_contents', e.target.value)}
                 placeholder={language === 'bn' ? "ক্ষুদ্রান্ত্র এবং উহার অভ্যন্তরস্থ বস্তুসমূহ" : "Small intestine and its contents"}
               rows={3}
-                className={`${errors.small_intestine_and_contents ? 'border-red-500' : 'border-gray-300'} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.small_intestine_and_contents ? 'border-red-500' : ''} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.small_intestine_and_contents && (
               <p className="text-sm text-red-600">{errors.small_intestine_and_contents}</p>
@@ -203,7 +203,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('large_intestine_and_contents', e.target.value)}
                 placeholder={language === 'bn' ? "বৃহদন্ত্র এবং উহার অভ্যন্তরস্থ বস্তুসমূহ" : "Large intestine and its contents"}
               rows={3}
-                className={`${errors.large_intestine_and_contents ? 'border-red-500' : 'border-gray-300'} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.large_intestine_and_contents ? 'border-red-500' : ''} focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.large_intestine_and_contents && (
               <p className="text-sm text-red-600">{errors.large_intestine_and_contents}</p>
@@ -214,7 +214,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
         </div>
 
       {/* Liver & Spleen Group - Professional */}
-      <div className="rounded-lg border border-green-200 bg-green-50 p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 border border-green-200">
             <Heart className="h-4 w-4 text-green-700" />
@@ -235,7 +235,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('liver', e.target.value)}
               placeholder={language === 'bn' ? "যকৃত" : "Liver"}
               rows={3}
-              className={`${errors.liver ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                              className={`${errors.liver ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.liver && (
               <p className="text-sm text-red-600">{errors.liver}</p>
@@ -253,7 +253,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('spleen', e.target.value)}
               placeholder={language === 'bn' ? "প্লীহা" : "Spleen"}
               rows={3}
-              className={`${errors.spleen ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.spleen ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.spleen && (
               <p className="text-sm text-red-600">{errors.spleen}</p>
@@ -263,7 +263,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
         </div>
 
       {/* Urinary & Reproductive Group - Professional */}
-      <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg bg-gradient-to-r from-slate-50 via-yellow-50/30 to-amber-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-100 border border-yellow-200">
             <Package className="h-4 w-4 text-yellow-700" />
@@ -286,7 +286,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('kidneys', e.target.value)}
                 placeholder={language === 'bn' ? "মূত্রাশয়সমূহ (কিডনি)" : "Kidneys"}
               rows={3}
-                className={`${errors.kidneys ? 'border-red-500' : 'border-gray-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.kidneys ? 'border-red-500' : ''} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.kidneys && (
               <p className="text-sm text-red-600">{errors.kidneys}</p>
@@ -304,7 +304,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
               onChange={(e) => onFieldChange('urinary_bladder', e.target.value)}
                 placeholder={language === 'bn' ? "মূত্রাস্থলী" : "Urinary bladder"}
               rows={3}
-                className={`${errors.urinary_bladder ? 'border-red-500' : 'border-gray-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+                className={`${errors.urinary_bladder ? 'border-red-500' : ''} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.urinary_bladder && (
               <p className="text-sm text-red-600">{errors.urinary_bladder}</p>
@@ -324,7 +324,7 @@ export default function AbdomenSection({ formData, onFieldChange, errors }: Abdo
             onChange={(e) => onFieldChange('genital_organs', e.target.value)}
               placeholder={language === 'bn' ? "প্রজনন অঙ্গ (বাহিরে/ভিতরে)" : "Genital organs (external/internal)"}
             rows={3}
-              className={`${errors.genital_organs ? 'border-red-500' : 'border-gray-300'} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.genital_organs ? 'border-red-500' : ''} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
           />
           {errors.genital_organs && (
             <p className="text-sm text-red-600">{errors.genital_organs}</p>

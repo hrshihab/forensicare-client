@@ -6,7 +6,7 @@ import { tagTypesList } from '../tag-types'
 export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: process.env.NEXT_PUBLIC_API_URL,
+        baseUrl: '', // Empty baseUrl to handle both local and server endpoints
         prepareHeaders: (headers) => {
             const token = getFromLocalStorage(authKey)
             if (token) {

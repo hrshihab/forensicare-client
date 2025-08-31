@@ -25,8 +25,28 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
+  // Always start with 'bn' to avoid hydration mismatch, then update after mount
   const [language, setLanguage] = useState<Language>('bn');
   const [translations, setTranslations] = useState<Record<string, any>>({});
+  const [isClient, setIsClient] = useState(false);
+
+  // Set client flag after mount to avoid hydration issues
+  useEffect(() => {
+    setIsClient(true);
+    // Load language from localStorage after mount
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && (savedLanguage === 'bn' || savedLanguage === 'en')) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
+
+  // Persist language changes to localStorage
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
+    if (isClient) {
+      localStorage.setItem('language', lang);
+    }
+  };
 
   useEffect(() => {
     const loadTranslations = async () => {
@@ -63,7 +83,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   const value: LanguageContextType = {
     language,
-    setLanguage,
+    setLanguage: handleSetLanguage,
     t,
   };
 

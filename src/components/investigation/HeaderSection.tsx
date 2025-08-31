@@ -60,7 +60,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
       />
 
       {/* Case Information Group - Blue */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
             <MapPin className="h-4 w-4 text-blue-600" />
@@ -79,7 +79,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               value={formData.thana_id || ''}
               onValueChange={(value) => onFieldChange('thana_id', value)}
             >
-              <SelectTrigger className={`h-10 ${errors.thana_id ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
+              <SelectTrigger className={`h-10 ${errors.thana_id ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
                 <SelectValue placeholder={language === 'bn' ? "থানা নির্বাচন করুন" : "Select Thana"} />
               </SelectTrigger>
               <SelectContent>
@@ -107,7 +107,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   value={formData.case_type || 'none'}
                   onValueChange={(value) => onFieldChange('case_type', value)}
                 >
-                  <SelectTrigger className={`w-full h-full rounded-l-lg rounded-r-none border-r-0 flex items-center ${errors.case_type ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
+                  <SelectTrigger className={`w-full h-full rounded-l-lg rounded-r-none border-r-0 flex items-center ${errors.case_type ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
                     <SelectValue placeholder={language === 'bn' ? "ধরন" : "Type"} className="flex items-center" />
                   </SelectTrigger>
                   <SelectContent>
@@ -129,7 +129,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   placeholder={formData.case_type && formData.case_type !== 'none' ? 
                     (language === 'bn' ? `${formData.case_type} নং` : `${formData.case_type} No.`) : 
                     (language === 'bn' ? "প্রথমে মামলার ধরন নির্বাচন করুন" : "Select case type first")}
-                  className={`${errors.gd_cid_case_no ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'} ${(!formData.case_type || formData.case_type === 'none') ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white'} rounded-l-none rounded-r-lg border-l-0 h-full transition-all duration-200`}
+                  className={`${errors.gd_cid_case_no ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'focus:border-blue-500 focus:ring-blue-200'} ${(!formData.case_type || formData.case_type === 'none') ? 'bg-white text-gray-500 cursor-not-allowed' : 'bg-white'} rounded-l-none rounded-r-lg border-l-0 h-full transition-all duration-200`}
                   disabled={!formData.case_type || formData.case_type === 'none'}
                 />
               </div>
@@ -154,7 +154,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               type="date"
               value={formData.ref_date || ''}
               onChange={(e) => onFieldChange('ref_date', e.target.value)}
-              className={`h-10 ${errors.ref_date ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
+              className={`h-10 ${errors.ref_date ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}
             />
             {errors.ref_date && (
               <p className="text-sm text-red-600">{errors.ref_date}</p>
@@ -164,7 +164,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
       </div>
 
       {/* Dates and Numbers Group - Green */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
             <Calendar className="h-4 w-4 text-green-600" />
@@ -184,7 +184,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               value={formData.pm_no || ''}
               onChange={(e) => onFieldChange('pm_no', e.target.value)}
               placeholder={language === 'bn' ? "পিএম নং" : "PM Number"}
-              className={`h-10 ${errors.pm_no ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200`}
+              className={`h-10 ${errors.pm_no ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200`}
             />
             {errors.pm_no && (
               <p className="text-sm text-red-600">{errors.pm_no}</p>
@@ -201,7 +201,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               type="date"
               value={formData.report_date || ''}
               onChange={(e) => onFieldChange('report_date', e.target.value)}
-              className={`h-10 ${errors.report_date ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200`}
+              className={`h-10 ${errors.report_date ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200`}
             />
             {errors.report_date && (
               <p className="text-sm text-red-600">{errors.report_date}</p>
@@ -217,7 +217,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               id="station"
               value="DMC MORGUE" 
               readOnly
-              className="h-10 border-green-300 bg-green-50 text-green-800 cursor-not-allowed"
+              className="h-10 border-green-300 bg-white text-green-800 cursor-not-allowed"
             />
           </div>
         </div>

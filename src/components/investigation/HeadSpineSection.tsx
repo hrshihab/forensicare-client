@@ -45,7 +45,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
       />
 
       {/* Scalp, Skull & Vertebrae Group */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
             <Skull className="h-4 w-4 text-blue-600" />
@@ -66,7 +66,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
               onChange={(e) => onFieldChange('scalp', e.target.value)}
               placeholder={language === 'bn' ? "মাথার ত্বক এবং চুলের অবস্থা" : "Condition of scalp skin and hair"}
               rows={3}
-              className={`${errors.scalp ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.scalp ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.scalp && (
               <p className="text-sm text-red-600">{errors.scalp}</p>
@@ -84,7 +84,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
               onChange={(e) => onFieldChange('skull', e.target.value)}
               placeholder={language === 'bn' ? "খুলির অস্থির অবস্থা" : "Condition of skull bones"}
               rows={3}
-              className={`${errors.skull ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.skull ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.skull && (
               <p className="text-sm text-red-600">{errors.skull}</p>
@@ -102,7 +102,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
               onChange={(e) => onFieldChange('vertebrae', e.target.value)}
               placeholder={language === 'bn' ? "মেরুদন্ডের অস্থির অবস্থা" : "Condition of vertebral bones"}
               rows={3}
-              className={`${errors.vertebrae ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.vertebrae ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.vertebrae && (
               <p className="text-sm text-red-600">{errors.vertebrae}</p>
@@ -112,7 +112,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
       </div>
 
       {/* Meninges Group - Single field */}
-      <div className="rounded-xl border  p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-red-50/30 to-pink-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-100">
             <Shield className="h-4 w-4 text-red-600" />
@@ -131,7 +131,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
             onChange={(e) => onFieldChange('meninges', e.target.value)}
             placeholder={language === 'bn' ? "মস্তিষ্ক এবং মেরুদন্ডের ঝিল্লীর অবস্থা" : "Condition of brain and spinal cord membranes"}
             rows={3}
-            className={`${errors.meninges ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+                          className={`${errors.meninges ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
           />
           {errors.meninges && (
             <p className="text-sm text-red-600">{errors.meninges}</p>
@@ -140,7 +140,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
       </div>
 
       {/* Brain & Spinal Cord Group - Same div, different fields */}
-      <div className="rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
             <Brain className="h-4 w-4 text-green-600" />
@@ -161,7 +161,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
               onChange={(e) => onFieldChange('brain', e.target.value)}
               placeholder={language === 'bn' ? "মস্তিষ্কের বিস্তারিত পরীক্ষা এবং অবস্থা" : "Detailed examination and condition of the brain"}
               rows={3}
-              className={`${errors.brain ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.brain ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.brain && (
               <p className="text-sm text-red-600">{errors.brain}</p>
@@ -179,7 +179,7 @@ export default function HeadSpineSection({ formData, onFieldChange, errors }: He
               onChange={(e) => onFieldChange('spinal_cord', e.target.value)}
               placeholder={language === 'bn' ? "যদি কোন রোগ অথবা যখমের নিদর্শন না থাকে তাহা হইলে মেরুদন্ডের নল পরীক্ষার দরকার নাই" : "If no signs of disease or injury, spinal canal examination not required"}
               rows={3}
-              className={`${errors.spinal_cord ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.spinal_cord ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.spinal_cord && (
               <p className="text-sm text-red-600">{errors.spinal_cord}</p>

@@ -43,7 +43,7 @@ export const OpinionsSection: React.FC<OpinionsSectionProps> = ({
       />
 
       {/* Medical Officer Opinion - Blue Theme */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="space-y-4">
           <div className="space-y-3 group">
             <Label htmlFor="medical_officer_opinion" className="text-base font-semibold text-gray-700 group-hover:text-blue-700 transition-colors">
@@ -63,7 +63,7 @@ export const OpinionsSection: React.FC<OpinionsSectionProps> = ({
               onChange={(e) => onFieldChange('medical_officer_opinion', e.target.value)}
               placeholder={language === 'bn' ? "মৃত্যুর কারণ সম্পর্কে মেডিক্যাল অফিসারের মতামত লিখুন" : "Enter medical officer's opinion on cause of death"}
               rows={4}
-              className={`${errors.medical_officer_opinion ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.medical_officer_opinion ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.medical_officer_opinion && (
               <p className="text-sm text-red-600">{errors.medical_officer_opinion}</p>
@@ -73,7 +73,7 @@ export const OpinionsSection: React.FC<OpinionsSectionProps> = ({
       </div>
 
       {/* Civil Surgeon Remark - Green Theme */}
-      <div className="rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="space-y-4">
           <div className="space-y-3 group">
             <Label htmlFor="civil_surgeon_remark" className="text-base font-semibold text-gray-700 group-hover:text-green-700 transition-colors">
@@ -85,7 +85,7 @@ export const OpinionsSection: React.FC<OpinionsSectionProps> = ({
               onChange={(e) => onFieldChange('civil_surgeon_remark', e.target.value)}
               placeholder={language === 'bn' ? "সিভিল সার্জনের মন্তব্য লিখুন" : "Enter civil surgeon's remark"}
               rows={4}
-              className={`${errors.civil_surgeon_remark ? 'border-red-500' : 'border-gray-300'} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.civil_surgeon_remark ? 'border-red-500' : ''} focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.civil_surgeon_remark && (
               <p className="text-sm text-red-600">{errors.civil_surgeon_remark}</p>

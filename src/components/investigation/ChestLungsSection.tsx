@@ -48,7 +48,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
       />
 
       {/* Chest Wall & Bones Group */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-blue-50/30 to-indigo-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
             <Shield className="h-4 w-4 text-blue-600" />
@@ -69,7 +69,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('ribs_cartilage', e.target.value)}
               placeholder={language === 'bn' ? "প্রকার—পাজর এবং কোমলাস্থিসমূহ" : "Type—Ribs and cartilages"}
               rows={3}
-              className={`${errors.ribs_cartilage ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.ribs_cartilage ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.ribs_cartilage && (
               <p className="text-sm text-red-600">{errors.ribs_cartilage}</p>
@@ -87,7 +87,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('pleura', e.target.value)}
               placeholder={language === 'bn' ? "ফুসফুস আবরণী" : "Pleura"}
               rows={3}
-              className={`${errors.pleura ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.pleura ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.pleura && (
               <p className="text-sm text-red-600">{errors.pleura}</p>
@@ -97,7 +97,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
       </div>
 
       {/* Airways Group - Only 2 fields */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-red-50/30 to-pink-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-100">
             <Activity className="h-4 w-4 text-red-600" />
@@ -118,7 +118,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('larynx', e.target.value)}
               placeholder={language === 'bn' ? "বাগযন্ত্র" : "Larynx"}
               rows={3}
-              className={`${errors.larynx ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.larynx ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.larynx && (
               <p className="text-sm text-red-600">{errors.larynx}</p>
@@ -136,7 +136,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('trachea', e.target.value)}
               placeholder={language === 'bn' ? "শ্বাসনালী" : "Trachea"}
               rows={3}
-              className={`${errors.trachea ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.trachea ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.trachea && (
               <p className="text-sm text-red-600">{errors.trachea}</p>
@@ -146,7 +146,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
       </div>
 
       {/* Lungs Group */}
-      <div className="rounded-xl border border-green-200 bg-green-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-emerald-50/30 to-teal-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="flex items-center gap-2 mb-4">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
             <Package className="h-4 w-4 text-green-600" />
@@ -167,7 +167,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('right_lung', e.target.value)}
               placeholder={language === 'bn' ? "ডান ফুসফুস" : "Right lung"}
               rows={3}
-              className={`${errors.right_lung ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.right_lung ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.right_lung && (
               <p className="text-sm text-red-600">{errors.right_lung}</p>
@@ -185,7 +185,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('left_lung', e.target.value)}
               placeholder={language === 'bn' ? "বাম ফুসফুস" : "Left lung"}
               rows={3}
-              className={`${errors.left_lung ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.left_lung ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.left_lung && (
               <p className="text-sm text-red-600">{errors.left_lung}</p>
@@ -216,7 +216,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('pericardium', e.target.value)}
               placeholder={language === 'bn' ? "হৃদযন্ত্রের আবরণী" : "Pericardium"}
               rows={3}
-              className={`${errors.pericardium ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.pericardium ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.pericardium && (
               <p className="text-sm text-red-600">{errors.pericardium}</p>
@@ -234,7 +234,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('heart', e.target.value)}
               placeholder={language === 'bn' ? "হৃদপিণ্ডের অবস্থা" : "Heart condition"}
               rows={3}
-              className={`${errors.heart ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.heart ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.heart && (
               <p className="text-sm text-red-600">{errors.heart}</p>
@@ -252,7 +252,7 @@ export default function ChestLungsSection({ formData, onFieldChange, errors }: C
               onChange={(e) => onFieldChange('blood_vessels', e.target.value)}
               placeholder={language === 'bn' ? "রক্ত নালী" : "Blood vessels"}
               rows={3}
-              className={`${errors.blood_vessels ? 'border-red-500' : 'border-gray-300'} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
+              className={`${errors.blood_vessels ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 resize-none`}
             />
             {errors.blood_vessels && (
               <p className="text-sm text-red-600">{errors.blood_vessels}</p>

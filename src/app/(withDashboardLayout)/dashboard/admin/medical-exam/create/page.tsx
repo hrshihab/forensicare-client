@@ -151,7 +151,7 @@ function CreateMedicalExamInner() {
 
       {/* Section A+B — Case Header + Facility */}
       <Section titleBn="কেস হেডার ও প্রতিষ্ঠান" titleEn="Case Header & Facility">
-        <HeaderFacilitySection formData={formData} onFieldChange={onChange} />
+        <HeaderFacilitySection />
       </Section>
 
       {/* Section C — Victim Identity */}

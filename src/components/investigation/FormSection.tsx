@@ -9,12 +9,14 @@ interface FormSectionProps {
   section: FormSectionType;
   children: React.ReactNode;
   onToggle?: (isOpen: boolean) => void;
+  progress?: { completed: number; total: number };
 }
 
 export const FormSection: React.FC<FormSectionProps> = ({ 
   section, 
   children, 
-  onToggle 
+  onToggle,
+  progress
 }) => {
   const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(section.isOpen);
@@ -53,9 +55,9 @@ export const FormSection: React.FC<FormSectionProps> = ({
       case 'in_progress':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'not_started':
-        return 'bg-gray-100 text-gray-600 border-gray-200';
+        return 'bg-gray-100 text-gray-600';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -70,9 +72,9 @@ export const FormSection: React.FC<FormSectionProps> = ({
       case 'in_progress':
         return 'border-blue-200 hover:border-blue-300';
       case 'not_started':
-        return 'border-gray-200 hover:border-gray-300';
+        return 'hover:border-gray-300';
       default:
-        return 'border-gray-200 hover:border-gray-300';
+        return 'hover:border-gray-300';
     }
   };
 
@@ -87,9 +89,9 @@ export const FormSection: React.FC<FormSectionProps> = ({
       case 'in_progress':
         return 'bg-blue-50 hover:bg-blue-100 border-blue-200';
       case 'not_started':
-        return 'bg-gray-50 hover:bg-gray-100 border-gray-200';
+        return 'bg-gray-50 hover:bg-gray-100';
       default:
-        return 'bg-gray-50 hover:bg-gray-100 border-gray-200';
+        return 'bg-gray-50 hover:bg-gray-100';
     }
   };
 

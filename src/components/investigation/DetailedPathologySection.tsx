@@ -29,8 +29,8 @@ export const DetailedPathologySection: React.FC<DetailedPathologySectionProps> =
       {/* Section Header with Progress */}
       <SectionHeader
         icon={FileText}
-        iconBgColor="bg-purple-100"
-        iconColor="text-purple-600"
+        iconBgColor="bg-yellow-100"
+        iconColor="text-yellow-600"
         title={language === 'bn' ? 'বিস্তারিত রোগতত্ত্ব' : 'Detailed Pathology'}
         description={language === 'bn' ? 
           'রোগ অথবা যখমের বিস্তৃত বিবরন এবং বিশ্লেষণ' : 
@@ -38,15 +38,15 @@ export const DetailedPathologySection: React.FC<DetailedPathologySectionProps> =
         }
         completedFields={completedFields}
         totalFields={totalFieldsCount}
-        progressVariant="purple"
+        progressVariant="yellow"
         progressSize="medium"
       />
 
       {/* Detailed Pathology Content */}
-      <div className="rounded-xl border border-gray-200 bg-purple-50 p-5 shadow-sm">
+      <div className="rounded-xl bg-gradient-to-r from-slate-50 via-yellow-50/30 to-amber-50/20 p-5 shadow-sm border border-slate-100/50">
         <div className="space-y-4">
           <div className="space-y-3 group">
-            <Label htmlFor="pathology_description" className="text-base font-semibold text-gray-700 group-hover:text-purple-700 transition-colors">
+            <Label htmlFor="pathology_description" className="text-base font-semibold text-gray-700 group-hover:text-yellow-700 transition-colors">
               {t('investigation.detailed_pathology.pathology_description')}
             </Label>
             <Textarea
@@ -55,7 +55,7 @@ export const DetailedPathologySection: React.FC<DetailedPathologySectionProps> =
               onChange={(e) => onFieldChange('pathology_description', e.target.value)}
               placeholder={language === 'bn' ? "রোগ অথবা যখমের আরোও বিস্তৃত বিবরন লিখুন" : "Enter detailed description of disease or injury"}
               rows={4}
-              className={`${errors.pathology_description ? 'border-red-500' : 'border-gray-300'} focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
+              className={`${errors.pathology_description ? 'border-red-500' : ''} focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-300 resize-none rounded-lg shadow-sm hover:shadow-md`}
             />
             {errors.pathology_description && (
               <p className="text-sm text-red-600">{errors.pathology_description}</p>

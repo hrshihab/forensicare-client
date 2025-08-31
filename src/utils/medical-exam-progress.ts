@@ -16,8 +16,25 @@ export const getMedSectionFields = (id: MedSectionId): string[] => {
   switch (id) {
     case 'header_facility':
       // Do not count fixed institution fields towards progress
-      // Now includes victim identity fields
-      return ['memo_no','date','source_thana','case_type','case_no','victim_name','age_years','gender','religion','occupation','guardian_type','guardian_name','address'];
+      // Now includes victim identity fields - Total 16 fields
+      return [
+        'memo_no',
+        'date', 
+        'source_thana',
+        'case_type',
+        'case_no',
+        'case_issue_date',
+        'victim_name',
+        'victim_age',
+        'victim_gender', 
+        'victim_religion',
+        'victim_occupation',
+        'guardian_type',
+        'guardian_name',
+        'victim_address',
+        'identifier_name',
+        'identifier_address'
+      ];
     case 'consent':
       return ['identifier_details','consent_given'];
     case 'logistics':

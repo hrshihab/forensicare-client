@@ -23,7 +23,7 @@ import { useUpsertMedicalReportMutation } from '@/redux/api/postApis';
 import { useHeaderFacility } from '@/hooks/useHeaderFacility';
 
 const tabs: { id: MedSectionId; labelBn: string; labelEn: string }[] = [
-  { id: 'header_facility', labelBn: 'হেডার ও প্রতিষ্ঠান তথ্য', labelEn: 'Header & Institution Data' },
+  { id: 'header_facility', labelBn: 'সাধারণ তথ্য', labelEn: 'General Data' },
   { id: 'consent', labelBn: 'সম্মতি', labelEn: 'Consent' },
   { id: 'logistics', labelBn: 'সময়সূচি', labelEn: 'Logistics' },
   { id: 'narrative', labelBn: 'ঘটনা', labelEn: 'Narrative' },
@@ -128,6 +128,26 @@ function Inner() {
     }
   };
 
+  // Status-based color functions for tabs (matching investigation design2)
+  const getStatusColor = (status: string, isActive: boolean) => {
+    if (isActive) {
+      return 'bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 text-white border-transparent shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transform hover:-translate-y-0.5 transition-all duration-300';
+    }
+    if (status === 'done') {
+      return 'bg-gradient-to-r from-emerald-50 via-emerald-100 to-teal-50 text-emerald-800 border-emerald-200/60 hover:from-emerald-100 hover:via-emerald-200 hover:to-teal-100 hover:border-emerald-300 shadow-sm hover:shadow-md transition-all duration-300';
+    }
+    if (status === 'in_progress') {
+      return 'bg-gradient-to-r from-amber-50 via-orange-100 to-yellow-50 text-amber-800 border-amber-200/60 hover:from-amber-100 hover:via-orange-200 hover:to-yellow-100 hover:border-amber-300 shadow-sm hover:shadow-md transition-all duration-300';
+    }
+    return 'bg-gradient-to-r from-slate-50 via-gray-100 to-zinc-50 text-gray-700 border-gray-200/60 hover:from-gray-100 hover:via-slate-200 hover:to-zinc-100 hover:border-gray-300 shadow-sm hover:shadow-md transition-all duration-300';
+  };
+
+  const getTabStatus = (completed: number, total: number) => {
+    if (completed === 0) return 'not_started';
+    if (completed === total) return 'done';
+    return 'in_progress';
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'header_facility': return <HeaderFacilitySection />;
@@ -151,34 +171,34 @@ function Inner() {
         <div className="flex items-center gap-2">
           <LanguageToggle />
           <Button onClick={saveDraft} className="bg-blue-600 hover:bg-blue-700 text-white"><Save className="w-4 h-4 mr-2" />{language==='bn'?'খসড়া সংরক্ষণ':'Save Draft'}</Button>
-          <Button onClick={saveLocalJson} className="bg-emerald-600 hover:bg-emerald-700 text-white">{language==='bn'?'লোকাল (JSON) সংরক্ষণ':'Save Local JSON'}</Button>
+          <Button onClick={saveLocalJson} className="bg-emerald-600 hover:bg-emerald-700 text-white">{language==='bn'?'JSON এ সংরক্ষণ':'Save to JSON'}</Button>
         </div>
       </div>
 
       <div className="mb-4">
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-50/50 to-blue-50/30 rounded-xl px-4 py-2 border border-slate-100/50">
           <div className="absolute left-0 top-1/2 -translate-y-1/2 z-20 pointer-events-none">
-            <button onClick={()=>scrollTabs(-240)} className={`pointer-events-auto inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border shadow-sm hover:bg-gray-50 transition-opacity ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden={!canScrollLeft}>
+            <button onClick={()=>scrollTabs(-240)} className={`pointer-events-auto inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200/60 shadow-lg hover:bg-white hover:shadow-xl hover:border-slate-300 transition-all duration-300 ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden={!canScrollLeft}>
               <ChevronLeft className="w-4 h-4" />
             </button>
           </div>
           <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 pointer-events-none">
-            <button onClick={()=>scrollTabs(240)} className={`pointer-events-auto inline-flex items-center justify-center w-8 h-8 rounded-full bg-white border shadow-sm hover:bg-gray-50 transition-opacity ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden={!canScrollRight}>
+            <button onClick={()=>scrollTabs(240)} className={`pointer-events-auto inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200/60 shadow-lg hover:bg-white hover:shadow-xl hover:border-slate-300 transition-all duration-300 ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden={!canScrollRight}>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
           <div ref={tabsScrollRef} className="overflow-hidden no-scrollbar w-full max-w-full">
-            <ul className="flex flex-nowrap gap-2 text-sm font-medium pl-10 pr-10" role="tablist">
+            <ul className="flex flex-nowrap gap-2 text-sm font-medium pl-10 pr-10 py-1" role="tablist">
               {tabs.map((t) => {
                 const progressData = t.id === 'header_facility' ? headerFacilityData : formData;
                 const { completed, total } = isClient ? computeMedSectionProgress(t.id, progressData) : { completed: 0, total: 0 } as any;
+                const status = getTabStatus(completed, total);
                 const isActive = activeTab === t.id;
-                const base = isActive ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-sm' : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100';
                 return (
                   <li key={t.id} role="presentation" className="whitespace-nowrap max-w-none">
-                    <button className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-colors truncate ${base}`} onClick={()=>setActiveTab(t.id)} type="button" role="tab" aria-controls={t.id} aria-selected={isActive}>
-                      <span className="truncate max-w-[14ch]">{language==='bn'?t.labelBn:t.labelEn}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full border ${isActive ? 'bg-white/30 border-white/40' : 'bg-white/80 border-black/10'}`}>{completed}/{total}</span>
+                    <button className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 truncate ${isActive ? getStatusColor(status, true) : getStatusColor(status, false)}`} onClick={()=>setActiveTab(t.id)} type="button" role="tab" aria-controls={t.id} aria-selected={isActive}>
+                      <span className="truncate max-w-[12ch]">{language==='bn'?t.labelBn:t.labelEn}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${isActive ? 'bg-white/20 text-white border border-white/30' : 'bg-white/90 text-gray-700 border border-gray-200/40 shadow-sm'}`}>{completed}/{total}</span>
                     </button>
                   </li>
                 );

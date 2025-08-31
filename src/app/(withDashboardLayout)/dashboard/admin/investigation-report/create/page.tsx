@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { LanguageToggle } from '@/components/LanguageToggle';
@@ -18,7 +18,8 @@ import { Button } from '@/components/ui/button';
 import { Save, Eye, Printer, Lock, Unlock } from 'lucide-react';
 import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
 import { computeSectionStatus, getSectionFields } from '@/utils/section-progress';
-import { useSaveLocalReportMutation, useGetLocalReportsQuery, useGetLocalReportByIdQuery, useSubmitLocalReportMutation, useUnlockLocalReportMutation } from '@/redux/api/reportApis';
+import { showSectionCompletionToast, getSectionProgress, getOverallCompletion } from '@/utils/section-completion-toasts';
+// Local report functionality removed - keeping only report template functionality
 import { toFlatForm } from '@/utils/report-shape';
 import useUserInfo from '@/hooks/useUserInfo';
 import { useToast } from '@/components/ui/use-toast';
@@ -117,12 +118,14 @@ const CreateReportForm: React.FC = () => {
     },
   ]);
 
+  // Track previous section progress to detect completion
+  const [previousSectionProgress, setPreviousSectionProgress] = useState<Record<string, { completed: number; total: number }>>({});
+  const [hasShownCompletionToast, setHasShownCompletionToast] = useState(false);
+
   // Save to localStorage
-  const [saveLocalReport] = useSaveLocalReportMutation();
-  const [submitLocalReport] = useSubmitLocalReportMutation();
-  const [unlockLocalReport] = useUnlockLocalReportMutation();
-  const { data: savedReports = [] } = useGetLocalReportsQuery();
-  const { data: reportById } = useGetLocalReportByIdQuery(editId as any, { skip: !editId });
+  // Local report functionality removed - keeping only report template functionality
+  const savedReports: any[] = [];
+  const reportById: any = null;
   const userInfo = useUserInfo();
   const { toast } = useToast();
   const rawUser = typeof window !== 'undefined' ? localStorage.getItem('userInfo') : null;
@@ -154,14 +157,8 @@ const CreateReportForm: React.FC = () => {
         payload.id = formData.id || generateId();
       }
 
-      // Persist via API first to keep disk authoritative
-      const resp = await saveLocalReport(payload as any).unwrap().catch(() => null);
-      let savedPayload = data;
-      if (resp?.data?.id || payload.id) {
-        const finalId = resp?.data?.id ?? payload.id;
-        savedPayload = { ...payload, id: finalId } as Partial<InvestigationReport>;
-        setFormData(prev => ({ ...prev, id: finalId }));
-      }
+      // Local report saving removed - keeping only report template functionality
+      const savedPayload = payload;
 
       // Mirror to browser localStorage for quick resume
       localStorage.setItem('investigationReportData', JSON.stringify(savedPayload));
@@ -348,13 +345,7 @@ const CreateReportForm: React.FC = () => {
     const ok = validateForSubmit();
     if (!ok) return;
     try {
-      const resp = await submitLocalReport({ ...(formData as any), id: (formData as any).id }).unwrap();
-      const saved = resp?.data ?? null;
-      if (saved) {
-        const flat = toFlatForm(saved);
-        setFormData(flat);
-        localStorage.setItem('investigationReportData', JSON.stringify(flat));
-      }
+      // Local report submission removed - keeping only report template functionality
       // Optionally a toast can be added post-submit; modal already confirms intent
     } catch (e: any) {
       alert(e?.data?.error || 'Submit failed');
@@ -365,16 +356,10 @@ const CreateReportForm: React.FC = () => {
     try {
       const id = (formData as any)?.id;
       if (!id) return;
-      const resp = await unlockLocalReport({ id }).unwrap();
-      const saved = resp?.data ?? null;
-      if (saved) {
-        const flat = toFlatForm(saved);
-        setFormData(flat);
-        localStorage.setItem('investigationReportData', JSON.stringify(flat));
-      }
+      // Local report unlock removed - keeping only report template functionality
       alert('Editing unlocked for this report.');
     } catch (e: any) {
-      alert(e?.data?.error || 'Unlock failed');
+      alert('Unlock failed');
     }
   };
 
@@ -396,6 +381,46 @@ const CreateReportForm: React.FC = () => {
       const status = computeSectionStatus(section.id as any, formData as any, errors);
       return { ...section, status };
     }));
+
+    // Check for section completion and show toasts
+    sections.forEach(section => {
+      const sectionId = section.id as any;
+      const currentProgress = getSectionProgress(sectionId, formData);
+      const previousProgress = previousSectionProgress[sectionId];
+      
+      console.log(`Checking section ${sectionId}:`, {
+        currentProgress,
+        previousProgress,
+        hasPrevious: !!previousProgress
+      });
+      
+      // Only show toast if we have previous progress AND the section was just completed
+      if (previousProgress && previousProgress.completed < previousProgress.total && currentProgress.completed === currentProgress.total) {
+        showSectionCompletionToast(sectionId, formData, previousProgress);
+      }
+    });
+
+    // Update previous progress for next comparison
+    const newProgress: Record<string, { completed: number; total: number }> = {};
+    sections.forEach(section => {
+      const sectionId = section.id as any;
+      newProgress[sectionId] = getSectionProgress(sectionId, formData);
+    });
+    setPreviousSectionProgress(newProgress);
+
+    // Check for overall completion
+    const overallCompletion = getOverallCompletion(formData);
+    if (overallCompletion === 100 && !hasShownCompletionToast) {
+      toast({
+        title: '🎉🎊 Congratulations! 🎊🎉',
+        description: 'All sections are complete! Your investigation report is ready for submission.',
+        duration: 6000,
+        className: "bg-gradient-to-r from-green-50 to-blue-50 border-green-300 text-green-800",
+      });
+      setHasShownCompletionToast(true);
+    } else if (overallCompletion < 100) {
+      setHasShownCompletionToast(false);
+    }
   };
 
   // Helper function to check if general section has any data
@@ -429,6 +454,17 @@ const CreateReportForm: React.FC = () => {
     updateSectionStatuses();
   }, [errors, formData]);
 
+  // Initialize progress tracking on mount
+  useEffect(() => {
+    const initialProgress: Record<string, { completed: number; total: number }> = {};
+    sections.forEach(section => {
+      const sectionId = section.id as any;
+      initialProgress[sectionId] = getSectionProgress(sectionId, formData);
+    });
+    setPreviousSectionProgress(initialProgress);
+    console.log('Initialized progress tracking:', initialProgress);
+  }, [sections]); // Run when sections change
+
   // Auto-save every 10 seconds
   useEffect(() => {
     const interval = setInterval(autoSave, 10000);
@@ -440,14 +476,14 @@ const CreateReportForm: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              {t('investigation.create_title')}
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Create a new forensic investigation report
-            </p>
-          </div>
+                     <div>
+             <h1 className="text-3xl font-bold text-gray-900">
+               {t('investigation.create_title')}
+             </h1>
+             <p className="text-gray-600 mt-2">
+               Create a new forensic investigation report
+             </p>
+           </div>
         </div>
         <div className="flex items-center space-x-3">
           {/* Auto-save indicator removed per requirement */}
@@ -481,12 +517,13 @@ const CreateReportForm: React.FC = () => {
           >
             Clear Data
           </Button>
-          {canEdit && (
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
-              <Save className="w-4 h-4 mr-2" />
-              Save Draft
-            </Button>
-          )}
+
+           {canEdit && (
+             <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+               <Save className="w-4 h-4 mr-2" />
+               Save Draft
+             </Button>
+           )}
           {canEdit && (
             <Button onClick={() => setConfirmOpen(true)} disabled={!isSubmitReady()} className="bg-emerald-600 disabled:bg-gray-300 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
               Submit
@@ -497,113 +534,122 @@ const CreateReportForm: React.FC = () => {
 
       {/* Form */}
       <div className="space-y-4">
-        {/* Header Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'header')!}
-          onToggle={(isOpen) => handleSectionToggle('header', isOpen)}
-        >
-          <HeaderSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Header Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'header')!}
+           onToggle={(isOpen) => handleSectionToggle('header', isOpen)}
+           progress={getSectionProgress('header', formData)}
+         >
+           <HeaderSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* General Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'general')!}
-          onToggle={(isOpen) => handleSectionToggle('general', isOpen)}
-        >
-          <GeneralSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* General Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'general')!}
+           onToggle={(isOpen) => handleSectionToggle('general', isOpen)}
+           progress={getSectionProgress('general', formData)}
+         >
+           <GeneralSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* External Signs Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'external_signs')!}
-          onToggle={(isOpen) => handleSectionToggle('external_signs', isOpen)}
-        >
-          <ExternalSignsSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* External Signs Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'external_signs')!}
+           onToggle={(isOpen) => handleSectionToggle('external_signs', isOpen)}
+           progress={getSectionProgress('external_signs', formData)}
+         >
+           <ExternalSignsSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Head & Spine Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'head_spine')!}
-          onToggle={(isOpen) => handleSectionToggle('head_spine', isOpen)}
-        >
-          <HeadSpineSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Head & Spine Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'head_spine')!}
+           onToggle={(isOpen) => handleSectionToggle('head_spine', isOpen)}
+           progress={getSectionProgress('head_spine', formData)}
+         >
+           <HeadSpineSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Chest & Lungs Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'chest_lungs')!}
-          onToggle={(isOpen) => handleSectionToggle('chest_lungs', isOpen)}
-        >
-          <ChestLungsSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Chest & Lungs Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'chest_lungs')!}
+           onToggle={(isOpen) => handleSectionToggle('chest_lungs', isOpen)}
+           progress={getSectionProgress('chest_lungs', formData)}
+         >
+           <ChestLungsSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Abdomen Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'abdomen')!}
-          onToggle={(isOpen) => handleSectionToggle('abdomen', isOpen)}
-        >
-          <AbdomenSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Abdomen Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'abdomen')!}
+           onToggle={(isOpen) => handleSectionToggle('abdomen', isOpen)}
+           progress={getSectionProgress('abdomen', formData)}
+         >
+           <AbdomenSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Musculoskeletal Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'musculoskeletal')!}
-          onToggle={(isOpen) => handleSectionToggle('musculoskeletal', isOpen)}
-        >
-          <MusculoskeletalSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Musculoskeletal Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'musculoskeletal')!}
+           onToggle={(isOpen) => handleSectionToggle('musculoskeletal', isOpen)}
+           progress={getSectionProgress('musculoskeletal', formData)}
+         >
+           <MusculoskeletalSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Detailed Pathology Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'detailed_pathology')!}
-          onToggle={(isOpen) => handleSectionToggle('detailed_pathology', isOpen)}
-        >
-          <DetailedPathologySection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Detailed Pathology Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'detailed_pathology')!}
+           onToggle={(isOpen) => handleSectionToggle('detailed_pathology', isOpen)}
+           progress={getSectionProgress('detailed_pathology', formData)}
+         >
+           <DetailedPathologySection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
 
-        {/* Opinions Section */}
-        <FormSection
-          section={sections.find(s => s.id === 'opinions')!}
-          onToggle={(isOpen) => handleSectionToggle('opinions', isOpen)}
-        >
-          <OpinionsSection
-            formData={formData}
-            onFieldChange={handleFieldChange}
-            errors={errors}
-          />
-        </FormSection>
+                 {/* Opinions Section */}
+         <FormSection
+           section={sections.find(s => s.id === 'opinions')!}
+           onToggle={(isOpen) => handleSectionToggle('opinions', isOpen)}
+           progress={getSectionProgress('opinions', formData)}
+         >
+           <OpinionsSection
+             formData={formData}
+             onFieldChange={handleFieldChange}
+             errors={errors}
+           />
+         </FormSection>
       </div>
 
       {/* Saved reports and history moved to the All Reports page */}
@@ -627,11 +673,13 @@ const CreateReportForm: React.FC = () => {
   );
 };
 
-// Wrap the component with LanguageProvider
+// Wrap the component with LanguageProvider and Suspense
 const CreateReportPage: React.FC = () => {
   return (
     <LanguageProvider>
-      <CreateReportForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <CreateReportForm />
+      </Suspense>
     </LanguageProvider>
   );
 };

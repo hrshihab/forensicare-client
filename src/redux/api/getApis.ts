@@ -4,10 +4,10 @@ import { User } from '@/types/user';
 
 export const getApis = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Get all users
+        // Get all users (server-backed)
       getAllUsers: builder.query({
         query: (params?: { pageNo?: number; pageSize?: number }) => ({
-          url: '/User/getall',
+          url: `${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001/api'}/User/getall`,
           params: { pageNo: 1, pageSize: 25, ...params },
         }),
         transformResponse: (response: any) => {
@@ -16,16 +16,16 @@ export const getApis = baseApi.injectEndpoints({
         providesTags: [tagTypes.user],
       }),
   
-      // Get user by ID
+      // Get user by ID (server-backed)
       getUserById: builder.query<User, number>({
-        query: (id) => `/User/${id}`,
+        query: (id) => `${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001/api'}/User/${id}`,
         providesTags: (_result, _error, id) => [{ type: tagTypes.user, id }],
       }),
 
-      // Get user info by ID
+      // Get user info by ID (server-backed)
       getUserInfo: builder.query({
         query: (id: number) => ({
-          url: '/User/get/userinfo',
+          url: `${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001/api'}/User/get/userinfo`,
           params: { id },
         }),
         transformResponse: (response: any) => {
@@ -34,10 +34,10 @@ export const getApis = baseApi.injectEndpoints({
         providesTags: (_result, _error, id) => [{ type: tagTypes.user, id }],
       }),
 
-      // GET all departments
+      // GET all departments (server-backed)
       getDepartments: builder.query({
         query: (params?: { pageNo?: number; pageSize?: number }) => ({
-          url: '/Department/getall',
+          url: `${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001/api'}/Department/getall`,
           params: { pageNo: 1, pageSize: 25, ...params },
         }),
         transformResponse: (response: any) => {
@@ -46,55 +46,49 @@ export const getApis = baseApi.injectEndpoints({
         providesTags: [tagTypes.department],
       }),
 
-      // Reports (server-backed)
+      // GET single department by ID (server-backed)
+      getDepartmentById: builder.query({
+        query: (id) => `${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:5001/api'}/department/${id}`,
+        providesTags: (_result, _error, id) => [{ type: tagTypes.department, id }],
+      }),
+
+      // Investigation Reports (LOCAL - using Next.js API routes)
       getReports: builder.query<any[], { page?: number; pageSize?: number } | void>({
-        query: (params) => ({
-          url: '/reports',
-          params: params ? { page: params.page ?? 1, pageSize: params.pageSize ?? 25 } : undefined,
+        query: () => ({
+          url: '/api/reports/local',
         }),
         transformResponse: (response: any) => {
-          if (Array.isArray(response)) return response;
-          return response?.result?.data ?? response?.data ?? [];
+          return response?.data || [];
         },
         providesTags: [tagTypes.report],
       }),
 
       getReportById: builder.query<any, string | number>({
-        query: (id) => ({ url: `/reports/${id}` }),
+        query: (id) => ({ url: `/api/reports/local?id=${id}` }),
         transformResponse: (response: any) => {
-          return response?.result?.data ?? response?.data ?? response ?? null;
+          return response?.data || null;
         },
         providesTags: (_r, _e, id) => [{ type: tagTypes.report, id }],
       }),
 
-      // Medical Reports (server-backed)
+      // Medical Reports (LOCAL - using Next.js API routes)
       getMedicalReports: builder.query<any[], { page?: number; pageSize?: number } | void>({
-        query: (params) => ({
-          url: '/medical-reports',
-          params: params ? { page: params.page ?? 1, pageSize: params.pageSize ?? 25 } : undefined,
+        query: () => ({
+          url: '/api/medical/local',
         }),
         transformResponse: (response: any) => {
-          if (Array.isArray(response)) return response;
-          return response?.result?.data ?? response?.data ?? [];
+          return response?.data || [];
         },
         providesTags: [tagTypes.medicalReport],
       }),
 
       getMedicalReportById: builder.query<any, string | number>({
-        query: (id) => ({ url: `/medical-reports/${id}` }),
+        query: (id) => ({ url: `/api/medical/local?id=${id}` }),
         transformResponse: (response: any) => {
-          return response?.result?.data ?? response?.data ?? response ?? null;
+          return response?.data || null;
         },
         providesTags: (_r, _e, id) => [{ type: tagTypes.medicalReport, id }],
       }),
-
-    // GET single department by ID
-      getDepartmentById: builder.query({
-        query: (id) => `/department/${id}`,
-        providesTags: (_result, _error, id) => [{ type: tagTypes.department, id }],
-    }),
-  
-     
     }),
     overrideExisting: true,
 });
