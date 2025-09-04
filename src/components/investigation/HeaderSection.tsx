@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDropdownValues } from '@/hooks/useDropdownValues';
+import { THANA_OPTIONS } from '@/constants/thana';
 import SectionHeader from '@/components/ui/section-header';
 import { FileText, MapPin, Calendar, Hash } from 'lucide-react';
 
@@ -21,10 +22,61 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   errors
 }) => {
   const { t, language } = useLanguage();
-  const { thanaOptions, caseTypeOptions, getLabel } = useDropdownValues();
+  const { caseTypeOptions, getLabel } = useDropdownValues();
+
+  // Get all districts from hierarchical structure
+  const getAllDistricts = () => {
+    if (!THANA_OPTIONS || !Array.isArray(THANA_OPTIONS)) {
+      return [];
+    }
+    const allDistricts: { value: string; label: string }[] = [];
+    THANA_OPTIONS.forEach(division => {
+      if (division.districts && Array.isArray(division.districts)) {
+        division.districts.forEach(district => {
+          allDistricts.push({
+            value: district.district,
+            label: district.district
+          });
+        });
+      }
+    });
+    return allDistricts.sort((a, b) => a.label.localeCompare(b.label));
+  };
+
+  // Get thanas for selected district
+  const getThanasForDistrict = (selectedDistrict: string) => {
+    if (!selectedDistrict || !THANA_OPTIONS || !Array.isArray(THANA_OPTIONS)) {
+      return [];
+    }
+    
+    for (const division of THANA_OPTIONS) {
+      if (division.districts && Array.isArray(division.districts)) {
+        for (const district of division.districts) {
+          if (district.district === selectedDistrict) {
+            return district.thanas.map(thana => ({
+              value: thana,
+              label: thana
+            }));
+          }
+        }
+      }
+    }
+    return [];
+  };
+
+  const districtOptions = getAllDistricts();
+  const thanaOptions = getThanasForDistrict(formData.district);
+
+  // Set default district to Dhaka if not set
+  React.useEffect(() => {
+    if (!formData.district) {
+      onFieldChange('district', 'Dhaka');
+    }
+  }, [formData.district, onFieldChange]);
 
   // Calculate completion percentage for Header section
   const requiredFields = [
+    'district',
     'thana_id',
     'case_type',
     'gd_cid_case_no',
@@ -42,7 +94,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
   }).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden relative">
       {/* Section Header with Progress */}
       <SectionHeader
         icon={FileText}
@@ -69,71 +121,106 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             {language === 'bn' ? 'মামলার তথ্য' : 'Case Information'}
           </h4>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Thana Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="thana_id" className="text-base font-medium font-bangla text-gray-700">
-              {language === 'bn' ? "থানা" : "Thana"} *
-            </Label>
-            <Select
-              value={formData.thana_id || ''}
-              onValueChange={(value) => onFieldChange('thana_id', value)}
-            >
-              <SelectTrigger className={`h-10 ${errors.thana_id ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
-                <SelectValue placeholder={language === 'bn' ? "থানা নির্বাচন করুন" : "Select Thana"} />
-              </SelectTrigger>
-              <SelectContent>
-                {thanaOptions.map((thana) => (
-                  <SelectItem key={thana.value} value={thana.value}>
-                    {getLabel(thanaOptions, thana.value)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[120px]">
+           {/* Combined District and Thana Selection */}
+           <div className="space-y-2 min-w-0">
+             <Label htmlFor="district" className="text-base font-medium font-bangla text-gray-700">
+               {language === 'bn' ? "থানা" : "Thana"} *
+             </Label>
+             <div className="flex h-10 w-full">
+               {/* District Selection - 1/2 width */}
+               <div className="w-1/2 min-w-0">
+                 <Select
+                   value={formData.district || 'Dhaka'}
+                   onValueChange={(value) => {
+                     onFieldChange('district', value);
+                     onFieldChange('thana_id', ''); // Reset thana when district changes
+                   }}
+                 >
+                   <SelectTrigger className={`w-full h-full rounded-l-lg rounded-r-none border-r-0 flex items-center ${errors.district ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 min-w-0`}>
+                     <SelectValue placeholder={language === 'bn' ? "জেলা" : "District"} className="flex items-center truncate" />
+                   </SelectTrigger>
+                                       <SelectContent className="max-w-[200px]" position="popper" side="bottom" align="start">
+                      {districtOptions.map((district) => (
+                        <SelectItem key={district.value} value={district.value} className="truncate">
+                          {district.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                 </Select>
+               </div>
+               
+               {/* Thana Selection - 1/2 width */}
+               <div className="w-1/2 min-w-0">
+                 <Select
+                   value={formData.thana_id || ''}
+                   onValueChange={(value) => onFieldChange('thana_id', value)}
+                   disabled={!formData.district}
+                 >
+                   <SelectTrigger className={`w-full h-full rounded-l-none rounded-r-lg border-l-0 flex items-center ${errors.thana_id ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 ${!formData.district ? 'bg-gray-100 cursor-not-allowed' : ''} min-w-0`}>
+                     <SelectValue placeholder={!formData.district ? 
+                       (language === 'bn' ? "প্রথমে জেলা নির্বাচন করুন" : "Select district first") : 
+                       (language === 'bn' ? "থানা" : "Thana")} className="flex items-center truncate" />
+                   </SelectTrigger>
+                                       <SelectContent className="max-w-[200px]" position="popper" side="bottom" align="start">
+                      {thanaOptions.map((thana) => (
+                        <SelectItem key={thana.value} value={thana.value} className="truncate">
+                          {thana.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                 </Select>
+               </div>
+             </div>
+            
+            {/* Error messages */}
+            {errors.district && (
+              <p className="text-sm text-red-600">{errors.district}</p>
+            )}
             {errors.thana_id && (
               <p className="text-sm text-red-600">{errors.thana_id}</p>
             )}
           </div>
 
-          {/* Combined Case Type and Number Field */}
-          <div className="space-y-2">
-            <Label htmlFor="case_type" className="text-base font-medium font-bangla text-gray-700">
-              {t('investigation.header.gd_cid_case_no')} *
-            </Label>
-            <div className="flex h-10">
-              {/* Case Type Selection - 1/4 width */}
-              <div className="w-2/6">
-                <Select
-                  value={formData.case_type || 'none'}
-                  onValueChange={(value) => onFieldChange('case_type', value)}
-                >
-                  <SelectTrigger className={`w-full h-full rounded-l-lg rounded-r-none border-r-0 flex items-center ${errors.case_type ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200`}>
-                    <SelectValue placeholder={language === 'bn' ? "ধরন" : "Type"} className="flex items-center" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {caseTypeOptions.map((caseType) => (
-                      <SelectItem key={caseType.value} value={caseType.value}>
-                        {getLabel(caseTypeOptions, caseType.value)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Case Number Input - 3/4 width */}
-              <div className="w-4/6">
-                <Input
-                  id="gd_cid_case_no"
-                  value={formData.gd_cid_case_no || ''}
-                  onChange={(e) => onFieldChange('gd_cid_case_no', e.target.value)}
-                  placeholder={formData.case_type && formData.case_type !== 'none' ? 
-                    (language === 'bn' ? `${formData.case_type} নং` : `${formData.case_type} No.`) : 
-                    (language === 'bn' ? "প্রথমে মামলার ধরন নির্বাচন করুন" : "Select case type first")}
-                  className={`${errors.gd_cid_case_no ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'focus:border-blue-500 focus:ring-blue-200'} ${(!formData.case_type || formData.case_type === 'none') ? 'bg-white text-gray-500 cursor-not-allowed' : 'bg-white'} rounded-l-none rounded-r-lg border-l-0 h-full transition-all duration-200`}
-                  disabled={!formData.case_type || formData.case_type === 'none'}
-                />
-              </div>
-            </div>
+                     {/* Combined Case Type and Number Field */}
+           <div className="space-y-2 min-w-0">
+             <Label htmlFor="case_type" className="text-base font-medium font-bangla text-gray-700">
+               {t('investigation.header.gd_cid_case_no')} *
+             </Label>
+             <div className="flex h-10 w-full">
+               {/* Case Type Selection - 1/4 width */}
+               <div className="w-2/6 min-w-0">
+                 <Select
+                   value={formData.case_type || 'none'}
+                   onValueChange={(value) => onFieldChange('case_type', value)}
+                 >
+                   <SelectTrigger className={`w-full h-full rounded-l-lg rounded-r-none border-r-0 flex items-center ${errors.case_type ? 'border-red-500' : ''} focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 min-w-0`}>
+                     <SelectValue placeholder={language === 'bn' ? "ধরন" : "Type"} className="flex items-center truncate" />
+                   </SelectTrigger>
+                                       <SelectContent className="max-w-[150px]" position="popper" side="bottom" align="start">
+                      {caseTypeOptions.map((caseType) => (
+                        <SelectItem key={caseType.value} value={caseType.value} className="truncate">
+                          {getLabel(caseTypeOptions, caseType.value)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                 </Select>
+               </div>
+               
+               {/* Case Number Input - 3/4 width */}
+               <div className="w-4/6 min-w-0">
+                 <Input
+                   id="gd_cid_case_no"
+                   value={formData.gd_cid_case_no || ''}
+                   onChange={(e) => onFieldChange('gd_cid_case_no', e.target.value)}
+                   placeholder={formData.case_type && formData.case_type !== 'none' ? 
+                     (language === 'bn' ? `${formData.case_type} নং` : `${formData.case_type} No.`) : 
+                     (language === 'bn' ? "প্রথমে মামলার ধরন নির্বাচন করুন" : "Select case type first")}
+                   className={`${errors.gd_cid_case_no ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'focus:border-blue-500 focus:ring-blue-200'} ${(!formData.case_type || formData.case_type === 'none') ? 'bg-white text-gray-500 cursor-not-allowed' : 'bg-white'} rounded-l-none rounded-r-lg border-l-0 h-full transition-all duration-200 min-w-0`}
+                   disabled={!formData.case_type || formData.case_type === 'none'}
+                 />
+               </div>
+             </div>
             
             {/* Error messages */}
             {errors.case_type && (
@@ -173,7 +260,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
             {language === 'bn' ? 'তারিখ ও নম্বরসমূহ' : 'Dates & Numbers'}
           </h4>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[120px]">
           {/* PM Number */}
           <div className="space-y-2">
             <Label htmlFor="pm_no" className="text-base font-medium font-bangla text-gray-700">

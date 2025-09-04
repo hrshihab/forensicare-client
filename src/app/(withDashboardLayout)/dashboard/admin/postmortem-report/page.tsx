@@ -42,20 +42,14 @@ export default function InvestigationReportsPage() {
     <div className="p-6 overflow-x-hidden">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Investigation Reports</h1>
-          <p className="text-gray-600 mt-2">Manage and view forensic investigation reports</p>
+          <h1 className="text-3xl font-bold text-gray-900">Post-mortem Reports</h1>
+          <p className="text-gray-600 mt-2">Manage and view post-mortem examination reports</p>
         </div>
         <div className="flex space-x-3">
-          <Link href="/dashboard/admin/investigation-report/create">
+          <Link href="/dashboard/admin/postmortem-report/create">
             <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="w-4 h-4 mr-2" />
               Create Report
-            </Button>
-          </Link>
-          <Link href="/dashboard/admin/investigation-report/create-design2">
-            <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50">
-              <Layout className="w-4 h-4 mr-2" />
-              Create Report (Design 2)
             </Button>
           </Link>
         </div>
@@ -101,12 +95,8 @@ export default function InvestigationReportsPage() {
                         View
                       </Link>
                       <span className="text-gray-300">|</span>
-                      <Link className="text-purple-600 hover:underline" href={`/dashboard/admin/investigation-report/create-design2?id=${r.id}`}>
-                        Edit D2
-                      </Link>
-                      <span className="text-gray-300">|</span>
-                      <Link className="text-sky-600 hover:underline" href={`/dashboard/admin/investigation-report/create?id=${r.id}`}>
-                        Edit D1
+                      <Link className="text-blue-600 hover:underline" href={`/dashboard/admin/postmortem-report/create?id=${r.id}`}>
+                        Edit
                       </Link>
                       <span className="text-gray-300">|</span>
                       <Link className="text-amber-700 hover:underline" href={`/dashboard/admin/investigation-report/${r.id}/logs`}>

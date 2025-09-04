@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, CheckCircle, AlertCircle, XCircle, SkipForward } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { FormSection as FormSectionType } from '@/types/investigation';
+import { FormSection as FormSectionType } from '@/types/postmortem';
 
 interface FormSectionProps {
   section: FormSectionType;

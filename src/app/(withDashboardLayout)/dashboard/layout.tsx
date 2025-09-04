@@ -10,10 +10,35 @@ import { Breadcrumb } from "@/components/ui/breadcrumb"
 import * as React from "react"
 
 export default function DashboardLayout({children}: {children: React.ReactNode}) {
-  // Dynamic breadcrumb logic
-  // const pathname = typeof window !== 'undefined' ? window.location.pathname : ''
-  // const segments = pathname.split("/").filter(Boolean)
-  // const buildPath = (idx: number) => "/" + segments.slice(0, idx + 1).join("/")
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <div className="flex h-screen">
+        <div className="w-64 bg-gray-50 border-r" />
+        <div className="flex-1">
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+            <div className="flex items-center gap-2 px-4">
+              <div className="w-8 h-8 bg-gray-200 rounded" />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-4"
+              />
+              <Breadcrumb />
+            </div>
+          </header>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden">
+            {children}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <SidebarProvider>

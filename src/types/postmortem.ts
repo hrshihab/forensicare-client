@@ -1,29 +1,25 @@
-export interface InvestigationReport {
+export interface PostmortemReport {
   id?: string;
   // lifecycle
   status?: 'draft' | 'submitted';
   locked?: boolean;
   lockedAt?: string;
   lockedBy?: string;
-  lockReason?: string;
-  submittedAt?: string;
-  submittedBy?: string;
+  rejectionFeedback?: string;
   createdAt?: string;
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
-  audit?: { at: string; by: string; action: string }[];
+
+  // header
   pm_no: string;
-  thana_id: string;
-  thana_text?: string;
-  gd_cid_case_no: string;
-  case_type: 'none' | 'GD' | 'CID' | 'CASE'; // Updated to include 'none' option
+  thana: string;
+  gd_ud_case_no: string;
+  case_type: 'none' | 'GD' | 'UD' | 'CASE';
   ref_date: string;
   report_date: string;
   station: string;
-  year_val?: number;
-  month_val?: number;
-  day_val?: number;
+
   
   // General Info
   person_name: string;
@@ -32,8 +28,7 @@ export interface InvestigationReport {
   caste_tribe?: string;
   brought_from_village?: string;
   brought_from_thana?: string;
-  // Historical field kept for compatibility with older UI
-  brought_by_list: string[];
+
   // Current UI fields
   constable_name?: string;
   relatives_names?: string[];
@@ -45,12 +40,14 @@ export interface InvestigationReport {
   
   // External Signs
   physique_state?: string;
-  wounds_desc?: string;
-  injuries_desc?: string;
-  neck_marks?: string;
+  wounds_injuries_neck_desc?: string;
+  //injuries_desc?: string;
+  //neck_marks?: string;
   
   // Head & Spine
-  scalp_skull_vertebrae?: string;
+  scalp?: string;
+  skull?: string;
+  vertebrae?: string;
   meninges?: string;
   brain_spinal?: string;
   
@@ -100,10 +97,10 @@ export interface InvestigationReport {
   skip_status?: 'none' | 'optional_skipped' | 'required_skipped';
   skip_reason?: string;
   section_status?: 'done' | 'in_progress' | 'error' | 'skipped';
-  created_by?: string; // deprecated, use createdBy
-  created_at?: string; // deprecated, use createdAt
-  updated_by?: string; // deprecated, use updatedBy
-  updated_at?: string; // deprecated, use updatedAt
+  created_by?: string; 
+  created_at?: string; 
+  updated_by?: string; 
+  updated_at?: string; 
   version_no?: number;
 }
 

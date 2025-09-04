@@ -15,7 +15,7 @@ import { DetailedPathologySection } from '@/components/investigation/DetailedPat
 import { OpinionsSection } from '@/components/investigation/OpinionsSection';
 import { Button } from '@/components/ui/button';
 import { Save, Eye, Printer, Lock, Unlock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { InvestigationReport } from '@/types/investigation';
+import { PostmortemReport } from '@/types/postmortem';
 import { computeSectionProgress } from '@/utils/section-progress';
 import { useSaveLocalReportMutation, useGetLocalReportByIdQuery, useSubmitLocalReportMutation, useUnlockLocalReportMutation } from '@/redux/api/reportApis';
 import { toFlatForm } from '@/utils/report-shape';
@@ -94,8 +94,7 @@ const CreateReportPageDesign2 = () => {
 };
 
 const CreateReportFormInner = () => {
-  const [formData, setFormData] = useState<Partial<InvestigationReport>>({
-    brought_by_list: [],
+  const [formData, setFormData] = useState<Partial<PostmortemReport>>({
     station: 'DMC MORGUE',
     case_type: 'none',
   });
@@ -157,7 +156,7 @@ const CreateReportFormInner = () => {
   const handleFieldChange = (field: string, value: any) => {
     if (!canEdit) return;
     setFormData(prev => {
-      const nextState: Partial<InvestigationReport> = {
+      const nextState: Partial<PostmortemReport> = {
         ...prev,
         [field]: value,
       };
@@ -358,7 +357,7 @@ const CreateReportFormInner = () => {
         <div className="flex items-center space-x-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              {language === 'bn' ? "ময়না তদন্ত রিপোর্ট - ডিজাইন ২" : "Create Investigation Report - Design 2"}
+              {language === 'bn' ? "ময়না তদন্ত রিপোর্ট - ডিজাইন ২" : "Create Post-mortem Report - Design 2"}
             </h1>
           </div>
         </div>

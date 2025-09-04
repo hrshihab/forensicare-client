@@ -28,7 +28,7 @@
     "exam_date_after_brought": "Examination date must be after brought date"
   },
   "investigation": {
-    "create_title": "Create Investigation Report",
+    "create_title": "Create Post-mortem Report",
     "sections": {
       "header": "Header",
       "general": "General Information",

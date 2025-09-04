@@ -30,13 +30,13 @@ export const GeneralSection: React.FC<GeneralSectionProps> = ({
 
 	// Default value for police_info based on current language
 	const defaultPoliceInfo = language === 'bn'
-		? 'সুরতহাল ও চালান'
+		? 'সুরতহাল রিপোর্ট ও চালান মোতাবেক'
 		: 'As per inquest report and challan';
 
 	// Default value for identifier_name based on current language
 	const defaultIdentifierName = language === 'bn'
-		? 'উল্লেখিত কলাম ৩'
-		: 'As per column 3';
+		? 'উল্লেখিত কলাম নং ৩ অনুযায়ী'
+		: 'As per column no 3';
 
 	// Keep track of the previously-used default to decide if we should switch on language change
 	const lastDefaultPoliceInfoRef = useRef<string>(defaultPoliceInfo);

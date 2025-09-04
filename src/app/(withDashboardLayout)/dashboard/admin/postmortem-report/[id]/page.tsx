@@ -34,8 +34,7 @@ export default function ReportViewPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Report Overview</h1>
         <div className="space-x-3">
-          <Link href={`/dashboard/admin/investigation-report/create?id=${id}`} className="text-sky-600 hover:underline">Edit D1</Link>
-          <Link href={`/dashboard/admin/investigation-report/create-design2?id=${id}`} className="text-purple-600 hover:underline">Edit D2</Link>
+          <Link href={`/dashboard/admin/postmortem-report/create?id=${id}`} className="text-blue-600 hover:underline">Edit</Link>
           <Link href={`/dashboard/admin/investigation-report/${id}/logs`} className="text-amber-700 hover:underline">Logs</Link>
         </div>
       </div>

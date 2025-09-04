@@ -16,7 +16,7 @@ import { OpinionsSection } from '@/components/investigation/OpinionsSection';
 import { DetailedPathologySection } from '@/components/investigation/DetailedPathologySection';
 import { Button } from '@/components/ui/button';
 import { Save, Eye, Printer, Lock, Unlock } from 'lucide-react';
-import { InvestigationReport, FormSection as FormSectionType } from '@/types/investigation';
+import { PostmortemReport, FormSection as FormSectionType } from '@/types/postmortem';
 import { computeSectionStatus, getSectionFields } from '@/utils/section-progress';
 import { showSectionCompletionToast, getSectionProgress, getOverallCompletion } from '@/utils/section-completion-toasts';
 // Local report functionality removed - keeping only report template functionality
@@ -32,13 +32,12 @@ const CreateReportForm: React.FC = () => {
   const editId = searchParams?.get('id') || undefined;
   
   // Stable default for SSR/CSR to avoid hydration mismatches; load saved data after mount
-  const defaultFormData: Partial<InvestigationReport> = {
-    brought_by_list: [],
+  const defaultFormData: Partial<PostmortemReport> = {
     station: 'DMC MORGUE',
     case_type: 'none',
   };
 
-  const [formData, setFormData] = useState<Partial<InvestigationReport>>(defaultFormData);
+  const [formData, setFormData] = useState<Partial<PostmortemReport>>(defaultFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
@@ -148,11 +147,11 @@ const CreateReportForm: React.FC = () => {
   const canEdit = !isLocked; // admin cannot bypass; must unlock first
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const saveToLocalStorage = async (data: Partial<InvestigationReport>) => {
+  const saveToLocalStorage = async (data: Partial<PostmortemReport>) => {
     try {
       if (!canEdit) return; // prevent saving when locked for non-admins
       // Ensure a stable id for upsert
-      const payload: Partial<InvestigationReport> = { ...data };
+      const payload: Partial<PostmortemReport> = { ...data };
       if (!payload.id) {
         payload.id = formData.id || generateId();
       }
@@ -170,7 +169,7 @@ const CreateReportForm: React.FC = () => {
   };
 
   const generateId = () => `rpt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  const normalizeForSnapshot = (data: Partial<InvestigationReport>) => {
+  const normalizeForSnapshot = (data: Partial<PostmortemReport>) => {
     const { createdAt, updatedAt, ...rest } = (data as any) || {};
     return rest;
   };
@@ -207,7 +206,7 @@ const CreateReportForm: React.FC = () => {
         lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(parsed));
       } else {
         // New form, assign an id immediately for stable saves
-        const seeded = { ...defaultFormData, id: generateId() } as Partial<InvestigationReport>;
+        const seeded = { ...defaultFormData, id: generateId() } as Partial<PostmortemReport>;
         setFormData(seeded);
         lastSavedSnapshot.current = JSON.stringify(normalizeForSnapshot(seeded));
       }
@@ -253,10 +252,10 @@ const CreateReportForm: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     // Header validation - always validate as it's required and open by default
-    if (!formData.thana_id) {
+    if (!formData.thana) {
       newErrors.thana_id = t('validation.required_field');
     }
-    if (!formData.gd_cid_case_no) {
+    if (!formData.gd_ud_case_no) {
       newErrors.gd_cid_case_no = t('validation.required_field');
     }
     if (!formData.ref_date) {
@@ -505,7 +504,6 @@ const CreateReportForm: React.FC = () => {
             onClick={() => {
               localStorage.removeItem('investigationReportData');
               setFormData({
-                brought_by_list: [],
                 station: 'DMC MORGUE',
                 case_type: 'none',
               });

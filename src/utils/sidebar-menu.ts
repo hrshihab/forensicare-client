@@ -78,13 +78,12 @@ import {
         //   ],
         // },
         {
-          title: "Investigation Report",
-          url: `/dashboard/${role}/investigation-report`,
+          title: "Post-mortem Report",
+          url: `/dashboard/${role}/postmortem-report`,
           icon: ClipboardCheck,
           items: [
-            { title: "Create Report", url: `/dashboard/${role}/investigation-report/create`, icon: ClipboardCheck },
-            { title: "Create Report (Design 2)", url: `/dashboard/${role}/investigation-report/create-design2`, icon: ClipboardCheck },
-            { title: "All Reports", url: `/dashboard/${role}/investigation-report`, icon: ClipboardList },
+            { title: "Create Report", url: `/dashboard/${role}/postmortem-report/create`, icon: ClipboardCheck },
+            { title: "All Reports", url: `/dashboard/${role}/postmortem-report`, icon: ClipboardList },
           ],
         },
         {

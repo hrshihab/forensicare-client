@@ -1,5 +1,7 @@
 // Centralized dropdown values for the application
 // This ensures consistent values across all components and proper language handling
+import { THANA_OPTIONS } from "./thana";
+
 
 export interface DropdownOption {
   value: string;
@@ -7,19 +9,10 @@ export interface DropdownOption {
   label_en: string;
 }
 
-// Thana options - Location data
-export const THANA_OPTIONS: DropdownOption[] = [
-  { value: 'Dhanmondi', label_bn: 'ধানমন্ডি', label_en: 'Dhanmondi' },
-  { value: 'Gulshan', label_bn: 'গুলশান', label_en: 'Gulshan' },
-  { value: 'Banani', label_bn: 'বনানী', label_en: 'Banani' },
-  { value: 'Mirpur', label_bn: 'মিরপুর', label_en: 'Mirpur' },
-  { value: 'Uttara', label_bn: 'উত্তরা', label_en: 'Uttara' },
-  { value: 'Mohammadpur', label_bn: 'মোহাম্মদপুর', label_en: 'Mohammadpur' },
-  { value: 'Lalbagh', label_bn: 'লালবাগ', label_en: 'Lalbagh' },
-  { value: 'Kotwali', label_bn: 'কোতয়ালী', label_en: 'Kotwali' },
-  { value: 'Ramna', label_bn: 'রমনা', label_en: 'Ramna' },
-  { value: 'Paltan', label_bn: 'পল্টন', label_en: 'Paltan' }
-];
+
+
+
+
 
 // Gender options
 export const GENDER_OPTIONS: DropdownOption[] = [
@@ -46,10 +39,8 @@ export const getLocalizedLabel = (options: DropdownOption[], value: string, lang
 };
 
 // Helper function to get all options for a specific dropdown type
-export const getDropdownOptions = (type: 'thana' | 'gender' | 'case_type'): DropdownOption[] => {
+export const getDropdownOptions = (type: 'gender' | 'case_type'): DropdownOption[] => {
   switch (type) {
-    case 'thana':
-      return THANA_OPTIONS;
     case 'gender':
       return GENDER_OPTIONS;
     case 'case_type':

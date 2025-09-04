@@ -42,19 +42,10 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [departmentFilter, setDepartmentFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
 
-  // Get departments for display
-  const [departments, setDepartments] = useState<any[]>([]);
-
   useEffect(() => {
-    // Load departments
-    import('@/data').then((data) => {
-      setDepartments(data.departments);
-    });
-
     // Get user info from localStorage
     const storedUserInfo = localStorage.getItem('userInfo');
     if (storedUserInfo) {
@@ -89,10 +80,8 @@ export default function AdminDashboard() {
     const matchesStatus = statusFilter === "all" || 
       (statusFilter === "active" && user.userStatus === "Active") ||
       (statusFilter === "inactive" && user.userStatus !== "Active");
-    const matchesDepartment = departmentFilter === "all" || 
-      user.departmentName === departmentFilter;
 
-    return matchesSearch && matchesRole && matchesStatus && matchesDepartment;
+    return matchesSearch && matchesRole && matchesStatus;
   }) || [];
 
   // Pagination
@@ -195,18 +184,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Departments</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{departments.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Active departments
-            </p>
-          </CardContent>
-        </Card>
+        
       </div>
 
       {/* User Table */}
@@ -258,7 +236,6 @@ export default function AdminDashboard() {
                 setSearchTerm("");
                 setRoleFilter("all");
                 setStatusFilter("all");
-                setDepartmentFilter("all");
                 setCurrentPage(1);
               }}
             >
@@ -339,7 +316,6 @@ export default function AdminDashboard() {
                             setSearchTerm("");
                             setRoleFilter("all");
                             setStatusFilter("all");
-                            setDepartmentFilter("all");
                             setCurrentPage(1);
                           }}
                         >
